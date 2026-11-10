@@ -1263,10 +1263,20 @@
             height: 11.2%;
         }
 
-        /* Onkyo Station Readout Banner (Amber Quartz-Locked LED Readout) */
-        #onkyo-station-banner {
+        /* Onkyo Station Readout Banner & Header Bar */
+        #onkyo-header-bar {
             position: relative;
             z-index: 290;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            max-width: 94vw;
+            flex-shrink: 0;
+        }
+        #onkyo-station-banner {
+            position: relative;
             background: rgba(18, 18, 20, 0.92);
             border: 1px solid rgba(229, 169, 59, 0.45);
             border-radius: 4px;
@@ -1285,16 +1295,43 @@
             overflow: hidden;
             pointer-events: none;
             box-shadow: 0 4px 18px rgba(0, 0, 0, 0.7);
-            margin-bottom: 12px;
             transition: opacity 0.3s ease, border-color 0.3s ease, color 0.3s ease;
             flex-shrink: 0;
+        }
+        #onkyo-zoom-toggle-btn {
+            display: none;
+            background: rgba(20, 20, 24, 0.94);
+            border: 1px solid rgba(255, 184, 51, 0.6);
+            color: #ffb833;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+            pointer-events: auto;
+            white-space: nowrap;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+        #onkyo-zoom-toggle-btn:hover, #onkyo-zoom-toggle-btn:active, #onkyo-zoom-toggle-btn.is-zoomed {
+            background: rgba(255, 184, 51, 0.25);
+            border-color: #ffb833;
+            box-shadow: 0 0 12px rgba(255, 184, 51, 0.55);
         }
         #onkyo-overlay { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 12; pointer-events: none; transition: opacity 0.3s ease; }
         #onkyo-stack-container.powered-off #onkyo-overlay { opacity: 0; }
         .onkyo-secret { position: absolute; z-index: 16; background: transparent; border: 0; padding: 0; margin: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; outline: none; }
         #onkyo-stack-container.powered-off .onkyo-hotspot, #onkyo-stack-container.powered-off .onkyo-secret { pointer-events: none; }
+        #onkyo-stack-container.powered-off #onkyo-header-bar,
         #onkyo-stack-container.powered-off #onkyo-station-banner {
             opacity: 0;
+            pointer-events: none;
         }
 
         #onkyo-controls-hint {
@@ -2657,12 +2694,34 @@
         }
 
         @media (max-width: 768px) {
+            #onkyo-stack-container {
+                padding: 6px 8px;
+            }
+            #onkyo-header-bar {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+            }
+            #onkyo-zoom-toggle-btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .onkyo-stage {
+                width: 96vw;
+                transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+            }
+            #onkyo-stack-container.tuner-zoomed .onkyo-stage {
+                transform: scale(1.95);
+                transform-origin: 54% 28%;
+            }
             #onkyo-stack-container:has(#wlob-vault-container.wlob-active) .onkyo-stage {
                 width: 100vw;
                 height: 100vh;
                 max-height: 100vh;
                 aspect-ratio: auto;
                 border-radius: 0;
+                transform: none !important;
             }
             #wlob-vault-container.wlob-active {
                 border-radius: 0;
@@ -2813,7 +2872,10 @@
 
     <!-- The Onkyo Integra M-504 & T-9090 Stack (Revealed on 1986 Metallica Break Point) -->
     <div id="onkyo-stack-container" aria-hidden="true">
-        <div id="onkyo-station-banner">104.3 MHz // METALLICA — MASTER OF PUPPETS (1986)</div>
+        <div id="onkyo-header-bar">
+            <div id="onkyo-station-banner">104.3 MHz // METALLICA — MASTER OF PUPPETS (1986)</div>
+            <button type="button" id="onkyo-zoom-toggle-btn" title="Toggle Zoom for Mobile Tuner & Keypad">🔍 ZOOM TUNER</button>
+        </div>
         <div class="onkyo-stage" id="onkyo-stage">
             <svg id="onkyo-overlay" viewBox="0 0 2752 1536" preserveAspectRatio="none" aria-hidden="true"></svg>
             <!-- Layer 1 (Active Base): M504stack.png (Do NOT load M504stack-off.jpeg during reveal transition) -->
@@ -2834,9 +2896,9 @@
             <button type="button" id="onkyo-spk-on-btn" class="onkyo-hotspot" title="Speakers ON"></button>
             <button type="button" id="onkyo-spk-off-btn" class="onkyo-hotspot" title="Speakers OFF // Enter Code (80085)"></button>
 
-            <!-- Interactive Direct Numeric Keypad (1 - 0) -->
+            <!-- Interactive Direct Numeric Keypad (0 - 0) -->
             <div id="onkyo-tuner-presets">
-                <button type="button" class="onkyo-preset-btn" data-num="1" title="1"><span>1</span></button>
+                <button type="button" class="onkyo-preset-btn" data-num="0" title="0 (Keypad 0)"><span>0</span></button>
                 <button type="button" class="onkyo-preset-btn" data-num="2" title="2"><span>2</span></button>
                 <button type="button" class="onkyo-preset-btn" data-num="3" title="3"><span>3</span></button>
                 <button type="button" class="onkyo-preset-btn" data-num="4" title="4"><span>4</span></button>
@@ -4959,6 +5021,55 @@
         if (onkyoTuneUpBtn) onkyoTuneUpBtn.addEventListener('click', (e) => { e.stopPropagation(); cycleOnkyoLiveRadioStation(1); });
         if (onkyoAutoScanBtn) onkyoAutoScanBtn.addEventListener('click', (e) => { e.stopPropagation(); cycleOnkyoLiveRadioStation(1); });
 
+        // Mobile Zoom Controls for Onkyo T-9090 Tuner & Keypad
+        const onkyoZoomBtn = document.getElementById('onkyo-zoom-toggle-btn');
+        let isOnkyoZoomed = false;
+        function toggleOnkyoZoom(forceState = null) {
+            if (forceState !== null) {
+                isOnkyoZoomed = Boolean(forceState);
+            } else {
+                isOnkyoZoomed = !isOnkyoZoomed;
+            }
+            if (onkyoContainer) {
+                if (isOnkyoZoomed) {
+                    onkyoContainer.classList.add('tuner-zoomed');
+                } else {
+                    onkyoContainer.classList.remove('tuner-zoomed');
+                }
+            }
+            if (onkyoZoomBtn) {
+                onkyoZoomBtn.textContent = isOnkyoZoomed ? '🔍 ZOOM OUT' : '🔍 ZOOM TUNER';
+                if (isOnkyoZoomed) {
+                    onkyoZoomBtn.classList.add('is-zoomed');
+                } else {
+                    onkyoZoomBtn.classList.remove('is-zoomed');
+                }
+            }
+            try { robotKnobClickAudio.currentTime = 0; robotKnobClickAudio.play().catch(() => {}); } catch (_) {}
+        }
+        window.toggleOnkyoZoom = toggleOnkyoZoom;
+
+        if (onkyoZoomBtn) {
+            onkyoZoomBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleOnkyoZoom();
+            });
+        }
+        let lastStageTap = 0;
+        const onkyoStageEl = document.getElementById('onkyo-stage');
+        if (onkyoStageEl) {
+            onkyoStageEl.addEventListener('touchend', (e) => {
+                if (window.innerWidth > 768) return;
+                // Double-tap stage on mobile to zoom tuner
+                const now = Date.now();
+                if (now - lastStageTap < 340 && now - lastStageTap > 60) {
+                    toggleOnkyoZoom();
+                    e.preventDefault();
+                }
+                lastStageTap = now;
+            });
+        }
+
         /* ======================================================================
            ONKYO T-9090 / M-504 INTERACTIVE OVERLAY
            Everything is drawn in an SVG that shares the photo's pixel grid (2752 x 1536),
@@ -6753,8 +6864,11 @@
             if (!isOnkyoRevealed || !isOnkyoPoweredOn) return;
             try { robotKnobClickAudio.currentTime = 0; robotKnobClickAudio.play().catch(() => {}); } catch (_) {}
 
+            let d = String(digit);
+            if (d === '1') d = '0'; // Map 1 to 0 so either the left 0 or right 0 inputs zero
+
             if (onkyoCodeBuffer.length >= 5) onkyoCodeBuffer = '';
-            onkyoCodeBuffer += String(digit);
+            onkyoCodeBuffer += d;
 
             if (onkyoStationBanner) {
                 onkyoStationBanner.textContent = onkyoCodeBuffer ? 'CODE: ' + onkyoCodeBuffer : '';
@@ -6884,6 +6998,7 @@
         // Unlock Vault & Cartoonish Multi-Door Sequential Opening
         function unlockWLOB() {
             isWlobOpen = true;
+            if (typeof toggleOnkyoZoom === 'function' && isOnkyoZoomed) toggleOnkyoZoom(false);
             if (window.Patina) window.Patina.clear();
 
             // Preload emergency video metadata in advance
