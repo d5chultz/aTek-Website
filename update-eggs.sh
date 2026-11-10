@@ -5,6 +5,12 @@
 # Run this script whenever you add, remove, or deduplicate photos in images/eggs/.
 # Usage:
 #   ./update-eggs.sh
+# Dont forget to push the changes to git-hub:
+#
+#  git add .
+#  git commit -m "Updated image registry and photos"
+#  git push
+#
 # ==============================================================================
 cd "$(dirname "$0")" || exit 1
 python3 - <<'PY'
