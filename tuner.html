@@ -1173,31 +1173,40 @@
         /* T-9090 Direct Numeric Entry Keypad (0-9) & Tuning Controls */
         #onkyo-tuner-presets {
             position: absolute;
-            left: 43.8%;
-            top: 25.7%;
-            width: 25.1%;
+            left: 44.1%;
+            top: 25.8%;
+            width: 23.4%;
             height: 7.2%;
-            z-index: 15;
+            z-index: 25;
             display: grid;
             grid-template-columns: repeat(10, 1fr);
-            gap: 2px;
+            gap: 1px;
+            pointer-events: auto;
         }
         .onkyo-preset-btn {
+            position: relative;
             background: transparent;
             border: 1px solid transparent;
             cursor: pointer;
-            border-radius: 3px;
+            border-radius: 2px;
             transition: all 0.15s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 0;
-            color: rgba(255, 184, 51, 0.45);
+            color: rgba(255, 184, 51, 0.55);
             font-family: 'Courier New', Courier, monospace;
             font-size: clamp(8px, 0.8vw, 13px);
             font-weight: 700;
             user-select: none;
             -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+        .onkyo-preset-btn::after {
+            content: '';
+            position: absolute;
+            inset: -4px -1px;
+            pointer-events: auto;
         }
         .onkyo-preset-btn:hover {
             border-color: rgba(255, 180, 60, 0.85);
