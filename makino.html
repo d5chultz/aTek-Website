@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Eiji Makino (1909–1979) — Photo Album 1937–1956 | Analog Tech Foundry</title>
+    <meta name="theme-color" content="#161618">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400&family=Noto+Serif+JP:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="warm.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png?v=2">
+    <style>
+        html, body { height: 100%; overflow: hidden; background: #161618; }
+        body { display: flex; flex-direction: column; }
+
+        .mk-top {
+            flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+            padding: 10px clamp(12px, 2.4vw, 32px); padding-top: calc(10px + env(safe-area-inset-top));
+            border-bottom: 1px solid var(--hairline); background: #161618; z-index: 20;
+        }
+        .mk-title { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+        .mk-title h1 { font: 600 clamp(1rem, 1.7vw, 1.4rem) var(--font-head); letter-spacing: 0; }
+        .mk-title h1 small { font-weight: 400; color: var(--alu-dim); font-size: 0.7em; margin-left: 6px; }
+        .mk-title span { font-size: 0.64rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--amber); }
+        .mk-nav { display: flex; gap: 6px; flex-wrap: wrap; }
+
+        /* Stage */
+        #stage { position: relative; flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; background:
+            radial-gradient(ellipse at 50% 40%, #202024 0%, #161618 70%); }
+        #zoom-box { margin: auto; position: relative; }
+        #book-host { position: relative; width: 100%; height: 100%; transform-origin: 0 0; }
+        #stage.zoomed { overflow: auto; }
+        #stage.zoomed #book-host { pointer-events: none; }
+        #stage.zoomed { cursor: grab; }
+
+        .page { background: #0e0e10; overflow: hidden; }
+        .page img { display: block; width: 100%; height: 100%; object-fit: contain; image-rendering: auto; filter: none;
+                    -webkit-user-drag: none; user-select: none; -webkit-user-select: none; pointer-events: none; }
+        .page.hard { background: #1b1b1e; }
+
+        /* ---------- Cover Page Animated Elements (Slide 1 Match) ---------- */
+        .page.cover-page {
+            background: #000000 !important;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+        .cover-stage {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            overflow: hidden;
+            container-type: inline-size;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* 1) Photo Album: Zoom in (3 seconds) */
+        .cover-book {
+            position: absolute;
+            left: 15.7%;
+            top: 13.9%;
+            width: 68.6%;
+            height: 72.1%;
+            transform-origin: 50% 50%;
+            transform: scale(0.32);
+            opacity: 0;
+            will-change: transform, opacity;
+            transition: transform 0.25s ease-out, opacity 0.25s ease-out;
+        }
+        .cover-book img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            pointer-events: none;
+            -webkit-user-drag: none;
+        }
+        .cover-stage.anim-active .cover-book {
+            transform: scale(1);
+            opacity: 1;
+            transition: transform 3s cubic-bezier(0.16, 1, 0.3, 1), opacity 2.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* 2) Kanji: Fly in from top (2 seconds) */
+        .cover-kanji {
+            position: absolute;
+            left: 10.1%;
+            top: 26.0%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Shippori Mincho', 'Noto Serif JP', 'Merriweather', 'Songti SC', serif;
+            font-size: clamp(14px, 4.3cqi, 32px);
+            font-weight: 400;
+            line-height: 1.22;
+            color: #f4f1ea;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+            transform-origin: 50% 0%;
+            transform: translateY(-240%);
+            opacity: 0;
+            will-change: transform, opacity;
+            transition: transform 0.25s ease-out, opacity 0.25s ease-out;
+            pointer-events: none;
+        }
+        .cover-kanji .kanji-gap {
+            height: 0.55em;
+        }
+        .cover-stage.anim-active .cover-kanji {
+            transform: translateY(0);
+            opacity: 1;
+            transition: transform 2s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* 3) Horizontal titles with dates: Appearance immediately after the Kanji (2s delay) */
+        .cover-titles {
+            position: absolute;
+            left: 51.1%;
+            top: 79.1%;
+            font-family: 'Merriweather', Georgia, serif;
+            color: #f4f1ea;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+            line-height: 1.35;
+            opacity: 0;
+            transform: translateY(6px);
+            will-change: opacity, transform;
+            transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+            pointer-events: none;
+        }
+        .cover-titles .title-name,
+        .cover-titles .title-sub {
+            font-size: clamp(10px, 3.15cqi, 23px);
+            font-weight: 300;
+            letter-spacing: 0.01em;
+            white-space: nowrap;
+        }
+        .cover-stage.anim-active .cover-titles {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1) 2s, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 2s;
+        }
+
+        #album-title-btn {
+            cursor: pointer;
+            transition: color 0.3s var(--ease-weighted);
+        }
+        #album-title-btn:hover {
+            color: var(--amber);
+        }
+
+        /* Guidance: persistent "tap here to turn page" pointing at the top-right corner of the album */
+        #turn-hint {
+            position: absolute; z-index: 15; display: flex; align-items: center; gap: 8px;
+            padding: 8px 12px; border-radius: 4px; cursor: pointer;
+            font: 600 0.68rem var(--font-body); letter-spacing: 0.14em; text-transform: uppercase; color: var(--amber);
+            background: rgba(24,24,27,0.9); border: 1px solid rgba(229,169,59,0.55);
+            box-shadow: 0 10px 24px -10px rgba(0,0,0,0.85); white-space: nowrap;
+            -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+        }
+        #turn-hint .arrow { font-size: 1.15rem; line-height: 1; display: inline-block; animation: nudge 2.4s var(--ease-weighted) infinite alternate; }
+        @keyframes nudge { from { transform: translate(0,0); } to { transform: translate(3px,-3px); } }
+
+        /* Mobile-only red rotation guidance (shown in portrait on touch phones) */
+        #rotate-hint {
+            display: none; position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 30;
+            align-items: center; gap: 10px; padding: 9px 14px; border-radius: 4px; max-width: 92vw;
+            font: 600 0.68rem var(--font-body); letter-spacing: 0.12em; text-transform: uppercase; color: #ff5a4d;
+            background: rgba(30,12,12,0.94); border: 1px solid rgba(255,90,77,0.7);
+        }
+        #rotate-hint .phone { display: inline-block; font-size: 1.2rem; animation: rot 3.2s var(--ease-weighted) infinite; }
+        @keyframes rot { 0%, 25% { transform: rotate(0); } 60%, 100% { transform: rotate(-90deg); } }
+        body.is-mobile.is-portrait #rotate-hint { display: flex; }
+
+        /* Notes / captions */
+        #notes {
+            flex: 0 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px;
+            padding: 8px clamp(12px, 3vw, 40px); border-top: 1px solid var(--hairline); background: #161618;
+            max-height: 15vh; overflow: auto; font-size: 0.74rem; color: var(--paper-dim); line-height: 1.45;
+        }
+        #notes.single { grid-template-columns: 1fr; }
+        #notes .note b { color: var(--amber); letter-spacing: 0.16em; font-weight: 600; font-size: 0.62rem; margin-right: 8px; }
+        #notes .note:empty { display: none; }
+
+        /* Controls */
+        .mk-bar {
+            flex: 0 0 auto; display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap;
+            padding: 8px 12px; padding-bottom: calc(8px + env(safe-area-inset-bottom)); background: #161618; border-top: 1px solid var(--hairline); z-index: 20;
+        }
+        .ctl {
+            min-width: 40px; height: 38px; padding: 0 12px; border: 0; border-radius: 3px; cursor: pointer;
+            font: 500 0.72rem var(--font-body); letter-spacing: 0.12em; text-transform: uppercase; color: var(--alu);
+            background: repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 1px, rgba(0,0,0,0.02) 1px 3px), linear-gradient(180deg, #34353a, #232427);
+            box-shadow: var(--machined); transition: color 0.4s var(--ease-weighted), transform 0.4s var(--ease-weighted);
+        }
+        .ctl:hover { color: var(--amber); transform: translateY(-1px); }
+        .ctl[aria-pressed="true"] { color: var(--amber); box-shadow: var(--machined), inset 0 -2px 0 var(--amber); }
+        .ctl:disabled { opacity: 0.4; cursor: default; transform: none; }
+        .pager { display: flex; align-items: center; gap: 6px; font-size: 0.74rem; color: var(--alu-dim); letter-spacing: 0.1em; }
+        .pager input { width: 62px; height: 34px; text-align: center; background: #0e0e10; color: var(--paper); border: 1px solid var(--hairline);
+                       border-radius: 3px; font: 500 0.8rem var(--font-body); }
+        .sep { width: 1px; height: 22px; background: var(--hairline); margin: 0 6px; }
+
+        /* Thumbnail drawer */
+        #drawer {
+            position: absolute; left: 0; right: 0; bottom: 0; z-index: 25; height: min(42%, 300px);
+            transform: translateY(102%); transition: transform 0.9s var(--ease-weighted);
+            background: rgba(22,22,24,0.97); border-top: 1px solid var(--hairline); box-shadow: 0 -20px 40px -20px rgba(0,0,0,0.8);
+            display: flex; flex-direction: column;
+        }
+        #drawer.open { transform: none; }
+        #drawer header { display: flex; justify-content: space-between; align-items: center; padding: 8px 14px; font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--alu-dim); }
+        #thumbs { overflow: auto; padding: 0 14px 14px; display: grid; align-content: start; grid-auto-rows: min-content; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 10px; }
+        .thumb { position: relative; cursor: pointer; background: #0e0e10; border-radius: 2px; overflow: hidden; aspect-ratio: 16 / 9;
+                 outline: 1px solid rgba(255,255,255,0.06); transition: transform 0.5s var(--ease-weighted); }
+        .thumb:hover { transform: scale(1.04); }
+        .thumb.current { outline: 2px solid var(--amber); }
+        .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .thumb span { position: absolute; left: 4px; bottom: 3px; font: 600 0.6rem var(--font-body); color: #fff; background: rgba(0,0,0,0.6); padding: 1px 5px; border-radius: 2px; }
+
+        body.fake-fs .mk-top, body.fake-fs #notes,
+        body.is-fullscreen .mk-top, body.is-fullscreen #notes { display: none; }
+        #loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font: 500 0.72rem var(--font-body); letter-spacing: 0.24em; text-transform: uppercase; color: var(--alu-dim); z-index: 5; pointer-events: none; }
+
+        @media (max-width: 700px) {
+            #notes { grid-template-columns: 1fr; max-height: 11vh; }
+            .ctl .lbl { display: none; }
+            .mk-nav .atf-link:nth-child(n+3) { display: none; }
+            .mk-top { padding-top: calc(6px + env(safe-area-inset-top)); padding-bottom: 6px; }
+            .mk-nav .atf-link { padding: 8px 10px; font-size: 0.64rem; }
+            .sep { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <header class="mk-top">
+        <div class="mk-title">
+            <span>Photo archive</span>
+            <h1 id="album-title-btn" role="button" tabindex="0" title="Click to view cover animation">Eiji Makino <small>1909–1979 &middot; Photo Album 1937–1956</small></h1>
+        </div>
+        <nav class="mk-nav">
+            <a id="back-tuner" class="atf-link primary" href="tuner.html?band=3">&#9664; Radio tuner</a>
+            <a class="atf-link" href="projects.html">Projects</a>
+            <a class="atf-link" href="about.html">About</a>
+            <a class="atf-link" href="index.html">Home</a>
+        </nav>
+    </header>
+
+    <main id="stage">
+        <div id="loading">Developing album&hellip;</div>
+        <div id="rotate-hint" role="status"><span class="phone">&#128241;</span><span>Rotate your phone to landscape for the best view</span></div>
+        <div id="zoom-box"><div id="book-host"></div></div>
+        <div id="turn-hint" role="button" tabindex="0" aria-label="Tap here to turn page"><span>Tap here to turn page</span><span class="arrow">&#8599;</span></div>
+
+        <aside id="drawer" aria-label="Page thumbnails">
+            <header><span>Pages</span><button class="ctl" id="drawer-close" style="height:28px">Close</button></header>
+            <div id="thumbs"></div>
+        </aside>
+    </main>
+
+    <section id="notes" aria-live="polite"><div class="note" id="note-l"></div><div class="note" id="note-r"></div></section>
+
+    <nav class="mk-bar" aria-label="Album controls">
+        <button class="ctl" id="b-first" title="First page">&#124;&#9664;</button>
+        <button class="ctl" id="b-prev" title="Previous page">&#9664;<span class="lbl">&nbsp;Prev</span></button>
+        <div class="pager"><input id="page-in" type="number" min="1" value="1" inputmode="numeric" aria-label="Jump to page"><span id="page-total">/ 430</span></div>
+        <button class="ctl" id="b-next" title="Next page"><span class="lbl">Next&nbsp;</span>&#9654;</button>
+        <button class="ctl" id="b-last" title="Last page">&#9654;&#124;</button>
+        <span class="sep"></span>
+        <button class="ctl" id="b-thumbs" title="Thumbnails" aria-pressed="false">&#9638;<span class="lbl">&nbsp;Pages</span></button>
+        <button class="ctl" id="b-zout" title="Zoom out">&minus;</button>
+        <button class="ctl" id="b-zin" title="Zoom in">+</button>
+        <button class="ctl" id="b-mode" title="Toggle single / double page">&#9647;&#9647;</button>
+        <button class="ctl" id="b-fs" title="Full screen">&#9974;<span class="lbl">&nbsp;Full</span></button>
+    </nav>
+
+    <script src="vendor/page-flip.browser.js"></script>
+    <script src="makino/captions.js"></script>
+    <script>
+    (function () {
+        const TOTAL = 430;
+        const PAGE_W = 720, PAGE_H = 405;           // source PDF page size (16:9 landscape)
+        const pad = n => String(n).padStart(3, '0');
+        const pageSrc = i => (i === 6 ? 'makino/pages/p-007.gif' : 'makino/pages/p-' + pad(i + 1) + '.jpg');
+        const thumbSrc = i => 'makino/thumbs/t-' + pad(i + 1) + '.jpg';
+
+        const stage = document.getElementById('stage');
+        const zoomBox = document.getElementById('zoom-box');
+        const hint = document.getElementById('turn-hint');
+        const pageIn = document.getElementById('page-in');
+        document.getElementById('page-total').textContent = '/ ' + TOTAL;
+        pageIn.max = TOTAL;
+
+        function getHost() {
+            let h = document.getElementById('book-host');
+            if (!h || !h.parentElement) {
+                if (!h) {
+                    h = document.createElement('div');
+                    h.id = 'book-host';
+                }
+                zoomBox.appendChild(h);
+            }
+            return h;
+        }
+
+        let flip = null, mode = null, zoom = 1, current = 0;
+        const loaded = new Set();
+
+        /* ---------- Page Turn Sound Effects ---------- */
+        const turnSounds = [
+            'makino/snd/flip-ct-sm.mp3',
+            'makino/snd/flip-ct-md.mp3',
+            'makino/snd/flip-ct-lg.mp3'
+        ];
+        let lastTurnSoundTime = 0;
+        function playTurnSound() {
+            const now = performance.now();
+            if (now - lastTurnSoundTime < 220) return;
+            lastTurnSoundTime = now;
+            try {
+                const s = new Audio(turnSounds[Math.floor(Math.random() * turnSounds.length)]);
+                s.volume = 0.48;
+                s.play().catch(() => {});
+            } catch (_) {}
+        }
+
+        /* ---------- Device guidance ---------- */
+        const isTouchPhone = () => matchMedia('(hover: none) and (pointer: coarse)').matches && Math.min(screen.width, screen.height) <= 820;
+        function updateDevice() {
+            document.body.classList.toggle('is-mobile', isTouchPhone());
+            document.body.classList.toggle('is-portrait', innerHeight > innerWidth);
+        }
+
+        /* ---------- Pages ---------- */
+        function ensure(center) {
+            const h = getHost();
+            for (let j = Math.max(0, center - 3); j <= Math.min(TOTAL - 1, center + 6); j++) {
+                if (loaded.has(j)) continue;
+                loaded.add(j);
+                if (j === 0) continue;
+                const img = h.querySelector('.page[data-i="' + j + '"] img');
+                if (img) img.src = pageSrc(j);
+            }
+        }
+
+        function buildPages() {
+            const frag = document.createDocumentFragment();
+            for (let i = 0; i < TOTAL; i++) {
+                const p = document.createElement('div');
+                p.className = 'page' + ((i === 0 || i === TOTAL - 1) ? ' hard' : '');
+                p.dataset.i = i;
+                if (i === 0 || i === TOTAL - 1) p.dataset.density = 'hard';
+                if (i === 0) {
+                    p.classList.add('cover-page');
+                    p.innerHTML = `
+                        <div class="cover-stage">
+                            <div class="cover-book">
+                                <img src="makino/pages/cover-book.jpg" alt="Eiji Makino Photo Album" draggable="false">
+                            </div>
+                            <div class="cover-kanji" aria-label="牧野 英二">
+                                <span>牧</span><span>野</span><span class="kanji-gap"></span><span>英</span><span>二</span>
+                            </div>
+                            <div class="cover-titles">
+                                <div class="title-name">Eiji Makino (1909–1979)</div>
+                                <div class="title-sub">Photo Album 1937–1956</div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    const img = document.createElement('img');
+                    img.alt = 'Album page ' + (i + 1);
+                    img.decoding = 'async';
+                    img.draggable = false;
+                    p.appendChild(img);
+                }
+                frag.appendChild(p);
+            }
+            return frag;
+        }
+
+        /* ---------- Cover Animation Trigger ---------- */
+        function triggerCoverAnim() {
+            const st = document.querySelector('.cover-stage');
+            if (!st) return;
+            st.classList.remove('anim-active');
+            void st.offsetWidth; // force reflow
+            st.classList.add('anim-active');
+        }
+
+        /* ---------- Book ---------- */
+        function stageSize() {
+            const r = stage.getBoundingClientRect();
+            return { w: Math.max(240, Math.floor(r.width)), h: Math.max(200, Math.floor(r.height)) };
+        }
+
+        function build(newMode, startAt) {
+            if (flip) {
+                try {
+                    const curHost = document.getElementById('book-host');
+                    if (curHost) {
+                        const origRemove = curHost.remove;
+                        curHost.remove = function () {};
+                        try { flip.destroy(); } finally { curHost.remove = origRemove; }
+                    } else {
+                        flip.destroy();
+                    }
+                } catch (_) {}
+                flip = null;
+            }
+            const host = getHost();
+            host.innerHTML = '';
+            loaded.clear();
+            host.appendChild(buildPages());
+
+            mode = newMode;
+            zoom = 1; applyZoom();
+            const s = stageSize();
+            zoomBox.style.width = s.w + 'px'; zoomBox.style.height = s.h + 'px';
+            host.style.width = s.w + 'px'; host.style.height = s.h + 'px';
+
+            flip = new St.PageFlip(host, {
+                width: PAGE_W, height: PAGE_H, size: 'stretch',
+                minWidth: mode === 'single' ? Math.ceil(s.w / 2) + 1 : 120, maxWidth: 3000,
+                minHeight: 100, maxHeight: 3000,
+                usePortrait: true, showCover: true, drawShadow: true, maxShadowOpacity: 0.45,
+                flippingTime: 900, startPage: startAt || 0, startZIndex: 0, autoSize: true,
+                mobileScrollSupport: false, swipeDistance: 24, clickEventForward: true,
+                useMouseEvents: true, showPageCorners: true, disableFlipByClick: false
+            });
+            window.flip = flip;
+            flip.loadFromHTML(host.querySelectorAll('.page'));
+            flip.on('changeState', e => { if (e.data === 'flipping') playTurnSound(); });
+            flip.on('flip', e => { current = e.data; playTurnSound(); onPage(); });
+            flip.on('changeOrientation', () => setTimeout(positionHint, 60));
+            ensure(startAt || 0);
+            document.getElementById('loading').style.display = 'none';
+            onPage();
+            setTimeout(positionHint, 120);
+            document.getElementById('b-mode').setAttribute('aria-pressed', mode === 'single' ? 'true' : 'false');
+            if (!startAt || startAt === 0) {
+                setTimeout(triggerCoverAnim, 160);
+            }
+        }
+
+        function onPage() {
+            current = flip ? flip.getCurrentPageIndex() : 0;
+            ensure(current);
+            pageIn.value = current + 1;
+            document.getElementById('b-first').disabled = document.getElementById('b-prev').disabled = current <= 0;
+            document.getElementById('b-next').disabled = document.getElementById('b-last').disabled = current >= TOTAL - 1;
+            updateNotes();
+            highlightThumb();
+            positionHint();
+        }
+
+        /* ---------- Captions / notes ---------- */
+        function clean(t) { return (t || '').replace(/\s+/g, ' ').trim(); }
+        function updateNotes() {
+            const portrait = flip && flip.getOrientation() === 'portrait';
+            const nl = document.getElementById('note-l'), nr = document.getElementById('note-r');
+            const notes = document.getElementById('notes');
+            const caps = window.MAKINO_CAPTIONS || [];
+            let leftIdx = current, rightIdx = null;
+            if (!portrait) {
+                // With a cover, spreads are (1) alone, then (2,3), (4,5) ...
+                if (current === 0) { leftIdx = null; rightIdx = 0; }
+                else if (current % 2 === 1) { leftIdx = current; rightIdx = current + 1 < TOTAL ? current + 1 : null; }
+                else { leftIdx = current - 1; rightIdx = current; }
+            }
+            const show = (el, idx) => {
+                el.innerHTML = idx == null ? '' : '<b>P.' + (idx + 1) + '</b>' + escapeHtml(clean(caps[idx]) || '—');
+            };
+            notes.classList.toggle('single', portrait || leftIdx == null || rightIdx == null);
+            show(nl, leftIdx); show(nr, rightIdx);
+        }
+        function escapeHtml(s) { return s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+
+        /* ---------- "Tap here to turn page" box, pinned to the album's top-right corner ---------- */
+        function positionHint() {
+            const h = getHost();
+            const wrap = h.querySelector('.stf__wrapper') || h;
+            const r = wrap.getBoundingClientRect();
+            const sr = stage.getBoundingClientRect();
+            const hw = hint.offsetWidth, hh = hint.offsetHeight;
+            // Sit just inside the top-right corner so the arrow points at the page corner on every viewport
+            let left = r.right - sr.left + stage.scrollLeft - hw - 6;
+            let top = r.top - sr.top + stage.scrollTop + 6;
+            left = Math.max(6, Math.min(left, stage.scrollWidth - hw - 6));
+            top = Math.max(6, top);
+            hint.style.left = left + 'px';
+            hint.style.top = top + 'px';
+        }
+        function turnForward() { if (!flip) return; if (current >= TOTAL - 1) flip.flip(0); else flip.flipNext('top'); }
+        hint.addEventListener('click', e => { e.stopPropagation(); turnForward(); });
+        hint.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); turnForward(); } });
+
+        /* ---------- Zoom (pan with scrollbars; flipping paused while zoomed) ---------- */
+        function applyZoom() {
+            const s = stageSize();
+            zoomBox.style.width = Math.round(s.w * zoom) + 'px';
+            zoomBox.style.height = Math.round(s.h * zoom) + 'px';
+            getHost().style.transform = 'scale(' + zoom + ')';
+            stage.classList.toggle('zoomed', zoom > 1);
+            stage.style.justifyContent = zoom > 1 ? 'flex-start' : '';
+            setTimeout(positionHint, 30);
+        }
+        function setZoom(z) {
+            zoom = Math.max(1, Math.min(3.5, z));
+            applyZoom();
+        }
+        document.getElementById('b-zin').onclick = () => setZoom(zoom + 0.5);
+        document.getElementById('b-zout').onclick = () => setZoom(zoom - 0.5);
+        stage.addEventListener('dblclick', () => { if (zoom > 1) setZoom(1); });
+
+        /* ---------- Thumbnails ---------- */
+        const thumbs = document.getElementById('thumbs');
+        const drawer = document.getElementById('drawer');
+        let thumbsBuilt = false;
+        function buildThumbs() {
+            if (thumbsBuilt) return; thumbsBuilt = true;
+            const frag = document.createDocumentFragment();
+            for (let i = 0; i < TOTAL; i++) {
+                const d = document.createElement('div');
+                d.className = 'thumb'; d.dataset.i = i;
+                d.innerHTML = '<img loading="lazy" decoding="async" alt="" src="' + thumbSrc(i) + '"><span>' + (i + 1) + '</span>';
+                d.addEventListener('click', () => { if (zoom > 1) setZoom(1); flip.turnToPage(i); current = i; onPage(); });
+                frag.appendChild(d);
+            }
+            thumbs.appendChild(frag);
+        }
+        function highlightThumb() {
+            const prev = thumbs.querySelector('.current'); if (prev) prev.classList.remove('current');
+            const cur = thumbs.querySelector('.thumb[data-i="' + current + '"]');
+            if (cur) { cur.classList.add('current'); if (drawer.classList.contains('open')) cur.scrollIntoView({ block: 'nearest', inline: 'nearest' }); }
+        }
+        function toggleDrawer(force) {
+            const open = force != null ? force : !drawer.classList.contains('open');
+            if (open) { buildThumbs(); highlightThumb(); }
+            drawer.classList.toggle('open', open);
+            document.getElementById('b-thumbs').setAttribute('aria-pressed', open ? 'true' : 'false');
+            if (open) setTimeout(() => { const c = thumbs.querySelector('.current'); if (c) c.scrollIntoView({ block: 'center' }); }, 300);
+        }
+        document.getElementById('b-thumbs').onclick = () => toggleDrawer();
+        document.getElementById('drawer-close').onclick = () => toggleDrawer(false);
+
+        /* ---------- Buttons ---------- */
+        document.getElementById('b-next').onclick = () => flip && flip.flipNext();
+        document.getElementById('b-prev').onclick = () => flip && flip.flipPrev();
+        document.getElementById('b-first').onclick = () => { if (flip) { flip.flip(0); } };
+        document.getElementById('b-last').onclick = () => { if (flip) { flip.flip(TOTAL - 1); } };
+        function jump() {
+            const n = Math.max(1, Math.min(TOTAL, parseInt(pageIn.value, 10) || 1));
+            flip.flip(n - 1);
+        }
+        pageIn.addEventListener('change', jump);
+        pageIn.addEventListener('keydown', e => { if (e.key === 'Enter') { jump(); pageIn.blur(); } e.stopPropagation(); });
+        document.getElementById('b-mode').onclick = () => build(mode === 'single' ? 'spread' : 'single', current);
+
+        document.addEventListener('keydown', e => {
+            if (e.target && e.target.tagName === 'INPUT') return;
+            if (e.key === 'ArrowRight') flip && flip.flipNext();
+            else if (e.key === 'ArrowLeft') flip && flip.flipPrev();
+            else if (e.key === 'Home') flip && flip.flip(0);
+            else if (e.key === 'End') flip && flip.flip(TOTAL - 1);
+            else if (e.key === '+' || e.key === '=') setZoom(zoom + 0.5);
+            else if (e.key === '-') setZoom(zoom - 0.5);
+            else if (e.key === 'f' || e.key === 'F') toggleFs();
+            else if (e.key === 't' || e.key === 'T') toggleDrawer();
+        });
+
+        /* ---------- Full screen (with iPhone fallback) ---------- */
+        function toggleFs() {
+            const el = document.documentElement;
+            const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+            if (el.requestFullscreen || el.webkitRequestFullscreen) {
+                if (!fsEl) (el.requestFullscreen || el.webkitRequestFullscreen).call(el); else (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+            } else {
+                document.body.classList.toggle('fake-fs');
+                relayout();
+            }
+        }
+        document.getElementById('b-fs').onclick = toggleFs;
+        ['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, () => {
+            const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+            document.body.classList.toggle('is-fullscreen', isFs);
+            document.getElementById('b-fs').setAttribute('aria-pressed', isFs ? 'true' : 'false');
+            setTimeout(relayout, 150);
+        }));
+
+        /* ---------- Layout / init ---------- */
+        function defaultMode() { return 'single'; } // each PDF page is already a landscape photo of an open album spread
+        let lastW = 0, lastH = 0, rt = null;
+        function relayout() {
+            updateDevice();
+            const s = stageSize();
+            if (s.w === lastW && s.h === lastH) return;
+            lastW = s.w; lastH = s.h;
+            if (flip) build(mode, current);
+        }
+        window.relayout = relayout;
+        window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(relayout, 180); });
+        window.addEventListener('orientationchange', () => { clearTimeout(rt); setTimeout(relayout, 300); });
+        stage.addEventListener('scroll', positionHint, { passive: true });
+
+        /* Back link: if this tab was opened from the tuner, close it so the tuner tab (and its Band 3 audio) is untouched */
+        document.getElementById('back-tuner').addEventListener('click', function (e) {
+            if (window.opener || history.length <= 1) {
+                e.preventDefault();
+                window.close();
+                setTimeout(() => { location.href = 'tuner.html?band=3'; }, 300);
+            }
+        });
+
+        /* Album title and cover page click triggers for the animation */
+        const albumTitleBtn = document.getElementById('album-title-btn');
+        if (albumTitleBtn) {
+            albumTitleBtn.addEventListener('click', () => {
+                if (current !== 0) {
+                    if (flip) flip.turnToPage(0);
+                    setTimeout(triggerCoverAnim, 450);
+                } else {
+                    triggerCoverAnim();
+                }
+            });
+        }
+
+        document.addEventListener('click', e => {
+            const cover = e.target.closest('.cover-page');
+            if (!cover) return;
+            const r = cover.getBoundingClientRect();
+            const relX = (e.clientX - r.left) / r.width;
+            const relY = (e.clientY - r.top) / r.height;
+            if (relX > 0.82 && relY < 0.25) return;
+            e.stopPropagation();
+            triggerCoverAnim();
+        }, true);
+
+        updateDevice();
+        const s0 = stageSize(); lastW = s0.w; lastH = s0.h;
+        const startParam = parseInt(new URLSearchParams(location.search).get('page') || '', 10);
+        build(defaultMode(), isNaN(startParam) ? 0 : Math.max(0, Math.min(TOTAL - 1, startParam - 1)));
+    })();
+    </script>
+</body>
+</html>

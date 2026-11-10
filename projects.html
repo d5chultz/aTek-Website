@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="referrer" content="no-referrer">
+    <title>aTek // VINTAGE CASE PC BUILDS</title>
+    <link rel="stylesheet" href="warm.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png?v=2">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png?v=2">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png?v=2">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico?v=2">
+    <link rel="manifest" href="site.webmanifest?v=2">
+    <meta name="theme-color" content="#141416">
+    <style>
+        /* High-end audiophile typography matching warm room design system (Righteous) */
+        :root { --font-head: 'Righteous', 'Outfit', sans-serif; }
+        h1, h2, h3, .display { font-family: var(--font-head); font-weight: 700; letter-spacing: 0.02em; line-height: 1.12; color: #ffffff; }
+        .proj-shell { max-width: 1400px; }
+        .proj-layout {
+            display: grid;
+            grid-template-columns: minmax(300px, 4fr) minmax(0, 8fr);
+            gap: clamp(28px, 5vw, 88px);
+            align-items: start;
+        }
+        /* Pinned dial column (desktop) */
+        .dial-column { position: sticky; top: 28px; display: flex; flex-direction: column; gap: 20px; }
+        .dial-column .bezel { padding: clamp(10px, 1.2vw, 16px); }
+        .freq-dial { display: block; width: 100%; height: auto; background: radial-gradient(circle at 50% 40%, #202024, #0d0d0f 75%); border-radius: 6px; }
+        .freq-dial .tick { stroke: rgba(244,241,234,0.28); stroke-width: 1; }
+        .freq-dial .tick.major { stroke: rgba(244,241,234,0.6); stroke-width: 1.4; }
+        .freq-dial .mark { fill: #3b3b40; transition: fill 0.9s var(--ease-weighted), r 0.9s var(--ease-weighted); }
+        .freq-dial .mark.active { fill: var(--amber-dim); }
+        .freq-dial.lit .mark.active { fill: var(--amber); r: 6; }
+        .freq-dial .mark-label { font: 500 9px var(--font-body); fill: var(--alu-dim); letter-spacing: 0.1em; transition: fill 0.9s var(--ease-weighted); }
+        .freq-dial .mark-label.active { fill: var(--paper); }
+        .freq-dial .needle { transform-origin: 200px 200px; transition: transform 1s var(--ease-weighted); }
+        .freq-dial .readout { font: 600 30px var(--font-head); fill: var(--paper); text-anchor: middle; }
+        .freq-dial .readout-sub { font: 500 8.5px var(--font-body); fill: var(--amber); text-anchor: middle; letter-spacing: 0.25em; }
+        .lock-line { display: flex; align-items: center; gap: 10px; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--alu); }
+        .lock-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 3px rgba(229,169,59,0.15); }
+
+        .year-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+        .year-tab {
+            font-family: var(--font-body); text-align: left; cursor: pointer; border: 0; border-radius: 3px;
+            padding: 10px 12px; color: var(--paper-dim);
+            background: linear-gradient(180deg, #212125, #18181b); box-shadow: var(--machined);
+            transition: color 0.5s var(--ease-weighted), transform 0.5s var(--ease-weighted);
+        }
+        .year-tab:hover { transform: translateY(-1px); color: var(--paper); }
+        .yr-num { display: block; font: 700 1.05rem var(--font-head); letter-spacing: 0.02em; }
+        .yr-label { display: block; font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--alu-dim); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .year-tab.active { color: var(--amber); box-shadow: var(--machined), inset 0 -2px 0 var(--amber); }
+
+        /* Editorial column */
+        .hero-year-badge { font-size: 0.7rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--amber); }
+        .hero-title { font-family: var(--font-head); font-size: clamp(1.8rem, 2.6vw, 2.6rem); margin: 14px 0 12px; text-transform: none; font-weight: 700; letter-spacing: 0.02em; color: #ffffff; }
+        .hero-subtitle { font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--alu-dim); margin-bottom: 22px; }
+        .hero-summary { max-width: 60ch; color: var(--paper-dim); font-weight: 300; font-size: 1.05rem; }
+        .meta-pills { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 26px 0 0; padding-top: 18px; border-top: 1px solid var(--hairline); }
+        .meta-pill { font-size: 0.78rem; color: var(--paper-dim); }
+        .meta-pill strong { display: block; font-size: 0.6rem; letter-spacing: 0.2em; font-weight: 500; color: var(--alu-dim); margin-bottom: 2px; }
+        .hero-emblem-box { display: none; }
+
+        .section-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: clamp(36px, 6vw, 72px) 0 18px; }
+        .section-head h2 { font-family: var(--font-head); font-size: 1.05rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #ffffff; }
+        .gphotos-toolbar { display: flex; gap: 6px; flex-wrap: wrap; }
+        .gphotos-btn { font: 500 0.66rem var(--font-body); letter-spacing: 0.16em; text-transform: uppercase; text-decoration: none; color: var(--paper-dim); background: linear-gradient(180deg,#232327,#1a1a1d); box-shadow: var(--machined); border: 0; border-radius: 3px; padding: 9px 13px; cursor: pointer; transition: color 0.4s var(--ease-weighted); }
+        .gphotos-btn:hover { color: var(--amber); }
+
+        /* Magazine masonry: varied aspect ratios, neutral grey, no borders */
+        .photo-gallery-grid { column-count: 2; column-gap: 18px; }
+        .photo-card { break-inside: avoid; margin: 0 0 18px; cursor: zoom-in; background: #2a2a2d; overflow: hidden; border-radius: 2px;
+            transition: transform 0.9s var(--ease-weighted), box-shadow 0.9s var(--ease-weighted); box-shadow: 0 10px 30px -14px rgba(0,0,0,0.7); }
+        .photo-card:nth-child(3n+1) { margin-top: 28px; }
+        .photo-card:hover { transform: scale(1.02); box-shadow: 0 24px 48px -16px rgba(0,0,0,0.85); }
+        .photo-card img { display: block; width: 100%; height: auto; transition: filter 0.9s var(--ease-weighted); filter: saturate(0.92) brightness(0.95); }
+        .photo-card:hover img { filter: none; }
+        .photo-caption { padding: 10px 2px 0; background: var(--bg); font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--alu-dim); }
+
+        .back-to-top-wrap { display: flex; justify-content: center; margin: 12px 0 0; }
+        .back-to-top { font: 500 0.7rem var(--font-body); letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; color: var(--paper-dim); padding: 12px 22px; border-radius: 3px; background: linear-gradient(180deg,#232327,#1a1a1d); box-shadow: var(--machined); transition: color 0.4s var(--ease-weighted), transform 0.4s var(--ease-weighted); }
+        .back-to-top:hover { color: var(--amber); transform: translateY(-1px); }
+        .panel-card { margin-top: clamp(36px, 6vw, 72px); }
+        .panel-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; gap: 12px; flex-wrap: wrap; }
+        .panel-title { font: 700 1.05rem var(--font-head); text-transform: uppercase; letter-spacing: 0.08em; color: #ffffff; }
+        .panel-header span:not(.panel-title) { font-size: 0.64rem; letter-spacing: 0.18em; color: var(--alu-dim) !important; text-transform: uppercase; }
+        .specs-table { width: 100%; border-collapse: collapse; }
+        .specs-table tr { border-bottom: 1px solid var(--hairline); }
+        .specs-table th { text-align: left; font-weight: 500; font-size: 0.64rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--alu-dim); padding: 14px 18px 14px 0; width: 34%; vertical-align: top; }
+        .specs-table td { font-size: 0.92rem; color: var(--paper); padding: 14px 0; }
+
+        .gphotos-connect-box p { font-size: 0.8rem; color: var(--alu-dim); margin-top: 8px; max-width: 60ch; }
+        .gphotos-editor { display: none; margin-top: 16px; padding: 18px; background: var(--bg-inset); border-radius: 4px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.6); }
+        .gphotos-editor.open { display: block; }
+        .gphotos-editor label { display: block; font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--alu); margin: 12px 0 6px; }
+        .gphotos-editor input, .gphotos-editor textarea { width: 100%; background: #0c0c0e; border: 1px solid var(--hairline); color: var(--paper); font: 0.8rem var(--font-body); padding: 10px; border-radius: 3px; }
+        .gphotos-editor textarea { min-height: 110px; }
+
+        #photo-lightbox { position: fixed; inset: 0; z-index: 9500; background: rgba(12,12,14,0.94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: none; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
+        #photo-lightbox.active { display: flex; }
+        #photo-lightbox img { max-width: 94vw; max-height: 78vh; box-shadow: 0 30px 80px rgba(0,0,0,0.8); }
+        #lightbox-caption { margin-top: 14px; font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--alu); }
+
+        @media (max-width: 960px) {
+            .proj-layout { grid-template-columns: 1fr; }
+            .dial-column { position: static; }
+            .dial-column .bezel { max-width: 420px; }
+            .photo-gallery-grid { column-count: 1; }
+            .photo-card:nth-child(3n+1) { margin-top: 0; }
+        }
+        @media (min-width: 961px) and (max-width: 1200px) { .year-strip { grid-template-columns: repeat(2, 1fr); } }
+    </style>
+</head>
+<body>
+    <div class="atf-shell proj-shell" id="top">
+        <header class="atf-header">
+            <a class="atf-brand" href="index.html">Analog Tech Foundry <span>//</span> aTek Projects</a>
+            <nav class="atf-nav">
+                <a id="return-tuner-link" href="tuner.html" class="atf-link primary">Radio tuner</a>
+                <a href="about.html" class="atf-link">About</a>
+                <a href="index.html" class="atf-link">Home</a>
+            </nav>
+        </header>
+
+        <div class="proj-layout">
+            <aside class="dial-column">
+                <div class="bezel">
+                    <svg id="freq-dial" class="freq-dial" viewBox="0 0 400 400" role="img" aria-label="Frequency dial showing the active build year">
+                        <g id="dial-ticks"></g>
+                        <g id="dial-marks"></g>
+                        <g class="needle" id="dial-needle">
+                            <line x1="200" y1="200" x2="200" y2="52" stroke="#E5A93B" stroke-width="1.6" stroke-linecap="round"/>
+                            <line x1="200" y1="200" x2="200" y2="226" stroke="#E5A93B" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+                        </g>
+                        <circle cx="200" cy="200" r="7" fill="#2b2b2f" stroke="#b9bcc1" stroke-width="1"/>
+                        <text class="readout" x="200" y="262" id="dial-readout">1937</text>
+                        <text class="readout-sub" x="200" y="282" id="dial-readout-sub">MFG YEAR</text>
+                    </svg>
+                </div>
+                <div class="lock-line"><span class="lock-dot"></span><span id="lock-status-text">Signal locked: 1937 MFG year</span></div>
+                <div class="year-strip" id="year-strip"></div>
+                <div class="hero-emblem-box">
+                    <img id="proj-hero-img" src="images/zenith-radio-dial.png" alt="Project Vintage Chassis" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='images/projects-band.png';">
+                    <div class="dial-coord-caption" id="proj-dial-caption"></div>
+                </div>
+            </aside>
+
+            <main>
+                <section class="project-hero">
+                    <div class="hero-year-badge" id="proj-year-badge">MFG YEAR 1937 // DIAL 261°</div>
+                    <h1 class="hero-title" id="proj-title">ZENITH 5-S-29 TOMBSTONE PC</h1>
+                    <div class="hero-subtitle" id="proj-subtitle"></div>
+                    <p class="hero-summary" id="proj-summary"></p>
+                    <div class="meta-pills" id="proj-meta-pills"></div>
+                </section>
+
+                <div class="section-head">
+                    <h2>Build photography</h2>
+                    <div class="gphotos-toolbar">
+                        <a id="open-gphotos-album-btn" href="https://photos.google.com" target="_blank" rel="noopener" class="gphotos-btn">Open album ↗</a>
+                        <button type="button" id="toggle-gphotos-editor-btn" class="gphotos-btn">Link album / photos</button>
+                    </div>
+                </div>
+
+                <div id="photo-gallery" class="photo-gallery-grid"></div>
+                <div class="back-to-top-wrap"><a href="#top" id="back-to-top" class="back-to-top">&uarr; Back to top</a></div>
+
+                <div class="gphotos-connect-box">
+                    <p id="gphotos-status-note">Select any photograph to inspect it full-screen, or open the linked album for high-resolution restoration and fabrication photos.</p>
+                    <div id="gphotos-editor" class="gphotos-editor">
+                        <label for="gphotos-album-input">Google Photos shared album URL (<span id="editor-proj-label"></span>)</label>
+                        <input type="url" id="gphotos-album-input" placeholder="https://photos.app.goo.gl/...">
+                        <label for="gphotos-urls-input">Direct image URLs (one per line, optional caption after |)</label>
+                        <textarea id="gphotos-urls-input" placeholder="https://lh3.googleusercontent.com/pw/... | Internal liquid cooling loop"></textarea>
+                        <div style="display:flex; gap:8px; margin-top:12px;">
+                            <button type="button" id="save-gphotos-btn" class="gphotos-btn">Save links</button>
+                            <button type="button" id="reset-gphotos-btn" class="gphotos-btn">Reset default</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-card">
+                    <div class="panel-header">
+                        <span class="panel-title">Hardware &amp; chassis</span>
+                        <span>Source: aTek project builds</span>
+                    </div>
+                    <table class="specs-table" id="proj-specs-table"></table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Fullscreen Lightbox -->
+    <div id="photo-lightbox">
+        <img id="lightbox-img" src="" alt="Build Photo" referrerpolicy="no-referrer">
+        <div id="lightbox-caption"></div>
+        <button type="button" class="nav-btn primary" style="margin-top:16px;" onclick="closeLightbox()">Close</button>
+    </div>
+
+    <script>
+        /* ==========================================================================
+           aTek PROJECT BUILDS DATABASE
+           Synced to Wave Band 2 Equipment Manufacturing Year Markings
+           ========================================================================== */
+                        const DEFAULT_GOOGLE_PHOTOS_CONFIG = {
+            "zenith-1936": {
+                        "albumUrl": "https://photos.app.goo.gl/XNb3LNC5Es5t1iNs9",
+                        "coverUrl": "https://lh3.googleusercontent.com/pw/AP1GczNfwC_DaWOEudHhM7bGWN6-cGEATmHlgb_Dl3EWMWqpw_aK6lVvXfdxzwuQ55SrVOq4r44yfWQdlAeiFrPf3cDTPgnLiH76bk8s4BLidgEPBIJqb0-b=w1000",
+                        "photos": [
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNfwC_DaWOEudHhM7bGWN6-cGEATmHlgb_Dl3EWMWqpw_aK6lVvXfdxzwuQ55SrVOq4r44yfWQdlAeiFrPf3cDTPgnLiH76bk8s4BLidgEPBIJqb0-b=w1000",
+                                                "caption": "Zenith 5-S-29 Tombstone PC Chassis & Custom Loop — Album Cover & Primary Showcase"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczN98SY_-7aJbxTTTb3qCt22Ur8yU3tqmtM6FYMKxF8mefOyFqSTAYNcNKilGU5sCX06eMDRvbDxmMH7ub0-wmcm-e_dchfbGfC9S_ZdEv0-n707AaSa=w1000",
+                                                "caption": "Zenith 5-S-29 Tombstone PC Chassis & Custom Loop — Photo 2"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMuVKDi1jqYRnROWG4FBwTxWVfzfQqwHcMhorobHCcmV1e2PSfNC-kNuwlYm_HrR-02SabWt5n74AJpZFz-sbpZTU5iKN5Z4MIW1m3vUib1HWnwWWjg=w1000",
+                                                "caption": "Zenith 5-S-29 Tombstone PC Chassis & Custom Loop — Photo 3"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNrkuwdFxsXcpLk6RhxBv6Rtup2eBCpyAZAzQ2pIvr40D0LY7uTOio16A7kjj2luu1Ue399m7yzWLJHc6OOHr42xzCwUumwo00gED4rJpcQEvgq9z3R=w1000",
+                                                "caption": "Zenith 5-S-29 Tombstone PC Chassis & Custom Loop — Photo 4"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPXX5tc0Qk51V3FbMzqhje_Xlb-Jje-eWoCIBaEbH7usOvTj59NgivrgO_7Wdy8Dn_MAXUA-yMk9BDm473ISe0wQniVYMWmymN3WOqmeCimi1j330wO=w1000",
+                                                "caption": "Zenith 5-S-29 Tombstone PC Chassis & Custom Loop — Photo 5"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNWA4Gi3W1rIuXeHqV1-2EOcH83AAtrJvdxF7246e3Qf0queLfevToYc2vhwJC9MaC68eKop1vK2uM-rVH-35vUM7MBoqdjh-td0TsY1P9ncvjAfA2C=w1000",
+                                                "caption": "Zenith 5-S-29 Tombstone PC Chassis & Custom Loop — Photo 6"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOODtIeIgSab2Ray43rWUEebn5d5odSjcLZewgXgFDDbkhNKhHiD5_ArZ-qUvijn40LPAPqpgp30F3Qh29RuBnyHC4XBTggqhwhIkUWmcXvdRU5jd3O=w1000",
+                                                "caption": "Zenith 5-S-29 Tombstone PC Chassis & Custom Loop — Photo 7"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNgij_mmI_Zdqw6tFx-rN-LIDtBXj18YRG9kWd3PyD3a6GKt5NuQqwYDx7nycy3E_lpo8spzGtTBdwdSgFtQYXp34pIYrLtgj0bToO4ohT5bpHcgR0a=w1000",
+                                                "caption": "Zenith 5-S-29 Tombstone PC Chassis & Custom Loop — Photo 8"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNgLuHjrvWMZI6g4DHLixu0pRL-OyYySEx8F7lN02bseWLRj8V555KdFB491RITN4igq4UsqBr5gBt10giNwxlssVG-j8m0OoWU9vU4xSHocMm6KVHc=w1000",
+                                                "caption": "Zenith 5-S-29 Tombstone PC Chassis & Custom Loop — Photo 9"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczP7y4UZphEJuwomtmRdyOo0m9plLAx59b3gO6ucn41-IWjV9GiRILm47j-n6cmwCpfH0YOdUmec3_DnJylnvD9weQYdx31qoTVTAtxVcsNdOLBwFrGP=w1000",
+                                                "caption": "Zenith 5-S-29 Tombstone PC Chassis & Custom Loop — Photo 10"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczML8lWvBHnppXIikZ1jrTPWJEepswsu-TcKdGXDRAGeuD-f56dSeS-Loq-PH27xW2xNeUbJYhdMtgSQR1evOrUZG9d44zXWRlxrTgCQSRUtxbulZm8G=w1000",
+                                                "caption": "Zenith 5-S-29 Tombstone PC Chassis & Custom Loop — Photo 11"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNVzC3e2XL8RpaL_1AedIzL7cBI6eH-vBwWG7Pr_g1tCGs0PxfGUFUvMbn73XTmmQIBA7nfTEFYIJ-0EJn5V3fz4vVIbMS1afeD4MrF1konLc5Swsl_=w1000",
+                                                "caption": "Zenith 5-S-29 Tombstone PC Chassis & Custom Loop — Photo 12"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOfWnBUcKFLGS9oVX27qonW1HSiPTM7eUq7LQn7ZsdQhEFjXJuVYEmuRR_IX88W9kABuAOo87tVFsjEFy-Z_kMOtlzOdIqan4WmQqDC_2fwnaglPkeN=w1000",
+                                                "caption": "Zenith 5-S-29 Tombstone PC Chassis & Custom Loop — Photo 13"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMFXx8prqvJIPkod3QHhWHXq9UHPfPhy9ioK_7Im4PK0kr_dO1Lnfo7P8qi7Q7z5f9ClAJiFwCPAQNtyt1_cXopiUqyi_kD0cojs74T-tfqUJfZJx5p=w1000",
+                                                "caption": "Zenith 5-S-29 Tombstone PC Chassis & Custom Loop — Photo 14"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNFvA0Toa8a_tSAgkOW8KtRUaOvM1Xtt5aYzsRPndKanrcUPaxyH_nvMAQ65epU-7YLfUVnBEAv8l7fx5EIyFX-h6u4F_Pv5oFta0Jdlf1r_ewUzGcE=w1000",
+                                                "caption": "Zenith 5-S-29 Tombstone PC Chassis & Custom Loop — Photo 15"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPJRoPSj7hkw3GXGu9TqlW4BKsW5X8YIBMH-VLiSvVNsdwECEIBbmBy-3kfkea_okEolsZ7XUKMOw8QZWojtxhLCGtnLt_wD7mpSBexk6ytIuU1qgMr=w1000",
+                                                "caption": "Zenith 5-S-29 Tombstone PC Chassis & Custom Loop — Photo 16"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMqJPjMBZ8aOda0lq1iQzBHfKjzaza8yjTOBtg3Fonc9Er05mA9AUaXRC7iOso5udP5vQF1aTbJWYcaL7Q4tXIa7gAYC-eiNWKX1qw4aWgJnm5pvxkn=w1000",
+                                                "caption": "Zenith 5-S-29 Tombstone PC Chassis & Custom Loop — Photo 17"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNQVkBYAHmv7jpLSJ9pyIW4XLO3qYD4ocb-JARFgPkMfwXQ8gTfTDYxxpZxv4k7--fsQjI2D4YeLeZ1HDUpVGIYJ_ZEC-SaK4TOI39Gx0Y403VbsNlE=w1000",
+                                                "caption": "Zenith 5-S-29 Tombstone PC Chassis & Custom Loop — Photo 18"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPjH1guNutMSE1acjMRGxcEQqQpPZT-2pr0LnJowleSlePPzJGG1AhAbuQbndHGD-2PdbSzztiRviHXfV42b-i0xBW3bl5_Dp_4A9Mu41HTLf6OiVki=w1000",
+                                                "caption": "Zenith 5-S-29 Tombstone PC Chassis & Custom Loop — Photo 19"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczO9z-a9qQ8JP0x3PNERtQXbfMZsYNbH9IQJ6zT8mOXe6aFMQkXI_ddyI16Og5ldHtz2xv8XzF6G8R8R0zbbFMa2SZV-4zrY75PQiz3Oy4Bc1MJsBsnn=w1000",
+                                                "caption": "Zenith 5-S-29 Tombstone PC Chassis & Custom Loop — Photo 20"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczM9RLsdzAHiSKpHsmIJjdjnfjDPBsiMRRee9vR2ibguCvHXcUpqkth-dVzu2AePcCDno-shKrnn06BMjwbwjKfjTENWYoc7jMuPtIqVIqi8s7bDtuVn=w1000",
+                                                "caption": "Zenith 5-S-29 Tombstone PC Chassis & Custom Loop — Photo 21"
+                                    }
+                        ]
+            },
+            "black-dial-1937": {
+                        "albumUrl": "https://photos.app.goo.gl/Q2Wv2RyuQ6BhoyYX6",
+                        "coverUrl": "https://lh3.googleusercontent.com/pw/AP1GczPIGQzre4nJk1pyyeg0juKOTRXYqGLca6FfDb3aL14KXoxJN520TfavtOzqi-cZzjkUdHNB7hqZwywkJhRHAIhj0W3cDl8oF9Wuv0hpoXVCvW47WFPO=w1000",
+                        "photos": [
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPIGQzre4nJk1pyyeg0juKOTRXYqGLca6FfDb3aL14KXoxJN520TfavtOzqi-cZzjkUdHNB7hqZwywkJhRHAIhj0W3cDl8oF9Wuv0hpoXVCvW47WFPO=w1000",
+                                                "caption": "Zenith Black Dial Robot Dial Restoration & Enclosure — Album Cover & Primary Showcase"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMCtn-2qhtMBW1moQ3bU5jgy7v-EC4VmFo55D3INR4_nReTHMGKkNhBny3zNhveoXeeNF1w1Bx6UIFCmXe8klPei-FR8_Zr97C2QUvXFBtikp6WE79e=w1000",
+                                                "caption": "Zenith Black Dial Robot Dial Restoration & Enclosure — Photo 2"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMM4vU_IaB_8fEB9iIdSe4gUF2V_f18aI4I7M9rrkmgNzVRpLsBX6SLMHpeDU3-ec0rOJ1cf-oB1srFEsPu4C5W1baqqdcE1WnC2HV03Pyps1expye-=w1000",
+                                                "caption": "Zenith Black Dial Robot Dial Restoration & Enclosure — Photo 3"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMSVFy6wGgwYTZ-bdoC7Uv4ZyW4A3Le8PsV3Z1TTGIp86iO49UrqfWVSiIvhpwOveJulBjdJchuREfaItGxG6Eb-D7obnCpDDmOd0wNieZ8JqYAEC6S=w1000",
+                                                "caption": "Zenith Black Dial Robot Dial Restoration & Enclosure — Photo 4"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMtOizuHUPOwKgeVsIMAD_W3Snp9uQ95bBhbsbPKutvSFUtxgvXfXmXx2ornDbyh9qalwDAebyfrND4ld9NdoFjbepLr0bPeRq0PZmJF0vfNU60x3O9=w1000",
+                                                "caption": "Zenith Black Dial Robot Dial Restoration & Enclosure — Photo 5"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczN1MIeGwP2dZbVhTweQUQ2IbN9WaBT7xYQbT-cgBDg-eOczu0_-vYFTxrVG8FH_UqTFlk7jA_1C2WcKFdRqVhZWutyotFlocdb0E2afzy3-NX61DfpT=w1000",
+                                                "caption": "Zenith Black Dial Robot Dial Restoration & Enclosure — Photo 6"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPML1d-a8ssLwwl27TdRVyrYbbNIysFrLkJ_9bEcU4ko6q67m_5Tnuw_o3v6ACHpBPmjQFDtcd-Xu4jGVXPscTorlNvFGFIrCgi7biI7UZAclEXTMsb=w1000",
+                                                "caption": "Zenith Black Dial Robot Dial Restoration & Enclosure — Photo 7"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOQ7w-NEDbxwPCRac8VxFQduvV4vKCAYfuAvCQtNkQdzyxIj2AV1l1mEdXWdMEOGn5G0z52zRBHbmwf2L6WbINB0EndUhKJGoOY9_fgqcZ62sYgIY89=w1000",
+                                                "caption": "Zenith Black Dial Robot Dial Restoration & Enclosure — Photo 8"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPh5MA1S4icYJxOTmNJMW_aCnMPLz7i0B2jVU7T2mF6ZnH1Db1BFXYOaCdKV37ynonorb7kfUjvRIW9zpHkRFafWKw0om7YD3S7WtnuTL_Wi8IumQuz=w1000",
+                                                "caption": "Zenith Black Dial Robot Dial Restoration & Enclosure — Photo 9"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPLj7KGwhjOq6MeeUyDseeD6irLY_IEr8cnpV05pyjJnBfM7W01uygx6Y-xPwVQgnRsdG1QvjFw7g2LL_WpfKrTxSE8hbtXx0zIbgYgj8hFzgsxy424=w1000",
+                                                "caption": "Zenith Black Dial Robot Dial Restoration & Enclosure — Photo 10"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOuQ2EHScyvapWGZAFNG2hETeuTq1WNr2C7da7jGXyxTIOO1Esec_OOkIg26kGtUT032xSBH31KadjDHG7tuPW9dNTmQKDknZenbpsl0B-sMSlM3swR=w1000",
+                                                "caption": "Zenith Black Dial Robot Dial Restoration & Enclosure — Photo 11"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNT5H-t_JVceasws_A13FoGLQyv_e53cr-UHbszd1wxk41dO3x6CE0s_uA2_uBEgETa1Mt264EPFriPEippxbPJ9EJy1UXlBbyJbOF9rpPrSwzEFxN4=w1000",
+                                                "caption": "Zenith Black Dial Robot Dial Restoration & Enclosure — Photo 12"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczN1wjgORXB8qYLfw7zjCeDH5FEMkfoY36zkoHEvHwKr7k49SIjE_AeMs6VoIv9IyjCo_ji2gpVShXYk1A1jlHgfe7nVSXli3plo3Z1jjTTiij8-ameg=w1000",
+                                                "caption": "Zenith Black Dial Robot Dial Restoration & Enclosure — Photo 13"
+                                    }
+                        ]
+            },
+            "trio-1972": {
+                        "albumUrl": "https://photos.app.goo.gl/Zt7y6CZBywxKgPY67",
+                        "coverUrl": "https://lh3.googleusercontent.com/pw/AP1GczOgq6YWdGVQajbvtg4SZSP4umtNCRCaEzmboU0NZApyqo9jfPC3kcLndXXGAtYWe4IBB6FcRqyn0_USo0_DE8veiPl-NhzKjBYeic4zhteA2o0ZqkdR=w1000",
+                        "photos": [
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOgq6YWdGVQajbvtg4SZSP4umtNCRCaEzmboU0NZApyqo9jfPC3kcLndXXGAtYWe4IBB6FcRqyn0_USo0_DE8veiPl-NhzKjBYeic4zhteA2o0ZqkdR=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Album Cover & Primary Showcase"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOZ7JoF9JNBZojm4Dk0n49S6TxkbauIoBmRFmfXyV3yVsW1bRdAav1uCc-0zU20K2ik7EyAAfV5omOScxX_e4mxfcdDvYq6sPD1L-PCg_WCbAItg2zQ=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 2"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOD2VOW9cW5Y5_PPsnaS4rgmX3s-Vs24M7q9Y-SOgYXACCCzcIkmtqIQNWO2ubjdV1MGxSVOSQo5bRLAd0p6bZM8VAfYnssdx9PnaBvRuXnn2PbT7gk=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 3"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOz2yGaeaPpFL3pqG22UVTwxG8nh_Sf6ESFrWU-Xe-K5Rxf6FZ_D3RNfA3FuMDoZmguXc9FHMguZ7PL-I1dFnTbNvXMIqhZezPEiCuUQb4k_FPNBaS1=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 4"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczM5URPEBq_7kd7P27_rCCAw1yCrzLigCbA9CfGKPu4PCd0DX2Tw6pLIyRGw-vsEJQtZ8G01gborzmsperZI_o3BCU0bfxir5C6qtFho7N8aLPpz9rZc=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 5"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNS6hakYGutvDZAZqOEOFR7yfUOjoRw6_BDlHsACUXbOmzzEDtOAR4RWRujt5ZWkvmL0-40zOQlVkjCy7oAqqevR9nbFLTL7vATPWQY6xMsfc4Y8NYg=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 6"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPbuRBLZw2EfVrgdNBulhrIDVfL8jIKtP-OhX3tKn1ytr1kiUV7QfErnMqqNqu4VtFs_bK071st3bfo5ky7j91zGN9Tq5DM6JaRR9s8pop6YTr4zj26=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 7"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPYzN0WQ6JnygpWQvAWEvaQ_ZmWPCcP7IRDpCsR6inH0HECtkun0gi_7M8ob4i0mJkqJ0f8VLJH6tQ_SpfqWBQlUGIUAXvAFifgSdjyFrtpchn2jTow=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 8"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczM-_zXVDf92uyCwdJtY_16QpnK64nJdqcHfJ6F43DEkO-gHgl5NBG8nhoiJ_0Ni2TwZo20GwBVoNLkDBz9_JWcc8kPC4D3AK4SUaPqwBhkRN1C_cXHA=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 9"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNolVjup6JWIuD9fMI153s5jQme5ZnCQvI4bBYaeWKRCAxzCV6N2CiApddTGk8ORKQF0xTqtORTrxvcCQlh6vjwGoon1jaPy6ftZI3i5sEhZXpnYXnd=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 10"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMgXpUtfxNh1Jp0fAWcHFf6Eam09rdFtbItbHAGRKhHIB-_ADhOrQtnsSwmks83pb_YZBUaiXmaWFziNiqwFZEzfbhTnRoov-w5s2niU3pAxrLVxzaW=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 11"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczP5_CSUMQhr5y776s2-tWFwqOAhCmiBLl6c2H-hmv4bqas6Yu4yACfH6nAfjy2L1rCVHGTwQL77e6FxPvorXKAdpKNwiItCyMfN2Y5JlelQ5x8UNqtB=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 12"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczO5rK4S7MqwdCTx8UPow7l5rnb6KL4WzPpIed0CRphvmzJJ-z4sltYJ0FXYxu8sy8Ntx9NVwHn4psargqS4iy-e5p9D6V4qCFmcwMrNaRDGCWZ_ECaO=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 13"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMPJQo0thVA5kQcd8CpMRFth9jRTS17bP72FIH3yiHf05A3F8oJxbVb2TCcXrRNpaNR0HGOeyWJ6j-a2lo0FzEUuGpSdSH1R0w7P8OU9Yg9hqkTIKsd=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 14"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczN5FjZRx9v4z4W4xtZiB_evLxJ_xOm8qJl13mkjVVjQHc1kX6-Enh6T33fj8I-v6kWpzbAIlClPfiG2nJZVsVJYwhjTMNmg-g0QQNIxpwqKtJL5hVV9=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 15"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNqS38h27TcXuJDPA_sOxq5DXc6miodEHzzuFQDzESy4bKK3yb5h7s4ckTi9n4v-rZyOHP6UVzyxceX6bFGhipiY8Ff7V5kFSesmm-QQwGaYuNtmrBm=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 16"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOWhhq85WfGo2LKVc0Pvw8RM3W5ydcZ1ufsuGWygWbES_HgaAc1LkBUJeM3_Wvqo9iZJUsMpsBzaGHs-NXghwXmRyqLGL7luRnWvhpnGT9oejb41Tf3=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 17"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMJclLeGr8YqyfzAOgz9zboytF1j2ZOQQvQp_-dKu7TFFSXHhhbjS8_vxOEbS5DoopP5HA4LN78uEvDwEyv3jX-b7PyPAsR3nAfJ93ApsanrjHlTLCj=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 18"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPpzF5Jk8R7pskwoT5rZd9nyIigMpsM5WmGB_hXxXWQG6s23yvD2aJqUafU-5z7AjzKY8iIZmFRtJAyKK2GOhX0SPd_jKqayXOF3JZ0g7NBW4YhMEmy=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 19"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOOL6pN3i5BmWH5fqdrKF0zRGmLrEM_L12w8eQyuyS7_Tllg6JpUHAo64vS1t98QOggChVfvXFt8oZ20NJonI7amf1bzgFVNxecomx9xj2w4J3UhC50=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 20"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMGenv0Dqlgc1ljz5A9BjkPmY7Ha3ov02PzPlxkf8a0-ynsnZ_2i9bTT7cIbNVLO1hbOELNxP4tGPvJekcqxfu51KXbPpvb9y43YlZiC-H9HFijQEX0=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 21"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOyJwEpVa9qXxKuT7_nGCRoG_9RdJmvt3jUrwpvzgtL4B6L_Izg5SsPJMT0Pq9qKXFWbeMx4EVJWlWty5P6di52C2fOcIXGPUrzFeJtBvmGDltadkaY=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 22"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMjtHAgTvD9nhXh5ITV7Owy99Nj9dYnMF1VMUuxs9zdzUbD7TM-rlloAAnW2QfqZgnuY5hpt7amyf8NFGMbViAfvEiiQXEYXsWyyX8BsEQWyyusjg-n=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 23"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNzYswFSfVVjUk4xkk5yVEGrk8kka0j-puv-rs_VUXrJ6IHifitGn88Ov3NvrZb32uTooDwtciCXXbu6OeFMBq1Z-0DSNJ8PyZ_GFXoM-D1aDi9T61F=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 24"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOshZan8E-vGSugjeIu5EgDO0rbQdvnxvMREWDzzR3jOTNUCD3sJYjGj08SscL91niXh7tCQZiUPU4u1jxaXvYQbjzjL4I-I0N3BucOBwiUpgDSWaR-=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 25"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNkKAzRP9s-XPqeCeBkY8zxyWso1uOgiFMjWtjhPwrMUeKjKPEWch2pMi7N0W9_lAmlL45foItXRPVUivR2BjY_oKcYnnsGtN2YekvunncI6XleLu_T=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 26"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMlpqgTXd4PzgEWykEsLjVkXKWHc0T0TTndE3JXRKvZ3JjBpiiIYZJGc10UYR10t98H4qt0mzWRh_7WTAFAGZVOjO3gcyzW5GkXifw7PGNND5BDKQSY=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 27"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNdqbJ2wVai7U9n-wSl30L9cVumIFgNpCnhDMgyp8SDSYr2M2x-UcO_khS-YguNE4vs_X0AL7f7vLILocSOz2QmMGYZy3ntr9UuK8KEVACiBRceH35H=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 28"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMAYRMvai1N4-uZKvC5NdvrhTjMsZKxu4p9Vi0Nb1e-vugz6G4psJrn0sDZK9JtBQwZi9TaTWuA7JG0PJHgsbUA1dv4FOmMj3epHXxb7zwAH1SYiYtt=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 29"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczN3Ns08XFNTvKC3xFRN7KHUyIJvh_z_YEqDAuoT9KHBdSa2BapYRagV5FaE588nKuY1yRSvcpMmTbhlVLNf_eWG2gb-9VkKPKo5dLKiyx6MgFAGhkJ1=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 30"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPbI7Gjjtzf6xD1Doz51rV-kTNbw3kyYeIarDD9OoX8ZRT6L9Nrz4ROgzEzL2gu0V1L0mVLahy476u9YL34-Lx0iQzbxyDfxfpwq3uHoMB98C_zXXmF=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 31"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczM7SI2D-ScKXX1yTD0Q2-rFti6QxGCn4FTBz76dvgGaXEEBcwCUI_81CGSxr9blgBsSgKaouFB-w_2Ubibr6GrJECDIR3mkANK4vkr5QiHRm8ejS4Sh=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 32"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczN5LqbUtVCunCGvcKlKniPSRUsSlKCoyqozCddyeVIbKaXVyJpXJdeD1yznVBqlSRfR04GSWny7spQDEeDCbOVp2RX6gShwlQMUd4XooarX1lWbN3de=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 33"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNwa3HrLr0EU-icQ1jgJFI9YjKXfREkD7tYLpV6JrQNMvDYqG9MXTuKWLULxbHXSN-11lC3QFeDngYx8rIWD243wO8LqHMTcq8oLOyD_gp3hQSXUWxo=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 34"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMhftHNDM1R0V4xB-_GT2F7MGwCEIXeOAOwf7zhfX3ObsIX1gNQkn_OJNWyiRu9AArXLpYtdlF2d_20DPRgeMKcgkIArSipuyM2mb90Q__JJ0XeJKru=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 35"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPDSrq_hPPyKqzUVXPnKa8UpNqk8Z9b3LSfiNgpwyGP-hORTkNmXHpULbR0eYtP4CgLJKzeajqN6CAxvNlRqM5fRMdLjY-79W-CPWdY5qJLqJgr0OW3=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 36"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMyeuZqlQ8lTjSMZjWmeGmjVp_saLqSKqbPqpa1dO8zSo9FSmCW0ZlHfPuL09iQQ3muhZMr8QmrRWGSNINEHm6Yhb5mjmnBJabUQK2471Ei8DxeLz-j=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 37"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMy2RR4ACeb68OzI03zXisQgkPdV9JMn9Ghp0saC2Z0AgiPPrMhcZSWr_bJensjAsYwy9VTzrz_EsGUF3wF5v_Pew644JiTkZDmXLfTmnREwytKBAxf=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 38"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPYZVkqg_ciGU7sK02TKsG4F1GcwMvU5Nj4MwwT9tTp1DXtVDZbwsoFewR1KXAdUfS70dUhLZsZspp6cTHZdFaHl4WPNWWzakuH81_eTv7Zjr_0RNir=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 39"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMStUF5f9CAD7bZ0702X0_eQq4Rhw0X53pPizeadytb3IBvcCjPfCmX-56OJtRjA1gb69JJxQppINPXlwzAQrSgBTlXmEg8yNuTfNxFARAyXmoWTbk9=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 40"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOFBQ0SyOxNfWKnsBOr1OCm-_LLN7F9BJkRkcXjH5ARr_HtDPCSlaJmqYn31U71Tqhoa6o5BvrEP3TXBjaQEaJh3CfUjphTWRzcF1EwMoO0EqC0jWZA=w1000",
+                                                "caption": "1972 TRIO KT-6005 Solid-State Tuner Chassis — Photo 41"
+                                    }
+                        ]
+            },
+            "flagship-1978": {
+                        "albumUrl": "https://photos.app.goo.gl/acPjgnntzdzBD3mL9",
+                        "coverUrl": "https://lh3.googleusercontent.com/pw/AP1GczNAiqrlTpizchKZOpr1CgA3YR2D4u75kogsjnzvoivxBtonyOiw3PTfvcuo1pHVZHpbWtvsp8ixEOznzt31r_VCqsYcVdZ_gjm5BbjzjqTV0kuj8GrH=w1000",
+                        "photos": [
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNAiqrlTpizchKZOpr1CgA3YR2D4u75kogsjnzvoivxBtonyOiw3PTfvcuo1pHVZHpbWtvsp8ixEOznzt31r_VCqsYcVdZ_gjm5BbjzjqTV0kuj8GrH=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Album Cover & Primary Showcase"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPOvzJJICtYa9kgWo2c4_AwabzxnbGF3Vt_Aa86j9p83KrBKBxn4EyoGss_f4kDayWO0E6nz_Hg5fJY5cnlSNYXF4Cuec1MBcm2haifHI2DlUWXeY7H=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 2"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMnxp_D4D-ZBLpDpNNf6UgQns6OhV1XGambtzbN1YblwyP4PR31OwV8nRoQX49tMcbKMobQ-ebMDDmEGAVXbfOqnsnynH1j0EBOyZ44oQDyOX6pAtjr=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 3"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNaiPKhipxvEPc4QMJ5qKMWPi_pADbZHlEG69Wjw0XYQOMs46nhFnk0x_uOE5ec4_ba1AOF1lKuC96hqYgNglKyD0wcuoh2cdd5urpdSZ_SRzeNL6Yp=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 4"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczO31W4mLYWWiX2l2W4cQFpfhjJxYyi04eXjJtiWFiRRs9CkncmPbtpJ6tEjO1pRQSFmf1xELiZ5X-HkIbCrpfAA5SM5GAaKqyf8-dsJO6HN9p2XeHIH=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 5"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMtl3_oeLdK4Y67WFAANOiaBzupz7AGBaz0agqvYXQDWL_3_akoALKP93ztBOEiYkpVG8MSKDTTCCCXo9CQC4IijjDIwPX6Xq05Z6vXWVINsgvWPRGu=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 6"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOSiwIjuMQA9gRNir9GJ5S862rXerDGmT8hTSR9wRFPObAuKxbVcpOk8Q2KJ8Kj3IgppKw5bm89HVESfKZgI2lzTvBhNpildqEh-6mZ2cSpepX40iqX=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 7"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczObngiHzJGmZzneeEkW97Opr9sgNgd7xzx9nd8UF-b7y2lJCAjqHjtaQcnbQzXVCIkpaUPJkx8oJDgW_2iMwXal02ZtxmBe4EXQHZeSH48oxujIVCuD=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 8"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczP3tpmfTlS8BGmOKZHSUxwMmWDyo41cnM2pt4wUyTtkGV-FyI1bq1YxhjvcdSQONvib_gFKA_iAgYGPyOXBNs1pilF5UUb9s9jXlRTag0bM8VdNEtcL=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 9"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMRw2oGduWZyvlq_YqZ8Bvn2lFLMeMSD3mDQS5Y8FkvWT1Nd25aPWjBUrVBtkk-UamxOvH9IU_SUCGmYS1Zsm__NTbFJP76g1nDtWwodb3DFv2sLXye=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 10"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNflC7-SS-R_e4QlBAV5iHb4ObrAlNHfwGpY4HNyxnZwUXi8FvXnOQk7pXCCoslKq4_2lGruKSibAS8wLlg6_aZZHWEy68-M99F6Wc-vGIY10CvgGIU=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 11"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMdcy0Olc_s1AB-j8Vr-e6GuBdZFxvYMbH39fkvlY1wCM-KQCr5B8NUqRwq428lSyECNU5tCzhArusUFSRdLySuxpSGHJlgnZ_ixPa33md7OAfMHxK_=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 12"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczP_6SrMlUkxv7Qc79gQ7NLT6zIRchSuW11IXGtlytWkp7q-5BAqqRVwxLgkzpiac3MSu1EDS_Keyd3F3W68NPNn1PtYZkx5ED3odhg-axU-bEN8iRQm=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 13"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOibKUzMNSQJ8KMRRG1FDoxq7GSUFZh7KLykhoZZUC7wDhonbalVFD_kYQTWIdEus_mkaAHfuCN0_PdKxeW_KjYPDCbr8YIrItwZ8hA6gsX7a1gB20N=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 14"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczP8pqTmTnoBuqH-ba-B7XfYUySqB4JnaqQiIxe4a_wJfA6REC-5iGZv0Wi6ZESp1gtMHCLIPr8aKCCett9ZtOsYZ1EWQDNyTmfqeJ3QB4QufLkfX1Dk=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 15"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMAuiCynEhF3qIvnMKRJDZLmvd6l8Nh3ELCkPF6qjO85GdPhLWrnbUEX0E7o--AK02NXq6ovhyMKpoZSaPJdjWEzqC4iGXn20JroNcA5TtGqxam4D1b=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 16"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPc6EoDpw3t04GupS4c2z5jaOFJ3Sg5l6QwTa7BMaesTlJZHq0gjCEQ_t93y7_sYwaPweop9a4LGZKAuMG8E1_-qbGh9u_0f_D_LUczzDOEWz1Zzofg=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 17"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPeFZq5hm9FfNbYkocwXW3TeRuWpez6oysSl2rE4mwTOKah4jNGF13_2Qvxszq2JchyzRuo1zO3-yCeUx7s6G8z8HEkIcMiG7VvnrCcfIADBy7bCchy=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 18"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOTiDDwzJp_frknnOpnUW0zsKcTJOnxGmqspk1V2Xj4__wKgZIcwhZ0qRcAGb87HiZpSGu50b-kkQm5bqdqdeISKHsMlI5z2SWfc8YXtg4ijnor-2nR=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 19"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOBzquau0viHe4USi1Vxo0wPe2zYvtGEFwTdXWDkfhECZeDBP5HITejT_qRHfggEe17ggwi_1OvSsAzYQMOrmdxi4n05-dxP9JupXc37WZ2flyo4IQR=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 20"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNN_pCtet8qWli1zjiflF6hWSQyaG6hJgWO3fsf39FQoS7vMgLa3l5FUem_9yBOV_ToWbJrpB84H0kInrk7M5Fd6taGLDvnZQUulF5EOWlJIusHsF4C=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 21"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPRNPfsVanoTLnaiEI_H2prC6mVAFaJiKJO_h_8CvhbMutY69M2jwiBX-isS4n7I0A3poJk5lYCFIHPP9BvbAdYImPCAZSeA5i7pZ6ntgdrfqBMztwu=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 22"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNsc_ugN1LJCnlqyKsikaCX_gdOPG601TxiDAo8UhdZOULUJ-UM3fk3jrTNuGKuAxLGqzJevxwKArTGWPYkSLGa6FGCMiofzYV2jStWHeL5mOklwP2b=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 23"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMO_2qkrY2X50ZGV0Re-6q21OPcdSv_YpWpLekbPphZcv4SPUCMRlUsJU0Y7HlbiXgXkpl7BYeUNL1aW0Bf-rFcp2h10q4m0X9YhAdxrFSgN_O4PwK8=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 24"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOkseFQr4pZAEfUxpGsECTQMgbdT88axgzCxNc5c_I5-dkLYF5YPmUIvrJWNn9SpPGBOAqqolc0qV27fFgLVLYiWh-ydPbxu-OMj3y25u6D6DrNxk2m=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 25"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMEJxcE8BLS4FXIYN-NNyU-2kwky72nzLt3QBVql-JO3j00NNEhS3ow58BjW6p2C2CxJ068r4J4cN5MEja0sxhgsR6DLiQCLg2Zp6I_ALrHFkg_RTRn=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 26"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMmb-ntZ11to5j6VzECSiYi7PJY1h9mGgs5A5KnP6O7l7efQv5oM3FkZrFcKHn3sg-mnbcRDl2_ZD9lz0n_Zqe-mgw9QSY0qxUN07_oHqTKLy3tlDkh=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 27"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNe5PvFSEswx8La3pr7Dlm0FWchKH6OibSCW1RPIsXK7-cD6JVZH-e3aa-5cy7M5-LC-9yYTl0c0oSmYXsV50BGHCz55zw_2TExtctYZj6AohxdxZ-V=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 28"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczP-gvKU22-jngbrKaiM4iHFWSf9BrbIchFLpf3sIS8gGIkI_KX78B-tfuVJzU5ejFBXIAxAV9fF45Kedrw9A4nGSV5ZIX3tlGvqSGXB5F-4B6e8eVA2=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 29"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMt4XSqxbiHN6as1FAxwy3wEbi5_jqce1YEZH9K5Ogu2XStKIDZJsJb0ECj96iasNnN128h6NA4EPcWR22QHwNeW0KGasSJPLjaF_WOGTlHem3mE5wv=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 30"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPvUp8qaAuQdGMWmnJOaBd_DdsJu4qglAhh9-0Lgp7qYESG4uJYDxBKyCknKrtb5vECqMFxFDTdbiyfwM_B2TL4nxvmi3aiBtKY_LXygl3dpWfh4SRq=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 31"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczP7T7jdX-vh6hzOSovp0iz9DRXsJtURUpH2irIDQOUYfsFW5chUuW8e1JGO6drTZisdNIcq7_egvOEgBljyT1riXUDNhNvnHEQPkKGCYpZSk0Fz7ssx=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 32"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNo-RMGwyfyY2NbYQa47aHEWkBf5oAg-Q-Plnw_rIqbW5ji_Mcv0gQEiRIoJHQTWrtvqIdj9KapMkC7IbliFqrs7W1Zlrfym1DmyfXgqoJvfpvZ5F05=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 33"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczM3-Y6dLpcol02X-i8AG0NF6VaS-v5pCrxsChj5s3wB9g49wsINxwezeJ_wZxCgRH2zUx8mJ6WUdPgSNvfV4W1TxCOYkMtcqJYULe2e76C-JCl7MFbv=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 34"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMyeHIZ8a_RBUhfMA-llyhXjpX5uE8WSyLC4p0DUZ_4IphBu6j3-kf0ZVAQYKw6B6ZvJmTqkJaM6wYpeUINzX95SG4HYZpBQdwmEmtgdP0OMkgboKBA=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 35"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPZ72r1QeVP2xrtTZBHxoLsoYci7BUSFx_6_S2w1jQU4vdu374ogHRwiXTebzhsqpp68Cic9LzOaauNI_Z3sSQhZKTCcE0I8HHvVuBcPKqf2VUkNL6n=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 36"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOVtMa3vizVTI1ngLmEMOeJwXC6JnBFu2qK71h_15iVhphP_yqvzmlm0JT6WZCnQA-EkDNg3f2gnqwqHRva7l-h5JMg-7_DEESKdixmjLeyjOB2jMwU=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 37"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPzRIcbJ4PFlssJWLktzEysHEu37RfUWwsA4Ald3y3nRgNAKnue6d9r2IJq57hlSd7Ay4KnOPnuUY_r-N_-PzKuENH-YCABbNwbDOP2ocsG2UtWCisT=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 38"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMHB1DITYny8w4hJrj2hkKjNI9kXoX-TnEaKFtRIr3fqri7yleOtSkEQHYv_mi_Di6FIadO4qpF3dt32flKBky6aVnAqkUyDN0QUpfMAzFYQ5yy-gbe=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 39"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMNRoSPBMbTBiXsHo5qLLew4Jx8WG2rQdIypQWm4iZpLo8ZR3IRacpGFWLYaifuuLnXud6OUp4lyF1ztU8qUM-8mW45cYOqhfi7gG4E0rO2JRhO44u8=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 40"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNxeKf6UNembjBA6aTwRzyFPB0M73kvfMYQElc_W3idotmqBAMJ4q0MNCGP1PaYMS21I9AzGvyrAosSqZv25C2_FmQ59DTZ4FmlI5nWTFkirDagzLrq=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 41"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMjc9KM1zau0nbeZSIPojo92ACeFkYTyZO6TxULiinE4rcO5Lnx34R60SNcpTo77Pgv7StoQvO6MpeFGebmoWyEWMAcWLwX-E2qyPuJV0r6QgzcwDS9=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 42"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMpwJUczMHVp1F_8RxLvW1IeXish93oQnjbJvvABcajcgdUFws9hBnplo0ETRrSxCe8ucKAUOd5hzJ0BX-bNv7Kc8kJQF1REchdHKkxXPaIjObTXkYP=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 43"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPms67PbU7_NESOiUdiJVXyjId23xAIyn3VCUWjNTd8SCfgs51ur40OTA0qWVXojFalWAM5mBxZQKQuS1DwVmMl8J5I5wzdVjXCGtX69YY4-sfk9Lmh=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 44"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMFXryX3usLMcEEZovI93xfDg_GM1HNSE-A02H8mZAMerPhuzWgB3PWnFXllyAcW_vSv0Guv9OplwWoo8rFENo8tEFMsLOwqGMSiQRgKOR51H6CIaJB=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 45"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMCy3fdKjpPjxvuan260zLvIONih7QkPen9pf_U9vBsyTYXhLkEjQs4rNU0iopGSD5ax851V-KUG77P3d-6Tr5_etJC3ewHB-0eSOQgvvaEoRj3rLNX=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 46"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPo5LFDsAo5O-lpL_6rbVGZk2DdNjN8BJ3ivilL-o1ZsVocPCPRm97k4smaJHuQDyYjIjpt3i_vcE5PxKqt5CrJ7nQXulLeduuppN5RoN6PKXkGcgm3=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 47"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczP0cV74mBwrRWHrE-G2as0fxXIfbdPKWDg-9W83Guj5Jj1VhNtK9RV4Ma85FseqX4OkbSxjiE9hW3ez--gggtfzaPUvkerxQAFWptRTepLbdSuD_eWs=w1000",
+                                                "caption": "Onkyo Integra M-506 Dual-Meter Power Amp Workstation — Photo 48"
+                                    }
+                        ]
+            },
+                "devils-canyon-1979": {
+                    "albumUrl": "https://photos.app.goo.gl/6kydDJwx756qLVno9",
+                    "coverUrl": "https://lh3.googleusercontent.com/pw/AP1GczNyg5Z6hCd7voqoF8Zz-hXlPaNzK35ZShuWCUMFcMoy1dKQD1o9vc3QZPD5GzEz9-vuMJd21a-H8-iuM5z6LaNCnGp61xaa-A83d1Gx1ni4Ahzv1Kqg=w1000",
+                    "photos": [
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczNyg5Z6hCd7voqoF8Zz-hXlPaNzK35ZShuWCUMFcMoy1dKQD1o9vc3QZPD5GzEz9-vuMJd21a-H8-iuM5z6LaNCnGp61xaa-A83d1Gx1ni4Ahzv1Kqg=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Album Cover & Primary Showcase (Photo 14)"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczODWnUt-Es6BGk-oVaPE0bl-qK1dSnMO_EIk7hqMCQ3P-osdmA7N7W-Fy3h6y_37HQAN40gNymjV0U6ayPXluru_nIrbBTPUL43S0dfWdwbtslXV1ju=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 16"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczOQPc8F3YCw4JPbpOn0KWyrUthe-At4v5vgHBt5uICyf_KxL5DMbMAK26d7zQX5OSgw5FqqPGm-_UvX2bOkH80gZMOBDBvIkMsK7WazEq1LFKF93R04=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 1"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczP75c3B2ANPXJ-U5o0FZ_DcdBkxFiz70Y003zFvv8m5mEvSmyH_Sww3q3d8ORxK7lJXWS9TcrcyWUD_03KFkaFAxWQZ-CWdwywQ9jqYDTZXjtteint-=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 2"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczNOUHiFJ9DNEriHN1kbvCOAwTlrvBMSINZECZjzwB9xrZ4OQFmuqB3rY_WfBFmcsrSSlqWEiRS5XO9Ec8bLQkfy-IPhKnNkZn_kEtSaKEHyid7U-vpB=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 3"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczO4O98hJb1bt7FIBEWlU8bFi2d9OomRWPqaZPEl99U9bmouyYJhLwkE40-ZOXWgXxMW1zd8E0-E91qeZwTwQuuYG6qSpRa0Y62eLqCWniwaT9q4UAEq=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 4"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczPxYNdsSI1wpkugiQqazwEJ8kv-JvJjzavAZzNDn2aN4bTcz0dW18neAH8oQOqflC9jAh6gyARppdPHaa8TdP5xtaeWgGkknSxGssK6fwsxYMDGVpOL=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 5"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczPljDioOPYB0PahKlbfaCEIR0andzOMudxjONI9LRYLjiskfrdcbcPhuh7v3eN_S0pYXIqbY5nc8Y7elJAgI4LORWRm6Qzkic-gzUmfqjbnzd-wYKuX=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 6"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczP0gffHi9FfTqKjMVAtuXE9Ymn--P6K8NqCyOclXkK4XzPHHKKqU8E-lBTWYfUbu5i39Dok5zEaUuS74jzujx9UCDQWz1-jbHpSFwaU1kmwRDxTev_o=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 7"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczMJwoW3zdDcl-mf-N55kjNB6FgqA6yqsHbiHO8ysF42EsvvN0_pz94Ok1DdLhKZnMrmTYIVqFydr0QFwkYzWA4s57SW6Q4O8O6qrqbwmv0r9LLtcpUO=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 8"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczOU8ilu8u0CqXfWzyqxhFg68ffiBtzy85SmQFMKGb1hD-FI_niZVKEPAMpIoTzo9cxt05-M-GMIV5Gx4danu5-w3xFXuzuOD0G6ymjVUc3keIc-Ow_2=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 9"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczMkQk6J01Z-FBdml4azKZHk2CIW8NROwBnsNmk-4CN3RRSOR1CWkq7z6PqZ_EfKIg7y5YiJaR36INTqwvF870kvKjX42QetRArOhahmLCYO7W0I2AL-=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 10"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczOS3licirPtSU0ptpAm3KboGjFS5ZMTfiVLprboj70_edXOrTVG0eiUcMvyAjo3RHy_2ReAyJJ_iY-qFzr7rD-By5vYrFcyjbaaCIJp6ThsSuHMIv9m=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 11"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczNW6zePVRKlI2YG7Ok-18feiwPiYk4fkLwpbuSd8UkYqWQKgVYBbH65GJ-uO_Ix-4pgrY4LNP1l1ifjf6GN2DdgTBzm2zf4jnj8Qk5QlEycORKaC0Cf=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 12"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczMB7-aMdwt3esl1n9quFToV3Z-eJ-p1BRgedlW8QQiE1QMDtyUaxlRQJWTFQILpOuvvyXpQHn2n1r1bugFGuLvDpo7EhNgM-bAF1Il8dSLKGp-gegag=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 13"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczOFPinHf911vfBB8iFcco8SFyVKR_ehmxPkSQH8lVbFRjhk8sH0-77bJHI2XHNTW1I6ShBntsMrHKxJ6akXpBWMxKVZJ0VQ0_a7Pan8y-q15S3fMruy=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 15"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczPnaTDIa8bHa4_UTE1P2yGtTqIC1RRlWxVwvCmdVP69qz_gCn68Th7gC8j3Dh7Ovlg0CvT07PFMF494raR-GsgDNzPp_thp6Ul6f1o9N6y8CaCHEu0Z=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 17"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczM1gRoMnK6uI8r7l21j1Z51LXQsil_m2TF_JpptTI2pFLoUg7z0U9UVqO-MLs2KhlmRViUNNcqfFPaMDv9MMR5MwXAzu28Crbn6YmDiFLtbrkdY73ks=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 18"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczMZQxyGiZOXL0DTX6dkSF3Mpx3DGbn1WdrShvO19GyJHwv2mT-fL2CCoSnn8O29d8halRHt4IsqTZYtkPuP0NVRGBgdDBM9Xx5TxMawt-m3XauA3gfZ=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 19"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczO2FOx5C_ssggDFaqIkKXVuWJrErOle4eh_NfQ6yn9m2nVxqNmlTRtBQVjOBGhTCgBgUMjB3qtYltdm_IzVk5FvFQnj8Jr7441eAa6ZNE7yQzeWkHjI=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 20"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczPJWCCHafUY4jSTZVtu0GCDG_AFv9NTBIj7Ylm9MexmFdFHik0UBspGvsTxHbFt1oLLnjiaRKd8m2GSRHaZx_V0-EKBo_uS5B6CufHSRf-KeFMUX6-r=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 21"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczPt62mQ6rKF-IrDuwSUwUxR6rArGpSLtiAEdMs2qJIqy2-v55ZAt4JGfkF9-SK-woXhklkVs2Fv8PUoXmvTYFSo7oPHGVF4k9OlCW2XSFweEY0oRsK4=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 22"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczPTXOGT0X84pRGOhNg8szPpEPCEusY5xk9aNy_5TVETWq_5RSo6KU652VXEqErlrcI6XPy4usAgFoF7bA9PfjDtXi5mnfPXAOQdCkv54bG0-zsowRQ8=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 23"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczOaFhP4Jc6oHRE9DpgYycR4ry5g98orBaxHj7zkX6Kzg2Xg5uVzNKjsIAw2rcNf4QffIlwYd13FmvC_atCE6rkxw6U1LQHeTll2dl8r6UL2rdLIJ5wT=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 24"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczPamGFmbIR2WG2uX1SP0TVDPVyQs5zaY6oId3ti7Yx4QY-fpWlqnzIUazGY3jD3S-VDmQcf2pTLjz8XfTyyHEvMCPjre633BiAhNA7EyZAcwxCgkRki=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 25"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczPfNWyL_qgXq75Hxt58UedTA49ZXem4KcBAL-ppBynt7_vi7tkFPmA_GUmgW-AhGVb36F6aJDEOi06Kl126vcC9cSWbseS9Xr62yBvJPZEj1gjRfPWw=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 26"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczONfOl7NmphiN9l--snA96_3GUuqXm-TzH5zodbCy_zf8EMVzUrKOQgTDQuDnnbHzxWbb4VPVWCkdHOlXZCe-ULO3iBbmHqNZk31jZUC7J4xOHai0fL=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 27"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczMC16NIs6sOki6Dr-aX98SA5T5n5zzuU0KDIz43yYf6MgBzN1ha4OIsomRoASPoLpbCCSpIR7T13pR4UP8WP3vr_ioO9nFHYjpKxfyvFrLOSfvKPBM7=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 28"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczOmHRgaqpITj4-qVThRRMQGT7rqNizYP0HzUlahGkTRmYjhEKz3JvnpiWhMpGsZG-o_KCgjVGvCDqkLHpMTTHfrWCKJyIDLCxwwBoJj0t0Z7t_IMq1e=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 29"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczMrZW4EtLUk-vhNeqYzwdVEPKfdzC-c5AeXEpiJjqOeTXCslcM3-ALa-EyQDuu2O6m-ByUK5FIeDPi0kEetK_w6lOnocSoP_-1PYyfXdNa9-aGIf1ZI=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 30"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczN5EfXj3vdy3MQJA8YpBy3UOlyOinYkK9AfoYGORyYNqHXtZyWmT0Jx_hSTXvPtXI8oQqqHAWjDcpuOdoPHPmk23yRzTG5ifnMB6Nt48U7DAV6PBtJa=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 31"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczO7XR48h_Cwo7-zmUVDYsf6pKsrA1gVdjjs6OnwlPIgxv3ECkYhY_oQHPYfJz_H1Oa_4UO4syMpXuAgQ8PT_J_dorqI2G-AsE-pnrgXLNfYc1SRwTHi=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 32"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczNEX654DMELnTeYL9OSipX-k1qpYIeqNsIuQNsT6Q0h9uzUScn7pxnozFwV-nyZ789-E6aWoYp6FLwX0u2lCbiTmIb0lNVbAE__Xkg1_vtf0M-HRqmz=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 33"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczM_mYdLgOJ1_skbuzZ_r8cz6NbjFsqocOcLSeltzy6bDnbOb2iBwp8DFKLBEKk9Hw1AarFu6PkW4rjHj3ql1FDFY52j6eY38Gbp33EQHOkkpyXP9Yb9=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 34"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczPhCwcIOhE5oVe2gBem07b8foln2TujBHWU4-tqVbIsZ94t-vlpSAkUzMtOR1Z2hCbCyP-yM96lSVhBeXWy6CvfnKcAZoEU7tBZMPrmtP-dmsoX7uKC=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 35"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczO_Y6VJja_XEiUixByD-IH_wyk5HKylvPXrwqhE4GUq8Pw5dx8yLDZCXFlPkwzSsOF2tq5qe_u8yJgOWUxZDVrdcnKDKPDCtKFwp5t4U-tOOfpyBF7z=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 36"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczNGN_bJ5a8e8m48SSRUPwboMz74K5n_GaZvmHlkWOErMJo67la3jzl6DZnDKwtug8vll3s6YwnYIMR5U-PnauXyb_GZ-qLBo6ucef6wHrY2DmPf7Aki=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 37"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczMphB95WOsalMPNwK08WQEqExUOOS7iKTisMUPkLEO2xEVzcnmYTD8n3_M3QG345gVfrPjQGnkgMfcCY6Fxft4druewvu-hK3f_BfJ2ibXtBe6dS4jd=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 38"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczP0gUHpgffCOl4XwDYwpEjUDEUkwziTVNyqitZeHsN5DovwCBiC0q67AjVoM0wZnV11ZTeN-W8fnBtW0m8jSsuYy3RBIQgh2PvAIR8039PUMkxwBOGq=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 39"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczOMt_do15F86OIy8Y3jpuM1wZqzUDoeLsJ8aUkrYyTx8OTYMkxhTtqB87CkkPt4DnToDY7xetbtgX_IL4vrP1JoX4uZZzajqj1_6Wg1RWwbkvgFaMGG=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 40"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczNwgrTaY7m6XMi4-VH7gbGsAOpg4lQI9q-9CJl7BPfZ4AosJKDHYGq-XDegXx-RZx2UbMYZZk4Y9B935ZcFS_M7G1ATZyr1uQy3z-gNhnxwZ5yPcT9X=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 41"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczPQ09dE4Ic-z4bh4eoqaUUFl3RNJS7VSowrumPcjCq48aeH6yhFONyAM0C0IB2UyOE0yOxnwnUeQ1tZ3Qq_AauOI20TjWapk6gRQAi38lXgAR5vn0d2=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 42"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczNuepgV1Oyh0oV4KrzkvV658qRo25Vnl_HWLhLoblhZmn2u6Jj0Lz-HhoAlCZz3c-aQxwVT_5tgz7FBrSp8qiwdkxxdJyD2RhovtdcfvHdlY49W1o37=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 43"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczNg4iDRX4-jeZn9MoZFFqe8_LRhgATuaYTHs_3fSSXD7H-PCd78MdlOU4mxM7W2ng4T0YkRMw9llG89Np5ujlCJPbxGBO8I1egFMHA_tyHhXVaO9zN-=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 44"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczN9iVbvpRLHSKxlx5ycG-yTx6aG4ecaO0_AAphv8b1Mmyvqa_Z4BuglfPatzVOUObINWNG4bzQn2gCpbclfniXW5iJBqp5E3h6ar-20qmppmeexw9F9=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 45"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczMlg4Qt1_5DGIMjdWiXTNsXxKBqEiN2tnIb_543y8g_iISMjhK82yaipdj4ItY-FMfcO0DtNb_JMPIu1Kqb_WV_o5yP1AxT7tRfPeao0fdIxJid1zoc=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 46"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczNS3-tJNXXFtxiXqAooXPyVxBBuec-r4oEmsnXv7QLdw3BtT4YLI90JnIUNKb8dOgLtO0Y7Ojsh6DI3JJTGc5ArryY-MglnIhvIDohx3rtBmKib6v6c=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 47"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczOgggoliRxGzGloHoANtzAs4TYQ5uVqddikoguVUF3y40B-THUw3xza78dp1G1curXRZcl8RfHl-z5IYpRkyEWeZqdkCWSA6OK-1rwsnK7v9MpFilnw=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 48"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczMG8ghmkXw_CKUdUZJdr7_q5297QKYbVjFwHL5acmRXj8BxYQXNPjQvBNWe5mVV-i1NXLtjF7Hsw7oPtC7b8bRulx-_jc667wpAHBEx3IYXt31U25Hz=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 49"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczNIbKX4avyTixON6qsUZzn1y8mieot1KgBjUM7WjAgOAnyfUdSi8_lObqHhPOGKLMLR3t546B5YC58A_FF7fDxm0G_jakXd-fkODz_t1m59eE3GPW2I=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 50"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczO-uVTep6N2OdfBYg1dt07KJpxVS76zZc780r0ak_dHaFg-zvU3JjfP6YQ962RJLAWydT-IW33zw-8sxvbn_WJrOsfLr2-9DootuIa7QLMdB3qZNHM6=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 51"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczMCsMc8M6OW22xoXqfoufXV9nz9bZLUm6QfKay8jwiOz-SyXTHg7tOggVGYV9pqQiyp0q1lamO64sCgd0gLQvFuNtCcPQAQlw0zHfusHz31CyKB40zQ=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 52"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczNuNbMIaJLll7rqTBKgWYyV2ej3UYvobi-RVYb4ck6Mb3wfRgBQVH1LDSke23WjJstwMKA8gU8cLCiAzCb1wFFJKzlGaGRwH5qOBBvSuIZ0ONXLg40f=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 53"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczMLY0sOpXfIQ4SgO1xo8sPiWfthGJzMh9oP3JAaAfMHxxCjZae9T4oBZMg04rEqqMtQQ2wEdbJ98hWI8A3HJ5tMJyfCPXZLYu3SYiNlcPaU5zXuPBX1=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 54"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczN8QjbeCK7jVjW0Y3lQqVEXndEGSjZYRpwd8z9WJH7NTQDQJyW6qxzoO31hYFv_kfuMsolrVDPDdMzwivyVdEjSFqmGEfhn-yuK_wCPMjLfp-kEF4tE=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 55"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczMiRhLtPEPU8nHhIbApDQx00quh9-iz9hAvpnArYEg6rJTbVhsoUCbJku8_5-cGjUlskGlLhcwIrD_wTriZDhi2oMnq9LbGyZsC-tJqwSez6-aEu5lY=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 56"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczNvVnMz5cwS-NBcytoJH7bp4cFNdtPPacD57DS_j1Rto7kcm-mhoQ0brCcO-uYDdbI_Q6hMHMPJrYivziZaOpXpQjJYlWfyydFRNOSaOrENDxg9V2QP=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 57"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczNpccahALNtNfqloCqHqsaB2vKowcRA3RUv_YMA248kfd_7Z0MEoX5hJVNWiQGYxOrLm3M508Q5nSTOMknHOMzwg6QJbCeDOZEdveP5SwkKQ84Ex8uk=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 58"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczP2gAejNjgvqLL40UaXHsp5ywKFJFAgDzepQDAaO59NfSEnm4UQN2tbWfJnDD8jqlg2k56_9G0WX8JMze-b7bPk1KLvsUGM0NHwa3IvNXa9UY_gbDx_=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 59"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczOifhpGoiaSsHBUx_nUjMrLjZjyTs0faG5FF0ObV8122R_5SKYHq-hfwzStRRpjVStOeIBSbJTn-_VSKJ6_1xzaoZ8kuNQ-MSIyZEEQp1KMrqNu2sCJ=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 60"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczNRCpHx51l41GvrJt6tDaglQgQcCbBPhHfhJxQxgv2sXL3gPoTV43-osdnz-0YonVi3aCL5uJXuDDy8cUcCJ1w9yTJdFZFVf7IZPZs4k2T2ODqQSs2C=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 61"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczOOyF5P0k2wqsKWEh2yAPmwdzQciVRTv--tds_OdOtl5hhh7BqOgF9F3X97sdSumFXmGVuNUvzQBAa85ldgOWDRE8O8IgpFF-v31r_-wiBWjy1F02xX=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 62"
+                        },
+                        {
+                            "url": "https://lh3.googleusercontent.com/pw/AP1GczM0QOs7hgscO7FnFV4TekWDTc7uWqNa3gJgEtfSpj39JYmiUgOA9HElULi6oJbwgnEbAWyRi6IhwwYXsFDu-vpUwlg5TfJ0Ubne9jpbTNJda1pqa7FX=w1000",
+                            "caption": "1979 Sansui TU-707 Devil's Canyon Liquid-Cooled Build \u2014 Photo 63"
+                        }
+                    ]
+                }
+,
+            "onkyo-2005": {
+                        "albumUrl": "https://photos.app.goo.gl/PDtLTzXwBf8MSQgw5",
+                        "coverUrl": "https://lh3.googleusercontent.com/pw/AP1GczOjI9v9DO1rAVQNtSbhOAaAEmUDazuAI7F3WbNowMki_1aqLtkrSJqA6M-_60iAT09yukTzkCoaHikXvGvWA_USeVCE1_a7CiQY_aua5zks-iWuIIof=w1000",
+                        "photos": [
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOjI9v9DO1rAVQNtSbhOAaAEmUDazuAI7F3WbNowMki_1aqLtkrSJqA6M-_60iAT09yukTzkCoaHikXvGvWA_USeVCE1_a7CiQY_aua5zks-iWuIIof=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Album Cover & Primary Showcase"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMuh3yvrbivalAEXlIWykEvi3BHikNfNPRR0EB3OSPIpTdJiW5tf4kKZU81Z7jzqbvLBA4DIcwp6Rfk9f8JbWSorN6i6YCH7reqN95n8yp26T--1b5O=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 2"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPb4QwwpQviH0D-4GT0j0xbvRk46lLD_GOw_3f7OiX3e9E37eTcT9bsRZ28VbdAZ0w7IaxrKwY9W34d5TAO2Mhtup-t2VVoZqC0oQsqdx0nTtaCEL7L=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 3"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMfJ7l6ikD7yHMukZqbwCDc4RuTFRrB_UYGKX3mMCJFd42uT9e0c8ygBRJbNsq67uE0ZrJXpFBDO0SF1mq89IE4c7Ua2PbTPtYq0Xb814hqe6N4AK8M=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 4"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPrUhPb3pTni8y44r1yh5zzbww4cE2Zyvn9vv5wm1ojgTrit3ZY2aST2D7tIEAqhVGMp8dtsmyn5grRhOgaHEUaeoQ-5DpQW8_lNPFA0y_lx7v16DnW=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 5"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMze08LPV6CRwP__eQMeJf57yx9VAksBDEDuDPj59F06ohKTytnpI7QcKmqYl4U2ShwFJw2Mqu7wTyPHchXCT3m8-zOt8RuVpZJ8vJtCva_mZI6pCPn=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 6"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNSOCEH8IxT8iAWrMHyUOAnTvpjvxZ0a9gE93qAAtK1RDhl4ovRqTxMNq6ctg02Crow18wzfuYf0rJk-11NGeOimlmR9s_SlhP8bgPHzt3VAaRu_fjV=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 7"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMoy5cZp7aC9KWUrb6d3IdgISnQir9tSQY_FD1iYYGBzAuM9uZQy0fwcXGFBEMtKcnWewaF-zy6bnMNkRGs-ucmVJvCl1jM0OoF-sRTtqnGiNUXJk4D=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 8"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMPPezSHXRkISmogcfWOKerm7F7bP4oGqtZwfQmAmaxagSRkdSMX6kjxN5vxkUEuVoMZzXQ6acLZgYMY_DCaAxMhdOv9xhhNzKZ0o7fm8QhaTJH-TDC=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 9"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczP-e6qYEJu4SyH0-v8_X71a2t9vcpQHfPWwtP62D5ljFEYhexKWAyafMlKqFiagw9Up2Y1SxpBG-xkHDMjOl0LzQPfLiEqyObHbnqmYOpox3Ua_4b6n=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 10"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNEltBtbN6GTaf4DKxfAekWvhc7X3SP4glKVOEIp4KJjDNNvwTLP1Fs7n4JWCi3pReVfA2yYvRIbsHDoSiPfHLNS8BSkwsI6LQQhGHm85bUNo_6OU6x=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 11"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOSrmvfpu5lNM4kPkZZM-lk-Ut-ERis6_Aoc9vG0byWU4yzBEP3C_TIzTgLC5wcuublsf-EHDvGD1eYzYI_GpxI2gntImuOmf6ZKC39oIaXM24E_H-7=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 12"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPX91jpAIbBoZu5TapZO6eC-5ZKHaw97Mun7rvjG_T7l3v7C9YUI7ua6JaKNqE9Gz501ozFvfwXOWOKhbefAqVwoaP2LOwkdXlc1goHf4XcRpwNfWIe=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 13"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOQM68PWURyui-col-JBZrpMX6BhIC9FhPO2VujBxVsw28Q2vUrbIIzWlDjAYdADwPB5-o3SyE-627MrN30Cc8EV5kh2dJWajMwTzEbLwUY0Cs1GOyB=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 14"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPilrmbxDDkJLuWnqz1QuIL4xVwk653fWFpRUScmOEyg4UT9jnzkFR1aiEFzuvALKWBoyvWOvMLLHcsH4V7u1AiEhTNCbmyzK2kUg_0bHYlp2rM4FyE=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 15"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMQW0M7YKuOBkImav6NtpfbXBcoH6qpg482iLaqpsKp7SL1MvnmWZwovqhF-IlaJDNpYuhMAr7OnChdy1FePJ93S223YQFX3SsDF2Rrd--zQrMu0Hyz=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 16"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOqbmCp-1g0UE24yz6cQzU0ZbDE3RwcE1v97fZ8i4PixWLR6m3XnlM1VePMlG876DpComdoHySjCswiWwyBZM4E4t_t23ScP64a2yywPifBG0RlzxYz=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 17"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPJHuhCeBi6P6WjbgQtdRnl_RDMb4vshLPh7bBuuWdkJyI9lLjgsmZ3UwI-A7PQj1vKqA1_XsL0AzHcXIY4xIR1jKIKyAGZTbigP4wyCD9FxoHQ931h=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 18"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNthQQcin76s0J8NluoIMhLe8nAbVNiuPu1CdaMEgMqq3G6wHD07LNbxnmitRa6WNYhHqOuJr8ZOf4jv_CpoRz6UjImnh33lChXqzSuXUC4zAM_cs98=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 19"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczOOOiLJ2mmWeFljGrsiHXDT5M9UaK-L2p5OntgAiA-w8dI4-BB60rdlbiZ_k8aJwdyYEIXUOsq6pFdQHTiZoQW2fzEgvU85be5Mvc_4zuVJ1ZV7WnKb=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 20"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczP4_wIbU0ONQhABurfLcmvjYWE0eBurYDcdy41yeFTlmsQWAL4-nfp2TCBM2wIIwe4ZuvafHGcs1oyVlD6N5H8-cXOayb0LL1kJTes9_NMlfCdUXqcH=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 21"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNH_ZfoZveZBXGh5zRQ6c_lhC-Y0uS9HhhmgIluqydsTJL_x8H2uy2WHffIoFpY0bI6YEaYPcJKHiODY-qhbgp7xXrmxkncDCC4xrmraLAaQg6_qrgv=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 22"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMYTNIPxgT57RPnZGeiyOOGvQGYKdHVOr8GSCOkeg3d20eav1qTSRyeTP0JCxNaJ3nkEMkeToGJ4cSnb4k34Q5qBBUhIwhjfAbT60kfIP6MXVJePqPF=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 23"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczO4Q1B_fMWLpYPlhuQ3I6joKxP405uJvz71XinKXRRANxvNoxll9G7IgrWwc8fDbcn8IKT5wsQGAelL0z5uom0osItI-LQk0TfWLeiIAu0uTq2Xc-BP=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 24"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPN0DkTbdYKLf3Xqzm95x100JXrfnBoSPE4ElFVFgeuKR6C0YlsPlE5hmq9-mA5otx52a7m8ych7wmx1lR-0NM4xHnfRKUJK01CcOsFbkU5FlDdjaHn=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 25"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczM7IwBuj3kcS2IqRaSDF5h8Ye-m9e_JP8bGgPTr3lcwJcKlsjM0jfI3JD5UUBs4huotVyaQ4s2Qk2yWop_AAtvwodwZOjtyxDdB562-QwvT9aLctBEl=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 26"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNP_dg30uJDyz9b2liqs9So9A3UsKPoVSiyrseQL52ceYYURFqIRV8-Fgj3RD_i6ijdg8uKpGVB9L8ON-2gsNtgLDYomMGnCl810Hf8iOKDcSVvUpu0=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 27"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczPi1zkICXa9OEevY8WbBZUtY1h6OCpivyLPZQKSXA5yZmrzVbjmPheJEw_LQzsD3h7mkmAxmpmYJbaIqoEHJF66cCjLo5Uw3t_2atMSnG57JtPP5lLT=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 28"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczMzDlunTLomiN-kcDvFYf0xZBJQ44rNXn8I3ZSfiL8kvT2HDy7Pp4vurjIW3L7ufTG74llNJGEOicfo3wgz5MsqlLldnJ5aiO_R2OFrWR9pdyMGWKRP=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 29"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNXuHRKcrrN--yB3va4QmBeQfpLUiKdH2pWepH7O8uePhFNVOfGRWuQwHv0PpWTd9UsLsgeP5Rmff1Iap2QYx3Fy3msKBqe_EunUrWJt_xLM6sMHyR4=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 30"
+                                    },
+                                    {
+                                                "url": "https://lh3.googleusercontent.com/pw/AP1GczNGMhc4aUGUapRn3zF-6TuOvIzucK2DI7zFammo1it1fHBAd2bv7QiRzB-gK_ynO0Fs92ikWL1dkBT5qRsjMZQtsONrMc6EkdyR96-_GWTDQCC49Gu8=w1000",
+                                                "caption": "2005 Onkyo TX-SA603 AV Receiver Workstation — Photo 31"
+                                    }
+                        ]
+            }
+};
+
+        // Backward compatibility aliases
+        DEFAULT_GOOGLE_PHOTOS_CONFIG["zenith-1937"] = DEFAULT_GOOGLE_PHOTOS_CONFIG["zenith-1936"];
+        DEFAULT_GOOGLE_PHOTOS_CONFIG["black-dial-1938"] = DEFAULT_GOOGLE_PHOTOS_CONFIG["black-dial-1937"];
+
+        const PROJECT_BUILDS = [
+            {
+                id: "zenith-1936",
+                year: 1936,
+                altYear: 1937,
+                dialAngle: 261,
+                code: "ZEN",
+                title: "1936 Zenith 5-S-29 Tombstone Radio PC",
+                vintageEquipment: "1936/1937 Zenith Model 5-S-29 Wood Tombstone Superheterodyne Radio",
+                location: "New York, USA",
+                status: "COMPLETED — Active Personal Workstation (NY)",
+                heroImage: "https://lh3.googleusercontent.com/pw/AP1GczOyKdwFl0rYzbWXJ_H9pDNIMS2DRcfEXUCuSoYwlhwUlzLWD_TSyA3ME30Kme8zXKJAntd24hTPRoOOsoe1Xno7aY5UUMYqzrgKlj31FdWaGEV_dxE4=w1000",
+                summary: "An authentic 1936 Zenith 5-S-29 wooden tombstone radio meticulously re-engineered to house a liquid-cooled AMD Ryzen 7 5700G Mini-ITX workstation. Preserves the antique wooden cabinet aesthetic and glowing dial presence while running silent modern hardware inside via a custom 280mm Arctic Liquid Freezer II loop and SFX-L gold power architecture.",
+                specs: [
+                    ["Project ID & Year", "ZEN // 1936 (Zenith Radio Corp., Chicago IL)"],
+                    ["Vintage Chassis / Case", "Zenith 5-S-29 Tombstone Radio Cabinet"],
+                    ["Motherboard", "GIGABYTE X570 I AORUS Pro Wi-Fi (Mini-ITX)"],
+                    ["Processor (CPU)", "AMD Ryzen 7 5700G (8-Core / 16-Thread Cezanne Zen 3 APU)"],
+                    ["Memory (RAM)", "G.Skill Trident Z Neo DDR4-3600"],
+                    ["Graphics (GPU)", "Integrated AMD Radeon Vega 8 Graphics (Ryzen 5700G)"],
+                    ["Primary Storage", "Samsung 980 PRO 1TB PCIe 4.0 NVMe M.2 SSD"],
+                    ["Secondary Storage", "2.5\" SATA SSD (Storage Expansion Bay)"],
+                    ["Cooling System", "Arctic Liquid Freezer II 280 A-RGB All-In-One Liquid Cooler"],
+                    ["Power Supply (PSU)", "Seasonic FOCUS SGX-500 (500W 80+ Gold Full-Modular SFX-L)"],
+                    ["Optical / Media", "External / Hidden Vintage Front Fascia"],
+                    ["Build Location & Status", "New York — Completed & In Daily Use"]
+                ]
+            },
+            {
+                id: "black-dial-1937",
+                year: 1937,
+                altYear: 1938,
+                dialAngle: 285,
+                code: "BLACK DIAL",
+                title: "1937 Zenith Black Dial Shutter-Dial PC",
+                vintageEquipment: "1937/1938 Zenith 6-S-127 / 9-S-232 'Robot Dial' Black Dial Radio",
+                location: "New York, USA",
+                status: "UPCOMING BUILD — Vintage Chassis Acquired (NY)",
+                heroImage: "https://lh3.googleusercontent.com/pw/AP1GczPML1d-a8ssLwwl27TdRVyrYbbNIysFrLkJ_9bEcU4ko6q67m_5Tnuw_o3v6ACHpBPmjQFDtcd-Xu4jGVXPscTorlNvFGFIrCgi7biI7UZAclEXTMsb=w1000",
+                summary: "Inspired directly by the iconic 1937/1938 Zenith 'Split-Second' Robot Dial featured in our interactive tuner, this upcoming New York flagship build pairs a genuine late-1930s Zenith Black Dial cabinet with next-generation small-form-factor workstation components.",
+                specs: [
+                    ["Project ID & Year", "BLACK DIAL // 1937 (Zenith Robot Dial Series)"],
+                    ["Vintage Chassis / Case", "Zenith Black Dial Tombstone Cabinet"],
+                    ["Motherboard", "TBD — High-Density Mini-ITX Platform"],
+                    ["Processor (CPU)", "TBD — Next-Gen Multi-Core Architecture"],
+                    ["Memory (RAM)", "TBD — High-Speed Dual-Channel Kit"],
+                    ["Primary Storage", "NVMe M.2 Solid State Array"],
+                    ["Cooling System", "Custom Low-Noise Internal Airflow / Radiator Layout"],
+                    ["Build Location & Status", "New York — Chassis Stage / Upcoming"]
+                ]
+            },
+            {
+                id: "trio-1972",
+                year: 1972,
+                dialAngle: 69,
+                code: "TRIO",
+                title: "1972 TRIO KT-6005 AM/FM Stereo Tuner PC",
+                vintageEquipment: "1972 TRIO (Kenwood) KT-6005 Solid-State AM/FM Stereo Tuner",
+                location: "Japan",
+                status: "COMPLETED — Active Personal Computer (Japan)",
+                heroImage: "https://lh3.googleusercontent.com/pw/AP1GczN5FjZRx9v4z4W4xtZiB_evLxJ_xOm8qJl13mkjVVjQHc1kX6-Enh6T33fj8I-v6kWpzbAIlClPfiG2nJZVsVJYwhjTMNmg-g0QQNIxpwqKtJL5hVV9=w1000",
+                summary: "Built inside a classic 1972 Japanese TRIO (Kenwood) KT-6005 brushed-aluminum stereo tuner chassis. Purchased via Yahoo! Auctions Japan, this completed sleeper workstation integrates a Micro-ATX/Mini-ITX Intel Core i5 platform, full-modular Corsair RM550x power delivery, and Blu-ray optical media while maintaining the classic 1972 silver-face audio silhouette.",
+                specs: [
+                    ["Project ID & Year", "TRIO // 1972 (TRIO Corp. / Kenwood, Tokyo Japan)"],
+                    ["Vintage Chassis / Case", "TRIO KT-6005 AM/FM Stereo Tuner (Acquired via Yahoo! Japan)"],
+                    ["Motherboard", "GIGABYTE GA-H81M-HD3"],
+                    ["Processor (CPU)", "Intel Core i5-4570 (Haswell Quad-Core, 3.2GHz / 3.6GHz Turbo)"],
+                    ["Memory (RAM)", "AData DDR3-1600 16GB Dual-Channel"],
+                    ["Graphics (GPU)", "Intel HD Graphics 4600 (Integrated)"],
+                    ["Primary Storage", "Phison PS3110-S10 SATA M.2 SSD in 2.5\" Adapter Enclosure"],
+                    ["Secondary Storage", "500GB 2.5\" SATA HDD"],
+                    ["Optical Drive", "Internal Blu-ray Optical Drive"],
+                    ["Cooling System", "Precision Low-Profile Air Cooling"],
+                    ["Power Supply (PSU)", "Corsair RM550x (550W 80+ Gold Fully Modular)"],
+                    ["Build Location & Status", "Japan — Completed & Active Personal System"]
+                ]
+            },
+            {
+                id: "flagship-1978",
+                year: 1978,
+                altYear: 1977,
+                dialAngle: 84,
+                code: "FLAGSHIP",
+                title: "1978 Onkyo Integra M-506 Dual-Meter Power Amp PC",
+                vintageEquipment: "1978 Onkyo Integra M-506 Dual-Transformer Stereo Power Amplifier",
+                location: "New York, USA",
+                status: "PAUSED — Flagship Chassis Sourced from Japan (Buyee)",
+                heroImage: "https://lh3.googleusercontent.com/pw/AP1GczNAiqrlTpizchKZOpr1CgA3YR2D4u75kogsjnzvoivxBtonyOiw3PTfvcuo1pHVZHpbWtvsp8ixEOznzt31r_VCqsYcVdZ_gjm5BbjzjqTV0kuj8GrH=w1000",
+                summary: "The aTek 'FLAGSHIP' build centers on the legendary Onkyo Integra M-506 stereo power amplifier (introduced late 1977 / 1978 model year), famous for its massive twin illuminated peak power meters spanning the front glass panel. Sourced directly from Japan via Buyee (¥20,800) and shipped to New York for a statement dual-meter powerhouse build.",
+                specs: [
+                    ["Project ID & Year", "FLAGSHIP // 1978 (1977/78 Onkyo Integra Series, Osaka Japan)"],
+                    ["Vintage Chassis / Case", "Onkyo Integra M-506 Stereo Power Amplifier (Sourced via Buyee.jp)"],
+                    ["Front Panel Signature", "Twin Large-Scale Analog Wattmeters + Dark Gunmetal/Silver Fascia"],
+                    ["Hardware Platform", "Flagship High-Output Custom Architecture (In Planning)"],
+                    ["Build Location & Status", "New York — Chassis Acquired, Build Paused"]
+                ]
+            },
+            {
+                id: "devils-canyon-1979",
+                year: 1979,
+                dialAngle: 99,
+                code: "DEVILS CANYON",
+                title: "1979 Sansui TU-707 AM/FM Tuner PC",
+                vintageEquipment: "1979 Sansui TU-707 Rack-Style Matte-Black AM/FM Stereo Tuner",
+                location: "Japan",
+                status: "DESIGN STAGE — Hardware & Liquid Cooler Sourced (Japan)",
+                heroImage: "https://lh3.googleusercontent.com/pw/AP1GczNyg5Z6hCd7voqoF8Zz-hXlPaNzK35ZShuWCUMFcMoy1dKQD1o9vc3QZPD5GzEz9-vuMJd21a-H8-iuM5z6LaNCnGp61xaa-A83d1Gx1ni4Ahzv1Kqg=w1000",
+                summary: "Named after its unlocked Intel Core i7-4790K 'Devil's Canyon' processor, this build marries the deep matte-black 1979 Sansui TU-707 analog tuner chassis with an ASUS Z97I-PLUS Mini-ITX board and an oversized Arctic Liquid Freezer II 280mm radiator.",
+                specs: [
+                    ["Project ID & Year", "DEVILS CANYON // 1979 (Sansui Electric Co., Tokyo Japan)"],
+                    ["Vintage Chassis / Case", "Sansui TU-707 AM/FM Stereo Tuner (Acquired via Yahoo! Japan)"],
+                    ["Motherboard", "ASUS Z97I-PLUS (Mini-ITX, Mercari JP)"],
+                    ["Processor (CPU)", "Intel Core i7-4790K 'Devil's Canyon' (4.0GHz / 4.4GHz Unlocked)"],
+                    ["Memory (RAM)", "G.Skill Sniper DDR3-1866 16GB (2x8GB)"],
+                    ["Cooling System", "Arctic Liquid Freezer II 280 (280mm All-In-One Liquid Cooler)"],
+                    ["Build Location & Status", "Japan — Design & Internal Layout Stage"]
+                ]
+            },
+            {
+                id: "onkyo-2005",
+                year: 2005,
+                dialAngle: 114,
+                code: "ONKYO",
+                title: "2005 Onkyo TX-SA603 AV Amplifier Workstation",
+                vintageEquipment: "2005 Onkyo Integra TX-SA603 7.1ch AV Surround Amplifier",
+                location: "Japan",
+                status: "DESIGN STAGE — Full Component Stack Ready (Japan)",
+                heroImage: "https://lh3.googleusercontent.com/pw/AP1GczPrUhPb3pTni8y44r1yh5zzbww4cE2Zyvn9vv5wm1ojgTrit3ZY2aST2D7tIEAqhVGMp8dtsmyn5grRhOgaHEUaeoQ-5DpQW8_lNPFA0y_lx7v16DnW=w1000",
+                summary: "A high-airflow sleeper workstation disguised inside a gold-finished 2005 Onkyo TX-SA603 AV Receiver chassis. Powered by an 8-core AMD Ryzen 7 3700X on an ASRock B550 Phantom Gaming motherboard, paired with dedicated ZOTAC GeForce GTX 670 graphics, DDR4-3600 memory, and a 600W 80+ Gold SFX power supply.",
+                specs: [
+                    ["Project ID & Year", "ONKYO // 2005 (Onkyo Corporation, Japan)"],
+                    ["Vintage Chassis / Case", "Onkyo TX-SA603 AV Surround Amplifier (Acquired via Yahoo! Japan)"],
+                    ["Motherboard", "ASRock B550 Phantom Gaming"],
+                    ["Processor (CPU)", "AMD Ryzen 7 3700X (8-Core / 16-Thread Zen 2)"],
+                    ["Memory (RAM)", "G.Skill Sniper X DDR4-3600"],
+                    ["Graphics (GPU)", "ZOTAC GeForce GTX 670 2GB 256-Bit GDDR5"],
+                    ["Primary Storage", "Silicon Power 512GB PCIe Gen3 NVMe M.2 SSD"],
+                    ["Secondary Storage", "1TB 3.5\" SATA HDD"],
+                    ["Cooling System", "AMD Wraith Prism RGB Down-Draft Cooler"],
+                    ["Power Supply (PSU)", "Kuroutoshikou KRPW-SXP600W/90+ (600W 80+ Gold SFX)"],
+                    ["Build Location & Status", "Japan — Design & Final Assembly Stage"]
+                ]
+            }
+        ];
+
+        const STORAGE_KEY = "atek_google_photos_links_v6";
+
+        function loadGooglePhotosStore() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    return { ...DEFAULT_GOOGLE_PHOTOS_CONFIG, ...parsed };
+                }
+            } catch (e) {}
+            return JSON.parse(JSON.stringify(DEFAULT_GOOGLE_PHOTOS_CONFIG));
+        }
+
+        function saveGooglePhotosStore(store) {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+            } catch (e) {}
+        }
+
+        let gphotosStore = loadGooglePhotosStore();
+        let activeProject = PROJECT_BUILDS[0];
+
+        function findProjectFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            const projParam = (params.get("project") || "").toLowerCase().trim();
+            const yearParam = parseInt(params.get("year") || "", 10);
+
+            if (projParam) {
+                const byId = PROJECT_BUILDS.find(p => {
+                    const pid = p.id.toLowerCase();
+                    const pcode = p.code.toLowerCase();
+                    return pid === projParam ||
+                           pid.replace('-1936', '-1937') === projParam ||
+                           pid.replace('-1937', '-1938') === projParam ||
+                           pcode === projParam ||
+                           pcode.includes(projParam) ||
+                           projParam.includes(pcode);
+                });
+                if (byId) return byId;
+            }
+            if (!isNaN(yearParam)) {
+                const byYear = PROJECT_BUILDS.find(p => p.year === yearParam || p.altYear === yearParam);
+                if (byYear) return byYear;
+            }
+            return PROJECT_BUILDS[0];
+        }
+
+        function renderYearStrip() {
+            const strip = document.getElementById("year-strip");
+            strip.innerHTML = "";
+            PROJECT_BUILDS.forEach(proj => {
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "year-tab" + (proj.id === activeProject.id ? " active" : "");
+                btn.innerHTML = `
+                    <span class="yr-num">${proj.year}</span>
+                    <span class="yr-label">${proj.code}</span>
+                `;
+                btn.addEventListener("click", () => selectProject(proj));
+                strip.appendChild(btn);
+            });
+        }
+
+        function selectProject(proj) {
+            activeProject = proj;
+            const url = new URL(window.location.href);
+            url.searchParams.set("project", proj.id);
+            url.searchParams.set("year", proj.year);
+            window.history.replaceState({}, "", url);
+
+            renderYearStrip();
+            updateFreqDial();
+
+            document.getElementById("lock-status-text").textContent =
+                `Signal locked: ${proj.year} MFG year (${proj.dialAngle}°)`;
+            document.getElementById("return-tuner-link").href =
+                `tuner.html`;
+
+            const yearLabel = proj.altYear
+                ? `MFG / PROJECT YEAR ${proj.year} (${proj.altYear} MODEL) // DIAL ${proj.dialAngle}°`
+                : `MFG / PROJECT YEAR ${proj.year} // DIAL ${proj.dialAngle}°`;
+            document.getElementById("proj-year-badge").textContent = yearLabel;
+            document.getElementById("proj-title").textContent = proj.title;
+            document.getElementById("proj-subtitle").textContent =
+                `PROJECT CODE: ${proj.code} — CASE: ${proj.vintageEquipment}`;
+            document.getElementById("proj-summary").textContent = proj.summary;
+
+            const heroImg = document.getElementById("proj-hero-img");
+            const activeCfg = gphotosStore[proj.id] || {};
+            heroImg.src = activeCfg.coverUrl || proj.heroImage;
+            heroImg.alt = proj.title;
+            document.getElementById("proj-dial-caption").textContent =
+                `CHASSIS MFG YEAR: ${proj.year} (${proj.dialAngle}°)`;
+
+            const pillsEl = document.getElementById("proj-meta-pills");
+            pillsEl.innerHTML = `
+                <div class="meta-pill"><strong>CASE MFG YEAR:</strong> ${proj.year}</div>
+                <div class="meta-pill"><strong>LOCATION:</strong> ${proj.location}</div>
+                <div class="meta-pill"><strong>STATUS:</strong> ${proj.status}</div>
+            `;
+
+            const tableEl = document.getElementById("proj-specs-table");
+            tableEl.innerHTML = proj.specs.map(([k, v]) => `
+                <tr>
+                    <th>${k}</th>
+                    <td>${v}</td>
+                </tr>
+            `).join("");
+
+            renderGallery();
+        }
+
+        function renderGallery() {
+            const cfg = gphotosStore[activeProject.id] || { albumUrl: "https://photos.google.com/", photos: [] };
+            const albumBtn = document.getElementById("open-gphotos-album-btn");
+            albumBtn.href = cfg.albumUrl || "https://photos.google.com/";
+
+            document.getElementById("editor-proj-label").textContent = `${activeProject.year} ${activeProject.code}`;
+            document.getElementById("gphotos-album-input").value = cfg.albumUrl || "";
+            document.getElementById("gphotos-urls-input").value = (cfg.photos || [])
+                .map(p => p.caption ? `${p.url} | ${p.caption}` : p.url)
+                .join("\n");
+
+            const galleryEl = document.getElementById("photo-gallery");
+            galleryEl.innerHTML = "";
+            const photos = (cfg.photos && cfg.photos.length > 0)
+                ? cfg.photos
+                : [{ url: activeProject.heroImage, caption: activeProject.title }];
+
+            photos.forEach(item => {
+                const card = document.createElement("div");
+                card.className = "photo-card";
+                card.innerHTML = `
+                    <img src="${item.url}" alt="${item.caption || activeProject.title}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='images/projects-band.png';">
+                    <div class="photo-caption">${item.caption || activeProject.title}</div>
+                `;
+                card.addEventListener("click", () => openLightbox(item.url, item.caption || activeProject.title));
+                card.addEventListener("mouseenter", () => setDialLit(true));
+                card.addEventListener("mouseleave", () => setDialLit(false));
+                card.addEventListener("touchstart", () => setDialLit(true), { passive: true });
+                card.addEventListener("touchend", () => setTimeout(() => setDialLit(false), 900), { passive: true });
+                galleryEl.appendChild(card);
+            });
+        }
+
+        function openLightbox(url, caption) {
+            document.getElementById("lightbox-img").src = url;
+            document.getElementById("lightbox-caption").textContent = caption;
+            document.getElementById("photo-lightbox").classList.add("active");
+        }
+
+        function closeLightbox() {
+            document.getElementById("photo-lightbox").classList.remove("active");
+        }
+
+        document.getElementById("photo-lightbox").addEventListener("click", (e) => {
+            if (e.target.id === "photo-lightbox") closeLightbox();
+        });
+
+        document.getElementById("toggle-gphotos-editor-btn").addEventListener("click", () => {
+            document.getElementById("gphotos-editor").classList.toggle("open");
+        });
+
+        document.getElementById("save-gphotos-btn").addEventListener("click", () => {
+            const albumUrl = document.getElementById("gphotos-album-input").value.trim() || "https://photos.google.com/";
+            const rawLines = document.getElementById("gphotos-urls-input").value
+                .split("\n")
+                .map(s => s.trim())
+                .filter(Boolean);
+
+            const photos = rawLines.map(line => {
+                const parts = line.split("|");
+                return {
+                    url: parts[0].trim(),
+                    caption: (parts[1] || activeProject.title).trim()
+                };
+            });
+
+            gphotosStore[activeProject.id] = { albumUrl, photos };
+            saveGooglePhotosStore(gphotosStore);
+            renderGallery();
+            document.getElementById("gphotos-editor").classList.remove("open");
+        });
+
+        document.getElementById("reset-gphotos-btn").addEventListener("click", () => {
+            gphotosStore[activeProject.id] = JSON.parse(JSON.stringify(DEFAULT_GOOGLE_PHOTOS_CONFIG[activeProject.id]));
+            saveGooglePhotosStore(gphotosStore);
+            renderGallery();
+        });
+
+
+        /* ---- Frequency dial: ticks, project markers, weighted needle, photo-hover illumination ---- */
+        const SVGNS = "http://www.w3.org/2000/svg";
+        function polar(angleDeg, r) {
+            const a = (angleDeg - 90) * Math.PI / 180;
+            return [200 + Math.cos(a) * r, 200 + Math.sin(a) * r];
+        }
+        (function buildDialTicks() {
+            const g = document.getElementById("dial-ticks");
+            for (let d = 0; d < 360; d += 3) {
+                const major = d % 15 === 0;
+                const [x1, y1] = polar(d, major ? 150 : 156);
+                const [x2, y2] = polar(d, 164);
+                const l = document.createElementNS(SVGNS, "line");
+                l.setAttribute("x1", x1); l.setAttribute("y1", y1);
+                l.setAttribute("x2", x2); l.setAttribute("y2", y2);
+                l.setAttribute("class", "tick" + (major ? " major" : ""));
+                g.appendChild(l);
+            }
+        })();
+        function updateFreqDial() {
+            const marks = document.getElementById("dial-marks");
+            marks.innerHTML = "";
+            PROJECT_BUILDS.forEach(p => {
+                const active = p.id === activeProject.id;
+                const [cx, cy] = polar(p.dialAngle, 128);
+                const c = document.createElementNS(SVGNS, "circle");
+                c.setAttribute("cx", cx); c.setAttribute("cy", cy); c.setAttribute("r", active ? 5 : 3.5);
+                c.setAttribute("class", "mark" + (active ? " active" : ""));
+                marks.appendChild(c);
+                const [lx, ly] = polar(p.dialAngle, 182);
+                const t = document.createElementNS(SVGNS, "text");
+                t.setAttribute("x", lx); t.setAttribute("y", ly + 3); t.setAttribute("text-anchor", "middle");
+                t.setAttribute("class", "mark-label" + (active ? " active" : ""));
+                t.textContent = p.year;
+                marks.appendChild(t);
+            });
+            document.getElementById("dial-needle").style.transform = `rotate(${activeProject.dialAngle}deg)`;
+            document.getElementById("dial-readout").textContent = activeProject.year;
+        }
+        function setDialLit(on) {
+            document.getElementById("freq-dial").classList.toggle("lit", on);
+        }
+
+        document.getElementById("back-to-top").addEventListener("click", (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+
+        // Initialize with URL-selected project
+        selectProject(findProjectFromUrl());
+    </script>
+    <script src="patina.js"></script>
+</body>
+</html>

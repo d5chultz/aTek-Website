@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANALOG TECH FOUNDRY // aTek</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png?v=2">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png?v=2">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png?v=2">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico?v=2">
+    <link rel="manifest" href="site.webmanifest?v=2">
+</head>
+<body>
+
+    <div id="boot-screen" class="crt-turn-on">
+        <div class="terminal-line line1">aTek_BIOS_V2.6 // CORE_INIT... OK</div>
+        <div class="terminal-line line2">MAPPED: INTEL_V-NAND_ARRAY_STABLE</div>
+        <div class="terminal-line line4">SIGNAL PATH: LINE-ISOLATED // 1200_DPI_READY</div>
+        <div class="terminal-line line5">EXEC_FOUNDRY_INITIAL_BOARDS... <span class="blink">█</span></div>
+    </div>
+
+    <div id="main-site">
+        <div class="video-background">
+            <video autoplay loop muted playsinline id="bg-video">
+                <source src="vacuum.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <div class="content-overlay">
+            
+<header>
+    <div>ANALOG TECH FOUNDRY // aTek</div>
+    <div class="console-control-unit">
+        <span class="console-trigger audio-toggle-element">[ AUDIO_SYS: OFF // CLICK TO ENGAGE ]</span>
+    </div>
+</header>
+
+<div class="main-title">
+    <h1>FORGED FOR <br><span>THE PURIST.</span></h1>
+    <p>Integrating raw modern processing velocity natively inside precision-restored legacy electronics. No compromises.</p>
+</div>
+
+<footer class="main-footer">
+    <div class="footer-links-group">
+        <a href="mailto:ops@analogtechfoundry.com" class="contact-btn secure-link-container">SECURE_LINK</a>
+        <a href="about.html" class="contact-btn secure-link-container">ABOUT_aTek</a>
+        <a href="projects.html" class="contact-btn secure-link-container">PROJECTS</a>
+        <a href="tuner.html" class="contact-btn secure-link-container" id="tuner-link">RADIO_TUNER</a>
+    </div>
+    <img src="images/aTek-logo.png" alt="Analog Tech Foundry // aTek" class="badge-element">
+</footer>
+
+        </div>
+    </div>
+
+<script>
+let audioCtx;
+let masterGain;
+let noiseFilter;
+let activeOscillators = [];
+let noiseSource;
+let isAudioEngaged = false;
+let loopIntervalId = null; 
+
+function initializeFoundryAudio() {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    masterGain = audioCtx.createGain();
+    masterGain.gain.setValueAtTime(0, audioCtx.currentTime); 
+    masterGain.connect(audioCtx.destination);
+
+    // --- OSCILLATORS (60Hz Fundamental + Vintage Odd Harmonics) ---
+    const frequencies = [60, 180, 300]; 
+    const gains = [0.7, 0.25, 0.08];     
+
+    frequencies.forEach((freq, index) => {
+        const osc = audioCtx.createOscillator();
+        const oscGain = audioCtx.createGain();
+        
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        oscGain.gain.setValueAtTime(gains[index], audioCtx.currentTime);
+        
+        osc.connect(oscGain);
+        oscGain.connect(masterGain);
+        osc.start(0);
+        activeOscillators.push(osc);
+    });
+
+    // --- THERMAL HISS (Low-Pass Filtered White Noise) ---
+    const bufferSize = audioCtx.sampleRate * 2;
+    const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+        output[i] = Math.random() * 2 - 1;
+    }
+
+    noiseSource = audioCtx.createBufferSource();
+    noiseSource.buffer = noiseBuffer;
+    noiseSource.loop = true;
+
+    noiseFilter = audioCtx.createBiquadFilter();
+    noiseFilter.type = 'lowpass';
+    noiseFilter.frequency.setValueAtTime(350, audioCtx.currentTime);
+
+    const noiseGain = audioCtx.createGain();
+    noiseGain.gain.setValueAtTime(0.025, audioCtx.currentTime); 
+
+    noiseSource.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(masterGain);
+    noiseSource.start(0);
+}
+
+function runLoopStep() {
+    const mainSite = document.getElementById('main-site');
+    const video = document.getElementById('bg-video');
+    
+    if (audioCtx) {
+        let now = audioCtx.currentTime;
+        masterGain.gain.cancelScheduledValues(now);
+        masterGain.gain.setValueAtTime(0, now);
+        masterGain.gain.setValueAtTime(0, now + 2.0);
+        masterGain.gain.linearRampToValueAtTime(0.22, now + 3.0);
+        masterGain.gain.setValueAtTime(0.22, now + 11.0);
+    }
+
+    if (video) {
+        video.pause();
+        video.currentTime = 0;
+    }
+
+    setTimeout(() => {
+        if (!isAudioEngaged) return;
+
+        mainSite.style.animation = 'none';
+        mainSite.classList.remove('reset-pulse');
+        void mainSite.offsetHeight; 
+        mainSite.classList.add('reset-pulse');
+
+        if (video) {
+            video.play().catch(err => console.log("Video track playback queued post-silence"));
+        }
+    }, 2000);
+}
+
+function startAutomationLoop() {
+    runLoopStep();
+    loopIntervalId = setInterval(runLoopStep, 11000); 
+}
+
+function stopAutomationLoop() {
+    if (loopIntervalId) {
+        clearInterval(loopIntervalId);
+        loopIntervalId = null;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const trigger = document.querySelector('.console-trigger');
+    const video = document.getElementById('bg-video');
+    const tunerLink = document.getElementById('tuner-link');
+    
+    if (trigger) {
+        trigger.textContent = "[ AUDIO_SYS: OFF // CLICK TO ENGAGE ]";
+
+        trigger.addEventListener('click', () => {
+            if (!audioCtx) {
+                initializeFoundryAudio();
+                isAudioEngaged = true;
+                startAutomationLoop();
+                trigger.textContent = "[ AUDIO_SYS: CORES_HEATING // 60HZ_HUM_STABLE ]";
+                trigger.style.color = "#33ff33"; 
+                return;
+            }
+
+            if (!isAudioEngaged) {
+                isAudioEngaged = true;
+                startAutomationLoop();
+                trigger.textContent = "[ AUDIO_SYS: ACTIVE // 60HZ_HUM_STABLE ]";
+                trigger.style.color = "#33ff33";
+            } else {
+                isAudioEngaged = false;
+                stopAutomationLoop();
+                
+                let now = audioCtx.currentTime;
+                masterGain.gain.cancelScheduledValues(now);
+                masterGain.gain.setValueAtTime(masterGain.gain.value, now);
+                masterGain.gain.linearRampToValueAtTime(0, now + 0.2);
+                
+                if (video) {
+                    video.pause();
+                }
+
+                trigger.textContent = "[ AUDIO_SYS: OFF // CLICK TO ENGAGE ]";
+                trigger.style.color = "#ffffff"; 
+            }
+        });
+    }
+
+    // --- TUNER NAVIGATION CRT WIPE INTERCEPTOR ---
+    if (tunerLink) {
+        tunerLink.addEventListener('click', function(e) {
+            e.preventDefault(); // Stop normal fast page load
+            const targetUrl = this.getAttribute('href');
+            
+            // Add the wipe class straight to the body structure
+            document.body.classList.add('page-exit-wipe');
+            
+            // Route browser to target window exactly as the 0.6s screen pop finishes drawing
+            setTimeout(() => {
+                window.location.href = targetUrl;
+            }, 600);
+        });
+    }
+});
+</script>
+
+</body>
+</html>

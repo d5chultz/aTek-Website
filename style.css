@@ -1,0 +1,331 @@
+/* ==========================================================================
+   GLOBAL LAYOUT ENGINE & CRT MONITOR FILTER
+   ========================================================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body, html {
+    height: 100vh;   /* Desktop Fallback */
+    height: 100svh;  /* Locks to exact mobile browser frame boundaries */
+    background-color: #000;
+    color: #33ff33; 
+    font-family: 'Courier New', Courier, monospace;
+    overflow: hidden;
+}
+
+/* Restores the dark scanline overlay for the vintage monitor effect */
+body::before {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
+    z-index: 999999; /* Active over everything including boot sequences */
+    background-size: 100% 4px;
+    pointer-events: none;
+}
+
+/* Main Container Constraints & Desktop Sizing */
+#main-site {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    animation: fadeInSite 1.0s 3.9s ease-out forwards; 
+}
+
+/* Background Video Positioning */
+.video-background {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.video-background video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.content-overlay {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 40px;
+    color: #fff;
+    position: relative;
+    z-index: 2;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+}
+
+/* Typography Scaling */
+.main-title h1 {
+    font-family: 'Arial Black', Impact, sans-serif;
+    font-size: 5.5rem; 
+    line-height: 0.85;
+    text-transform: uppercase;
+    letter-spacing: -4px;
+    max-width: 950px;
+}
+
+.main-title p {
+    font-size: 1.1rem;
+    margin-top: 20px;
+    max-width: 600px;
+    line-height: 1.6;
+    color: #ccc;
+}
+
+/* Structuring the updated footer blocks cleanly */
+.main-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
+    padding-bottom: env(safe-area-inset-bottom); /* iOS Home Bar Protection */
+}
+
+/* Forces links into a clean horizontal line locked to the left edge */
+.footer-links-group {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 15px !important;
+    justify-content: flex-start !important; 
+    align-items: center !important;
+    width: auto !important;
+}
+
+.badge-element {
+    width: 200px;
+    height: auto;
+    aspect-ratio: 1024/558;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+
+.contact-btn {
+    color: #fff;
+    text-decoration: none;
+    border: 2px solid #fff;
+    padding: 12px 30px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: bold;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.console-control-unit {
+    text-align: right;
+}
+
+.console-trigger {
+    white-space: nowrap !important; /* Forces toggle text to stay on a single line */
+    display: inline-block !important;
+}
+
+.audio-toggle-element {
+    cursor: pointer;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+/* ==========================================================================
+   MOBILE & RESPONSIVE BREAKPOINTS (Max Height and Width Protection)
+   ========================================================================== */
+@media screen and (max-width: 768px) {
+    .content-overlay {
+        padding: 20px !important;
+    }
+
+    .main-title h1 {
+        font-size: 2.8rem !important;
+        letter-spacing: -1px;
+    }
+
+    .main-title p {
+        font-size: 0.9rem !important;
+        line-height: 1.4;
+    }
+
+    .main-footer {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        justify-content: flex-end !important;
+        gap: 20px !important; 
+    }
+
+    .footer-links-group {
+        width: 100% !important;
+        gap: 10px !important;
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;      
+        justify-content: flex-start !important; 
+    }
+
+    .badge-element {
+        width: 160px !important;
+        max-width: 160px !important;
+    }
+    
+    .contact-btn {
+        display: inline-block !important; 
+        width: auto !important;          
+        max-width: none !important;
+        text-align: center !important;
+        padding: 10px 16px !important;    
+        font-size: 0.75rem !important;
+        margin: 0 !important; 
+        letter-spacing: 2px !important;
+    }
+
+    .footer-links-group a:nth-child(3) {
+        margin-top: 4px !important;
+    }
+
+    .console-control-unit {
+        text-align: left !important;      
+        width: 100% !important;
+    }
+
+    .console-trigger {
+        font-size: 0.75rem !important; 
+    }
+
+    .audio-toggle-element {
+        font-size: 0.75rem !important;
+        display: block;
+        margin-top: 5px;
+    }
+}
+
+/* Hard Protection for tight 555px vertical viewports */
+@media screen and (max-height: 600px) and (max-width: 768px) {
+    .main-title h1 {
+        font-size: 2.2rem !important; 
+    }
+    .main-title p {
+        display: none; 
+    }
+    .badge-element {
+        display: none !important; 
+    }
+    .footer-links-group {
+        flex-direction: row !important; 
+        flex-wrap: wrap;
+        gap: 6px !important;
+    }
+    .contact-btn {
+        padding: 8px 12px !important;
+    }
+}
+
+/* ==========================================================================
+   VINTAGE TERMINAL & CRT BOOT ENGINE
+   ========================================================================== */
+
+/* --- STAGE 1: TERMINAL TEXT CASCADE --- */
+.terminal-line {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.1rem;
+    color: #33ff33;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 0;
+    margin-bottom: 8px;
+    opacity: 0;
+}
+
+/* Sequencing the line typing paths */
+.line1 { animation: typeLine 0.5s 0.2s steps(30) forwards, revealLine 0.1s 0.2s forwards; }
+.line2 { animation: typeLine 0.5s 0.9s steps(40) forwards, revealLine 0.1s 0.9s forwards; }
+.line4 { animation: typeLine 0.5s 1.6s steps(45) forwards, revealLine 0.1s 1.6s forwards; }
+.line5 { animation: typeLine 0.5s 2.3s steps(25) forwards, revealLine 0.1s 2.3s forwards; }
+
+.blink {
+    animation: terminalBlink 1.0s infinite;
+}
+
+/* --- STAGE 2: THE CRT MONITOR POP --- */
+#boot-screen {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background-color: #030a03;
+    z-index: 99998; 
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; 
+    align-items: flex-start;
+    padding-top: 40px;          
+    padding-left: 40px;         
+    box-sizing: border-box;
+    animation: crtPop 0.4s 3.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* --- STAGE 3: MAIN SITE REVEAL --- */
+@keyframes fadeInSite {
+    0% { opacity: 0; transform: scale(1.02); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* Synchronized layout loop pulse */
+.reset-pulse {
+    animation: layoutPulse 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
+}
+
+@keyframes layoutPulse {
+    0% { opacity: 1; transform: scale(1); }
+    20% { opacity: 0; transform: scale(1.005); filter: brightness(0.5); }
+    30% { opacity: 0; transform: scale(0.995); }
+    100% { opacity: 1; transform: scale(1); filter: brightness(1); }
+}
+
+/* --- STAGE 4: NAVIGATION PAGE LEAVE CRT MONITOR WIPE --- */
+.page-exit-wipe {
+    /* 0.6s duration stretched via a heavy center bezier curves it into a heavy pronounced pop */
+    animation: crtPop 0.6s 0s cubic-bezier(0.645, 0.045, 0.355, 1) forwards !important;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+}
+
+/* --- MOTION MATRICES --- */
+@keyframes typeLine {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes revealLine {
+    to { opacity: 1; }
+}
+
+@keyframes terminalBlink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+
+@keyframes crtPop {
+    0% { opacity: 1; transform: scale(1); }
+    50% { background: #99ff99; transform: scaleY(0.015); filter: brightness(2.5); }
+    99% { opacity: 0; transform: scale(0); }
+    100% { opacity: 0; transform: scale(0); left: -9999px; top: -9999px; }
+}
