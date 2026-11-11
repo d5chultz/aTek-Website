@@ -2715,6 +2715,7 @@
                 transform: scale(1.95);
                 transform-origin: 54% 28%;
             }
+            #onkyo-stack-container.wlob-danger-red .onkyo-stage,
             #onkyo-stack-container:has(#wlob-vault-container.wlob-active) .onkyo-stage {
                 width: 100vw;
                 height: 100vh;
@@ -2746,9 +2747,6 @@
     <div class="radio-frame">
         <img id="base-dial" src="images/zenith-radio-dial.png" class="base-dial">
         
-        <!-- Large Red 'A' Deployment Test Marker -->
-        <div id="deployment-test-marker" style="position: absolute; left: 50%; top: 32%; transform: translate(-50%, -50%); font-family: 'Arial Black', Impact, sans-serif; font-size: clamp(60px, 8vw, 110px); font-weight: 900; color: #ff1a1a; text-shadow: 0 0 20px rgba(255, 0, 0, 0.9), 0 0 40px rgba(255, 0, 0, 0.6), 2px 2px 4px #000; z-index: 180; pointer-events: none; user-select: none; letter-spacing: 2px;">A</div>
-
         <img id="magic-eye-base" src="images/magic-eye.png" class="overlay-item">
         <img id="magic-eye" src="images/magic-eye-low.png" class="overlay-item">
 
@@ -2925,14 +2923,14 @@
                         <div class="vdoor-half vdoor-left">
                             <div class="vdoor-hazard-bar top"></div>
                             <div class="vdoor-hazard-bar bottom"></div>
-                            <div class="vdoor-stamp">RESTRICTED AREA</div>
-                            <div class="vdoor-substamp">SECTOR 7-A // HEAVY BLAST SHIELD</div>
+                            <div class="vdoor-stamp">WARNING:</div>
+                            <div class="vdoor-substamp">RESTRICTED AREA // 80085</div>
                             <div class="vdoor-bolts"><span class="vbolt"></span><span class="vbolt"></span><span class="vbolt"></span><span class="vbolt"></span></div>
                         </div>
                         <div class="vdoor-half vdoor-right">
                             <div class="vdoor-hazard-bar top"></div>
                             <div class="vdoor-hazard-bar bottom"></div>
-                            <div class="vdoor-stamp">CODE: 80085</div>
+                            <div class="vdoor-stamp">WARNING:</div>
                             <div class="vdoor-substamp">HYDRAULIC RELEASE // LOCK 01</div>
                             <div class="vdoor-bolts"><span class="vbolt"></span><span class="vbolt"></span><span class="vbolt"></span><span class="vbolt"></span></div>
                         </div>
@@ -2943,7 +2941,7 @@
                     <div class="vdoor-layer vdoor-layer-2" id="vdoor-2">
                         <div class="vdoor-half vdoor-top">
                             <div class="vdoor-sub-rivets"></div>
-                            <div class="vdoor-stamp-brass">BIO-HAZARD AIRLOCK 02</div>
+                            <div class="vdoor-stamp-brass">NSFW</div>
                             <div class="vdoor-gauge-cluster">
                                 <div class="vdoor-sub-gauge"><div class="gauge-needle"></div><span>3200 PSI</span></div>
                                 <div class="vdoor-sub-gauge"><div class="gauge-needle alt"></div><span>SEAL OK</span></div>
@@ -2958,7 +2956,7 @@
                                 <div class="wheel-spoke spoke-4"></div>
                                 <div class="wheel-center"></div>
                             </div>
-                            <div class="vdoor-stamp-brass">DECOMPRESSION CYCLE ACTIVE</div>
+                            <div class="vdoor-stamp-brass">NSFW // 18+ ARCHIVE</div>
                         </div>
                         <div class="vdoor-seam-h"></div>
                     </div>
@@ -6888,6 +6886,9 @@
             try { robotKnobClickAudio.currentTime = 0; robotKnobClickAudio.play().catch(() => {}); } catch (_) {}
 
             if (onkyoCodeBuffer === '80085') {
+                if (typeof toggleOnkyoZoom === 'function') {
+                    toggleOnkyoZoom(false);
+                }
                 unlockWLOB();
             } else if (onkyoCodeBuffer.length > 0) {
                 if (onkyoStationBanner) {
@@ -6980,14 +6981,21 @@
                     finishedSequence = true;
                     try {
                         alienDoorAudio.pause();
-                        sweetJesusAudio.currentTime = 0;
-                        sweetJesusAudio.play().catch(() => {});
                     } catch (_) {}
                     const dw = document.getElementById('wlob-vault-doors-wrapper');
                     if (dw) dw.style.display = 'none';
                     initWlobRadioControls();
                     saveWlobFavorites();
                     fetchWlobPhotoPool();
+
+                    // Delay "Sweet Jesus!" audio reaction by about 2 seconds so the reaction comes after all the thumbs have loaded
+                    setTimeout(() => {
+                        if (!isWlobOpen) return;
+                        try {
+                            sweetJesusAudio.currentTime = 0;
+                            sweetJesusAudio.play().catch(() => {});
+                        } catch (_) {}
+                    }, 2000);
                     return;
                 }
 
@@ -7001,7 +7009,10 @@
         // Unlock Vault & Cartoonish Multi-Door Sequential Opening
         function unlockWLOB() {
             isWlobOpen = true;
-            if (typeof toggleOnkyoZoom === 'function' && isOnkyoZoomed) toggleOnkyoZoom(false);
+            if (typeof toggleOnkyoZoom === 'function') toggleOnkyoZoom(false);
+            if (onkyoContainer) onkyoContainer.classList.remove('tuner-zoomed');
+            const st = document.getElementById('onkyo-stage');
+            if (st) { st.style.transform = ''; st.style.transformOrigin = ''; }
             if (window.Patina) window.Patina.clear();
 
             // Preload emergency video metadata in advance
