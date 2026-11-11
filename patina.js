@@ -34,25 +34,10 @@
         // Brass tarnish: warm, very low alpha bloom in the corners (not a glow filter)
         [[0, 0], [W, 0], [0, H], [W, H]].forEach(([x, y]) => {
             const g = s.createRadialGradient(x, y, 0, x, y, Math.max(W, H) * 0.42);
-            g.addColorStop(0, 'rgba(140, 100, 40, 0.07)');
+            g.addColorStop(0, 'rgba(140, 100, 40, 0.05)');
             g.addColorStop(1, 'rgba(140, 100, 40, 0)');
             s.fillStyle = g; s.fillRect(0, 0, W, H);
         });
-
-        // Micro-scratches: thin, short, mostly horizontal arcs like cleaning swirls
-        const n = Math.round((W * H) / 9000);
-        for (let i = 0; i < n; i++) {
-            const x = rnd() * W, y = rnd() * H;
-            const len = 6 + rnd() * 46;
-            const ang = (rnd() - 0.5) * 0.5 + (rnd() < 0.2 ? Math.PI / 2.4 : 0);
-            s.strokeStyle = 'rgba(255,255,255,' + (0.015 + rnd() * 0.04).toFixed(3) + ')';
-            s.lineWidth = 0.5;
-            s.beginPath();
-            s.moveTo(x, y);
-            s.quadraticCurveTo(x + Math.cos(ang) * len * 0.5, y + Math.sin(ang) * len * 0.5 + (rnd() - 0.5) * 3,
-                               x + Math.cos(ang) * len, y + Math.sin(ang) * len);
-            s.stroke();
-        }
     }
 
     function makeDust() {
