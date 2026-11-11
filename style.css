@@ -258,6 +258,16 @@ header {
 .line2 { animation: typeLine 0.5s 0.9s steps(40) forwards, revealLine 0.1s 0.9s forwards; }
 .line4 { animation: typeLine 0.5s 1.6s steps(45) forwards, revealLine 0.1s 1.6s forwards; }
 .line5 { animation: typeLine 0.5s 2.3s steps(25) forwards, revealLine 0.1s 2.3s forwards; }
+.line6 { animation: typeLine 0.7s 3.1s steps(40) forwards, revealLine 0.1s 3.1s forwards; }
+
+/* Audio engage prompt: the boot sequence halts here until the visitor taps / presses Y */
+#boot-prompt { cursor: pointer; -webkit-tap-highlight-color: transparent; margin-top: 14px; }
+#boot-yes { color: #99ff99; text-shadow: 0 0 8px rgba(51, 255, 51, 0.8); }
+#boot-prompt:hover #boot-yes { color: #ffffff; }
+
+@media (max-width: 600px) {
+    .terminal-line { font-size: 0.78rem; }
+}
 
 .blink {
     animation: terminalBlink 1.0s infinite;
@@ -277,7 +287,12 @@ header {
     padding-top: 40px;          
     padding-left: 40px;         
     box-sizing: border-box;
-    animation: crtPop 0.4s 3.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* The CRT pop-off only fires once the visitor answers the audio prompt */
+#boot-screen.boot-engaged {
+    animation: crtPop 0.4s 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    pointer-events: none;
 }
 
 /* --- STAGE 3: MAIN SITE REVEAL --- */

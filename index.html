@@ -17,7 +17,8 @@
         <div class="terminal-line line1">aTek_BIOS_V2.6 // CORE_INIT... OK</div>
         <div class="terminal-line line2">MAPPED: INTEL_V-NAND_ARRAY_STABLE</div>
         <div class="terminal-line line4">SIGNAL PATH: LINE-ISOLATED // 1200_DPI_READY</div>
-        <div class="terminal-line line5">EXEC_FOUNDRY_INITIAL_BOARDS... <span class="blink">█</span></div>
+        <div class="terminal-line line5">EXEC_FOUNDRY_INITIAL_BOARDS... OK</div>
+        <div class="terminal-line line6" id="boot-prompt" role="button" tabindex="0">DO YOU WISH TO ENGAGE AUDIO: <span id="boot-yes">[Y]ES</span> <span class="blink">█</span></div>
     </div>
 
     <div id="main-site">
@@ -162,6 +163,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const trigger = document.querySelector('.console-trigger');
     const video = document.getElementById('bg-video');
     const tunerLink = document.getElementById('tuner-link');
+
+    // --- BOOT PROMPT: "Do you wish to engage audio: Yes" (halts the boot sequence until answered) ---
+    const bootScreen = document.getElementById('boot-screen');
+    const bootPrompt = document.getElementById('boot-prompt');
+    let bootPromptReady = false;
+    let bootAnswered = false;
+    setTimeout(() => { bootPromptReady = true; }, 3000); // prompt has appeared
+
+    function answerBootPromptYes(e) {
+        if (bootAnswered) return;
+        // If triggered by keyboard before line 6 appears, ignore
+        if (e && e.type === 'keydown' && !bootPromptReady) return;
+        bootAnswered = true;
+        // This tap / keypress is the user gesture browsers require, so audio can be engaged right here
+        if (!audioCtx) {
+            initializeFoundryAudio();
+            isAudioEngaged = true;
+            startAutomationLoop();
+            if (trigger) {
+                trigger.textContent = "[ AUDIO_SYS: CORES_HEATING // 60HZ_HUM_STABLE ]";
+                trigger.style.color = "#33ff33";
+            }
+        }
+        if (bootScreen) bootScreen.classList.add('boot-engaged');
+    }
+
+    if (bootPrompt) {
+        bootPrompt.addEventListener('click', answerBootPromptYes);
+        bootPrompt.addEventListener('touchend', (e) => { e.preventDefault(); answerBootPromptYes(e); });
+    }
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'y' || e.key === 'Y') answerBootPromptYes(e);
+    });
     
     if (trigger) {
         trigger.textContent = "[ AUDIO_SYS: OFF // CLICK TO ENGAGE ]";

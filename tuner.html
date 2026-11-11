@@ -918,27 +918,6 @@
         }
 
 
-        /* LOWER-RIGHT CORNER aTek LOGO (Replaces Gemini mark) */
-        #atek-corner-logo {
-            position: fixed;
-            bottom: 16px;
-            right: 20px;
-            height: 44px;
-            width: auto;
-            z-index: 250;
-            opacity: 0.9;
-            pointer-events: none;
-            filter: brightness(0) invert(1) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.85));
-            transition: opacity 0.3s ease;
-        }
-        @media (max-width: 768px) {
-            #atek-corner-logo {
-                bottom: calc(10px + env(safe-area-inset-bottom));
-                right: 12px;
-                height: 32px;
-            }
-        }
-
         /* ==========================================================================
            TIME MACHINE DECADE STATE HOOKS (Awaiting user dial-face templates for 1961, 1972, etc.)
            ========================================================================== */
@@ -2728,6 +2707,82 @@
                 border-radius: 0;
             }
         }
+
+        /* ==========================================================================
+           1974 — THE WATT WARS BEGIN (title / image sequence over the dial)
+           ========================================================================== */
+        #watt-wars-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 210; /* above the band selector HUD (200), below the Onkyo reveal (280) */
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            background: radial-gradient(ellipse at center, rgba(12, 7, 0, 0.62) 0%, rgba(0, 0, 0, 0.86) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        #watt-wars-overlay.ww-active { opacity: 1; }
+        #ww-title {
+            position: absolute;
+            left: 6vw;
+            right: 6vw;
+            margin: 0 auto;
+            max-width: 1000px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: clamp(1.15rem, 3.4vw, 2.3rem);
+            line-height: 1.4;
+            letter-spacing: 0.05em;
+            color: #ffcc77;
+            text-shadow: 0 0 6px rgba(255, 170, 0, 0.85), 0 0 18px rgba(255, 120, 0, 0.6), 2px 2px 3px #000;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        #ww-title.ww-show { opacity: 1; transform: none; }
+        #ww-title.ww-big { font-size: clamp(1.5rem, 5vw, 3.4rem); text-transform: uppercase; letter-spacing: 0.08em; }
+        #ww-title.ww-final { font-size: clamp(0.95rem, 2.6vw, 1.7rem); max-width: 900px; }
+        #ww-image-wrap {
+            position: absolute;
+            inset: 4vh 5vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            opacity: 0;
+            transition: opacity 0.7s ease;
+        }
+        #ww-image-wrap.ww-show { opacity: 1; }
+        #ww-image {
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+            min-height: 0;
+            object-fit: contain;
+            border: 2px solid rgba(255, 204, 119, 0.55);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.9), 0 0 24px rgba(255, 150, 0, 0.25);
+        }
+        #ww-image-wrap.ww-has-caption #ww-image { max-height: calc(100% - 5.2rem); }
+        #ww-caption {
+            display: none;
+            min-height: 3.6rem;
+            max-width: 900px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: clamp(0.9rem, 2.3vw, 1.5rem);
+            line-height: 1.35;
+            color: #ffcc77;
+            text-shadow: 0 0 6px rgba(255, 170, 0, 0.85), 2px 2px 3px #000;
+            opacity: 0;
+            transition: opacity 0.7s ease;
+        }
+        #ww-image-wrap.ww-has-caption #ww-caption { display: block; }
+        #ww-caption.ww-show { opacity: 1; }
     </style>
 </head>
 <body>
@@ -3131,8 +3186,16 @@
         </div>
     </div>
 
+    <!-- 1974 Watt Wars title / image sequence overlay -->
+    <div id="watt-wars-overlay" aria-hidden="true">
+        <div id="ww-title"></div>
+        <div id="ww-image-wrap">
+            <img id="ww-image" src="" alt="">
+            <div id="ww-caption"></div>
+        </div>
+    </div>
+
     <a href="index.html" class="return-btn">RETURN_MAIN</a>
-    <img id="atek-corner-logo" src="images/aTek-logo.png" alt="Analog Tech Foundry // aTek">
 
     <script src="images/eggs/manifest.js"></script>
     <script src="patina.js"></script>
@@ -3330,7 +3393,7 @@
             {
                 year: 1953, angle: 56.0, decadeClass: 'decade-1950',
                 name: '1953 World Series Game 6 - Brooklyn vs Yankees',
-                file: '1953_world_series_game_6.mp3',
+                file: 'audio/1953_world_series_game_6.mp3',
                 startOffset: 0
             },
             {
@@ -3391,6 +3454,15 @@
             },
 
             // 1970s (Up to ~1980): The Mellow Golden Age (.decade-1970)
+            {
+                // 1974: THE WATT WARS BEGIN — needle parks on 1974 and a scripted title / image sequence plays over "Burn"
+                year: 1974, angle: 120.2, decadeClass: 'decade-1970',
+                name: `1974 — THE WATT WARS BEGIN: DEEP PURPLE "BURN"`,
+                file: 'audio/Deep Purple-Burn.mp3',
+                startOffset: 0,
+                fixedStart: 0,
+                isWattWars: true
+            },
             {
                 year: 1972, angle: 234, decadeClass: 'decade-1970',
                 name: '1972 — STEVIE WONDER: "SUPERSTITION"',
@@ -4309,7 +4381,7 @@
             }
 
             tmCurrentTrack = nextTrack;
-            tmCurrentDurationLimit = 20 + Math.random() * 15;
+            tmCurrentDurationLimit = nextTrack.isWattWars ? (wattWarsTotalMs() / 1000 + 1.5) : (20 + Math.random() * 15);
             tmTrackStartTime = nextTrack.startOffset || 0;
             tmPlayStartWallTime = 0;
             tmSeekStartWallTime = performance.now();
@@ -4387,7 +4459,9 @@
                 startApplied = true;
                 const dur = timeMachineAudio.duration;
                 let randomStart = 0;
-                if (dur && isFinite(dur) && dur > 0) {
+                if (typeof track.fixedStart === 'number') {
+                    randomStart = track.fixedStart;
+                } else if (dur && isFinite(dur) && dur > 0) {
                     // Cap tmCurrentDurationLimit if the audio file itself is shorter than the 20–35s window (e.g. Sputnik-1 at 18.77s)
                     if (dur <= tmCurrentDurationLimit + 1.5) {
                         tmCurrentDurationLimit = Math.max(5, dur - 0.5);
@@ -4866,6 +4940,121 @@
             if (elapsed >= effectiveLimit) {
                 advanceFromCurrentTimeMachineTrack();
             }
+        }
+
+        // =========================================================================
+        // 1974 — THE WATT WARS BEGIN: scripted fade-in / fade-out title & image sequence
+        // Starts the moment the needle locks on the Watt Wars entry and "Burn" begins.
+        // =========================================================================
+        const WATT_FADE_MS = 700;   // each fade in / fade out
+        const WATT_HOLD_MS = 3000;  // every card is held for 3 seconds
+        const WATT_GAP_MS = 150;    // dark beat between cards
+        const WATT_WARS_STEPS = [
+            { type: 'title', text: '1974: The Watt Wars begin', big: true },
+            { type: 'title', text: 'Pioneer introduces Stereo Receiver model SX-1010.' },
+            { type: 'image', src: 'images/s-l1600.webp', caption: 'The first all-in-one stereo receiver rated at 100 continuous RMS wattage.' },
+            { type: 'image', src: 'images/pioneer-sx1010.jpg' },
+            { type: 'title', text: 'Pioneer literally called it SEXY010.' },
+            { type: 'title', text: 'This unit cost $699.95 in 1974. Today, a used model SX-1010 can be found for $2000-2500 depending upon condition.' },
+            { type: 'title', text: 'This receiver weighs 50 lbs.' },
+            { type: 'title', text: 'In the coming years, competing brands: Sansui, Marantz, Onkyo, Denon, and Yamaha answer the call to war releasing their own flagship monster receivers. The golden age for home audio starts now.', final: true, hold: 9000 }
+        ];
+
+        function wattWarsStepMs(step) {
+            const hold = step.hold || WATT_HOLD_MS;
+            let ms = WATT_FADE_MS + hold + WATT_FADE_MS + WATT_GAP_MS;
+            if (step.caption) ms += WATT_FADE_MS + WATT_HOLD_MS; // caption fades in under the image, then both fade out together
+            return ms;
+        }
+        function wattWarsTotalMs() {
+            return 500 + WATT_WARS_STEPS.reduce((sum, st) => sum + wattWarsStepMs(st), 0);
+        }
+
+        const wwOverlay = document.getElementById('watt-wars-overlay');
+        const wwTitleEl = document.getElementById('ww-title');
+        const wwImageWrap = document.getElementById('ww-image-wrap');
+        const wwImageEl = document.getElementById('ww-image');
+        const wwCaptionEl = document.getElementById('ww-caption');
+        let wwToken = 0;
+        let wwActive = false;
+        let wwDone = false;
+
+        function wwWait(ms, token) {
+            return new Promise(resolve => setTimeout(() => resolve(token === wwToken), ms));
+        }
+
+        function wattWarsCancel() {
+            wwToken++;
+            wwActive = false;
+            if (wwOverlay) wwOverlay.classList.remove('ww-active');
+            if (wwTitleEl) wwTitleEl.classList.remove('ww-show');
+            if (wwImageWrap) wwImageWrap.classList.remove('ww-show');
+            if (wwCaptionEl) wwCaptionEl.classList.remove('ww-show');
+        }
+
+        async function runWattWarsSequence() {
+            if (!wwOverlay) return;
+            const token = ++wwToken;
+            wwActive = true;
+            wwDone = true;
+            WATT_WARS_STEPS.forEach(st => { if (st.src) { const im = new Image(); im.src = st.src; } });
+
+            wwOverlay.classList.add('ww-active');
+            if (!(await wwWait(500, token))) return;
+
+            for (const step of WATT_WARS_STEPS) {
+                const hold = step.hold || WATT_HOLD_MS;
+                if (step.type === 'title') {
+                    wwTitleEl.textContent = step.text;
+                    wwTitleEl.classList.toggle('ww-big', !!step.big);
+                    wwTitleEl.classList.toggle('ww-final', !!step.final);
+                    wwTitleEl.classList.add('ww-show');
+                    if (!(await wwWait(WATT_FADE_MS + hold, token))) return;
+                    wwTitleEl.classList.remove('ww-show');
+                } else {
+                    wwImageEl.src = step.src;
+                    wwCaptionEl.textContent = step.caption || '';
+                    wwImageWrap.classList.toggle('ww-has-caption', !!step.caption);
+                    wwImageWrap.classList.add('ww-show');
+                    if (!(await wwWait(WATT_FADE_MS + WATT_HOLD_MS, token))) return;
+                    if (step.caption) {
+                        wwCaptionEl.classList.add('ww-show');
+                        if (!(await wwWait(WATT_FADE_MS + WATT_HOLD_MS, token))) return;
+                    }
+                    wwImageWrap.classList.remove('ww-show');
+                    wwCaptionEl.classList.remove('ww-show');
+                }
+                if (!(await wwWait(WATT_FADE_MS + WATT_GAP_MS, token))) return;
+            }
+            wwOverlay.classList.remove('ww-active');
+            wwActive = false;
+        }
+
+        // Watchdog: start when the needle has locked on the Watt Wars entry; abort if the listener tunes away / powers off
+        setInterval(() => {
+            const onWatt = isPoweredOn && currentBand === 2 && tmCurrentTrack && tmCurrentTrack.isWattWars;
+            if (!onWatt) {
+                wwDone = false;
+                if (wwActive) wattWarsCancel();
+                return;
+            }
+            if (wwActive && tmPhase !== 'playing') { wattWarsCancel(); return; }
+            if (!wwActive && !wwDone && tmPhase === 'playing') {
+                // Burn always starts from the top, and stays on air until the last card has faded out
+                tmCurrentDurationLimit = wattWarsTotalMs() / 1000 + 1.5;
+                tmTrackStartTime = 0;
+                tmPlayStartWallTime = performance.now();
+                if (timeMachineAudio.currentTime > 1.5) { try { timeMachineAudio.currentTime = 0; } catch (_) {} }
+                runWattWarsSequence();
+            }
+        }, 250);
+
+        // Manual tuning: when several broadcasts share one year mark (e.g. both 1974 entries), pick one at random
+        function pickTiedTrackIdx(idx) {
+            const a = timeMachineSequence[idx].angle;
+            const ties = [];
+            timeMachineSequence.forEach((t, i) => { if (Math.abs(t.angle - a) < 0.01 && t.year === timeMachineSequence[idx].year) ties.push(i); });
+            return ties.length > 1 ? ties[Math.floor(Math.random() * ties.length)] : idx;
         }
 
         // Check on both 'timeupdate' AND a 500ms watchdog interval so tracks always play and auto-advance reliably
@@ -5620,6 +5809,7 @@
                         }
                     }
                     if (closestIdx !== -1 && minDiff <= 5.0) {
+                        closestIdx = pickTiedTrackIdx(closestIdx);
                         const snapTrack = timeMachineSequence[closestIdx];
                         const snapStep = snapTrack.angle - bottomAngle;
                         bottomAngle = snapTrack.angle;
@@ -5980,6 +6170,7 @@
                         if (d < minDiff) { minDiff = d; closestIdx = i; }
                     }
                     if (closestIdx !== -1 && minDiff <= 5.0) {
+                        closestIdx = pickTiedTrackIdx(closestIdx);
                         const snapTrack = timeMachineSequence[closestIdx];
                         const snapStep = snapTrack.angle - bottomAngle;
                         bottomAngle = snapTrack.angle;
@@ -6631,6 +6822,7 @@
                 // Gracefully uses window.EGG_IMAGES already loaded via manifest.js
             }
             fetchCommunityVotes();
+            fetchWlobButtList();
             shuffleWlobPool();
             updateWlobCounts();
             renderWlobBoard();
@@ -6643,6 +6835,136 @@
         alienDoorAudio.preload = 'auto';
         const sweetJesusAudio = new Audio('audio/sweetjesus.mp3');
         sweetJesusAudio.preload = 'auto';
+
+        // Herbert soundbites
+        const herbertFatAssAudio = new Audio('audio/herbert-fat-ass.mp3');
+        herbertFatAssAudio.preload = 'auto';
+        const herbertSingingAudio = new Audio('audio/herbert-singing.mp3');
+        herbertSingingAudio.preload = 'auto';
+        const herbertBoysWantAudio = new Audio('audio/herbert-boys-want.mp3');
+        herbertBoysWantAudio.preload = 'auto';
+        function pauseHerbertAudio() {
+            [herbertFatAssAudio, herbertSingingAudio, herbertBoysWantAudio].forEach(a => { try { a.pause(); } catch (_) {} });
+        }
+
+        // --- "Big butt" photo detection -------------------------------------------------
+        // Photo filenames carry no content info, so a photo counts as a "big butt" shot when it is:
+        //   1) listed in images/eggs/butt-list.json (a JSON array of filenames), or
+        //   2) tagged on this device with tag mode (open the WLOB with ?tagbutt=1), or
+        //   3) has a butt-ish word in its filename.
+        const WLOB_BUTT_WORDS = new Set(['butt', 'butts', 'booty', 'bootie', 'ass', 'asses', 'bigass', 'fatass', 'phatass', 'pawg', 'twerk', 'twerking', 'derriere', 'rump']);
+        let wlobButtList = new Set();
+        let wlobButtLocalTags = new Set();
+        try { wlobButtLocalTags = new Set(JSON.parse(localStorage.getItem('wlob_butt_tags') || '[]')); } catch (_) {}
+
+        async function fetchWlobButtList() {
+            try {
+                const res = await fetch(`${WLOB_CONFIG.dir}butt-list.json?t=${Date.now()}`);
+                if (!res.ok) return;
+                const data = await res.json();
+                if (Array.isArray(data)) wlobButtList = new Set(data);
+            } catch (_) {}
+        }
+
+        function isWlobButtImage(file) {
+            if (!file) return false;
+            if (wlobButtList.has(file) || wlobButtLocalTags.has(file)) return true;
+            const words = file.replace(/\.[a-z0-9]+$/i, '').toLowerCase().split(/[^a-z0-9]+/);
+            return words.some(w => WLOB_BUTT_WORDS.has(w));
+        }
+
+        function maybePlayHerbertFatAss(file) {
+            if (!isWlobButtImage(file)) return;
+            if (!herbertFatAssAudio.paused && !herbertFatAssAudio.ended) return; // let the current one finish
+            try {
+                herbertFatAssAudio.currentTime = 0;
+                herbertFatAssAudio.play().catch(() => {});
+            } catch (_) {}
+        }
+
+        // --- Long-stay soundbites: after 30-60 minutes in the WLOB, Herbert sings / the boys want... ---
+        // (add ?herbertsecs=20 to the URL to test with a 20-second threshold)
+        let herbertTimerId = null;
+        let herbertStaySecs = 0;
+        let herbertThresholdSecs = 0;
+        let herbertLastClip = null;
+
+        function pickHerbertThresholdSecs() {
+            const override = parseFloat(new URLSearchParams(window.location.search).get('herbertsecs'));
+            if (override > 0) return override;
+            return (30 + Math.random() * 30) * 60;
+        }
+
+        function playHerbertLongStayClip() {
+            const clips = [herbertSingingAudio, herbertBoysWantAudio];
+            let clip = clips[Math.floor(Math.random() * clips.length)];
+            if (clip === herbertLastClip) clip = clips.find(c => c !== herbertLastClip);
+            herbertLastClip = clip;
+            try {
+                clip.currentTime = 0;
+                clip.play().catch(() => {});
+            } catch (_) {}
+        }
+
+        function startHerbertTimer() {
+            if (herbertTimerId) return;
+            herbertStaySecs = 0;
+            herbertThresholdSecs = pickHerbertThresholdSecs();
+            herbertTimerId = setInterval(() => {
+                if (!isWlobOpen || document.hidden) return;   // only counts time actually spent looking at the WLOB
+                herbertStaySecs += 1;
+                if (herbertStaySecs < herbertThresholdSecs) return;
+                if (isEmergencyActive) return;                 // never blow the cover during a boss-key meeting
+                playHerbertLongStayClip();
+                herbertStaySecs = 0;
+                herbertThresholdSecs = pickHerbertThresholdSecs();
+            }, 1000);
+        }
+
+        function stopHerbertTimer() {
+            if (herbertTimerId) clearInterval(herbertTimerId);
+            herbertTimerId = null;
+            herbertStaySecs = 0;
+        }
+
+        // --- Tag mode (?tagbutt=1): flag photos in the lightbox, then copy the list into images/eggs/butt-list.json ---
+        const wlobTagMode = new URLSearchParams(window.location.search).get('tagbutt') === '1';
+        let wlobTagPanel = null;
+        function setupWlobTagPanel() {
+            if (!wlobTagMode || wlobTagPanel) return;
+            wlobTagPanel = document.createElement('div');
+            wlobTagPanel.style.cssText = 'position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:100000;display:none;gap:8px;align-items:center;background:rgba(0,0,0,0.85);border:1px solid #ffb833;border-radius:6px;padding:8px 12px;font-family:"Courier New",monospace;font-size:12px;color:#ffcc77;';
+            wlobTagPanel.innerHTML = '<button type="button" id="wlob-tag-btn" style="background:#2a1a00;color:#ffcc77;border:1px solid #ffb833;border-radius:4px;padding:6px 10px;cursor:pointer;font-weight:bold;">🍑 TAG BUTT</button>' +
+                '<button type="button" id="wlob-tag-copy" style="background:#2a1a00;color:#ffcc77;border:1px solid #ffb833;border-radius:4px;padding:6px 10px;cursor:pointer;font-weight:bold;">COPY LIST</button>' +
+                '<span id="wlob-tag-count"></span>';
+            document.body.appendChild(wlobTagPanel);
+            wlobTagPanel.querySelector('#wlob-tag-btn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                const file = getActiveWlobList()[wlobCurrentLightboxIdx];
+                if (!file) return;
+                if (wlobButtLocalTags.has(file)) wlobButtLocalTags.delete(file); else wlobButtLocalTags.add(file);
+                try { localStorage.setItem('wlob_butt_tags', JSON.stringify(Array.from(wlobButtLocalTags))); } catch (_) {}
+                refreshWlobTagPanel();
+            });
+            wlobTagPanel.querySelector('#wlob-tag-copy').addEventListener('click', (e) => {
+                e.stopPropagation();
+                const merged = Array.from(new Set([...wlobButtList, ...wlobButtLocalTags])).sort();
+                const text = JSON.stringify(merged, null, 1);
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(() => { wlobTagPanel.querySelector('#wlob-tag-count').textContent = 'COPIED ' + merged.length + ' — paste into images/eggs/butt-list.json'; }).catch(() => window.prompt('Copy this into images/eggs/butt-list.json:', text));
+                } else {
+                    window.prompt('Copy this into images/eggs/butt-list.json:', text);
+                }
+            });
+        }
+        function refreshWlobTagPanel() {
+            if (!wlobTagPanel) return;
+            const file = getActiveWlobList()[wlobCurrentLightboxIdx];
+            const tagged = !!file && (wlobButtLocalTags.has(file) || wlobButtList.has(file));
+            wlobTagPanel.style.display = isWlobLightboxOpen ? 'flex' : 'none';
+            wlobTagPanel.querySelector('#wlob-tag-btn').textContent = tagged ? '🍑 TAGGED ✓ (tap to untag)' : '🍑 TAG BUTT';
+            wlobTagPanel.querySelector('#wlob-tag-count').textContent = (wlobButtList.size + wlobButtLocalTags.size) + ' tagged';
+        }
 
         // Shared Web Audio Context for synthesized door mechanisms
         function getWlobAudioCtx() {
@@ -6802,6 +7124,7 @@
                 if (alienDoorAudio) alienDoorAudio.pause();
                 if (sweetJesusAudio) sweetJesusAudio.pause();
                 if (guessWhoAudio) guessWhoAudio.pause();
+                pauseHerbertAudio();
             } catch (_) {}
 
             // Show Teams modal & play video full screen
@@ -6987,6 +7310,7 @@
                     initWlobRadioControls();
                     saveWlobFavorites();
                     fetchWlobPhotoPool();
+                    startHerbertTimer();
 
                     // Delay "Sweet Jesus!" audio reaction by about 2 seconds so the reaction comes after all the thumbs have loaded
                     setTimeout(() => {
@@ -7074,7 +7398,9 @@
                 if (alienDoorAudio) alienDoorAudio.pause();
                 if (sweetJesusAudio) sweetJesusAudio.pause();
                 if (guessWhoAudio) guessWhoAudio.pause();
+                pauseHerbertAudio();
             } catch (_) {}
+            stopHerbertTimer();
 
             const vaultContainer = document.getElementById('wlob-vault-container');
             if (vaultContainer) vaultContainer.classList.remove('vault-open');
@@ -7287,6 +7613,10 @@
 
             lb.classList.add('wlob-lb-active');
             lb.setAttribute('aria-hidden', 'false');
+
+            maybePlayHerbertFatAss(file);
+            setupWlobTagPanel();
+            refreshWlobTagPanel();
         }
 
         function closeWlobLightbox() {
@@ -7296,6 +7626,7 @@
                 lb.classList.remove('wlob-lb-active');
                 lb.setAttribute('aria-hidden', 'true');
             }
+            refreshWlobTagPanel();
         }
 
         // Radio Control Bar inside WLOB Board
