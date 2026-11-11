@@ -2694,8 +2694,7 @@
                 transform: scale(1.95);
                 transform-origin: 54% 28%;
             }
-            #onkyo-stack-container.wlob-danger-red .onkyo-stage,
-            #onkyo-stack-container:has(#wlob-vault-container.wlob-active) .onkyo-stage {
+            #onkyo-stack-container:has(#wlob-vault-container.vault-open) .onkyo-stage {
                 width: 100vw;
                 height: 100vh;
                 max-height: 100vh;
@@ -2703,7 +2702,7 @@
                 border-radius: 0;
                 transform: none !important;
             }
-            #wlob-vault-container.wlob-active {
+            #wlob-vault-container.vault-open {
                 border-radius: 0;
             }
         }
@@ -7209,10 +7208,19 @@
             try { robotKnobClickAudio.currentTime = 0; robotKnobClickAudio.play().catch(() => {}); } catch (_) {}
 
             if (onkyoCodeBuffer === '80085') {
+                const wasZoomed = isOnkyoZoomed || (onkyoContainer && onkyoContainer.classList.contains('tuner-zoomed'));
                 if (typeof toggleOnkyoZoom === 'function') {
                     toggleOnkyoZoom(false);
                 }
-                unlockWLOB();
+                if (wasZoomed) {
+                    // Let the smooth zoom-out CSS animation (0.35s) visibly restore the full Onkyo stack
+                    // before the red glow and door sequence start
+                    setTimeout(() => {
+                        unlockWLOB();
+                    }, 400);
+                } else {
+                    unlockWLOB();
+                }
             } else if (onkyoCodeBuffer.length > 0) {
                 if (onkyoStationBanner) {
                     onkyoStationBanner.textContent = 'CODE INVALID // ACCESS DENIED';
