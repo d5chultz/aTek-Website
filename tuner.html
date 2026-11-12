@@ -1370,6 +1370,43 @@
         }
         .return-btn:hover { background: linear-gradient(180deg, #232327, #1a1a1d); color: var(--amber); border-color: transparent; }
 
+        .inspiration-btn {
+            position: fixed;
+            bottom: 20px; right: 20px;
+            font-family: 'Inter', sans-serif; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase;
+            color: var(--amber); text-decoration: none;
+            border: 0; border-radius: 3px; padding: 9px 14px; font-size: 0.72rem;
+            background: linear-gradient(180deg, #232327, #1a1a1d); box-shadow: var(--machined);
+            z-index: 100;
+            display: inline-flex; align-items: center; gap: 8px;
+            transition: color 0.4s var(--ease-weighted), box-shadow 0.4s ease, transform 0.2s ease, opacity 0.4s ease;
+        }
+        .inspiration-btn:hover {
+            background: linear-gradient(180deg, #232327, #1a1a1d);
+            color: #ffffff;
+            box-shadow: 0 0 16px rgba(229, 169, 59, 0.45), var(--machined);
+            transform: translateY(-1px);
+        }
+        .inspiration-btn .inspiration-icon {
+            color: var(--amber);
+            font-size: 0.85rem;
+            filter: drop-shadow(0 0 5px rgba(229, 169, 59, 0.8));
+        }
+        @media (max-width: 768px) {
+            .inspiration-btn {
+                bottom: calc(10px + env(safe-area-inset-bottom));
+                right: 10px;
+                padding: 7px 11px;
+                font-size: 0.65rem;
+                letter-spacing: 0.12em;
+            }
+        }
+        #onkyo-stack-container.revealed ~ .inspiration-btn,
+        body:has(#onkyo-stack-container.revealed) .inspiration-btn,
+        body:has(#wlob-vault-container.wlob-active) .inspiration-btn {
+            display: none !important;
+        }
+
         #band-hud {
             background: rgba(24, 24, 27, 0.82); border: 0; border-radius: 6px;
             -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
@@ -3195,6 +3232,9 @@
     </div>
 
     <a href="index.html" class="return-btn">RETURN_MAIN</a>
+    <a href="inspiration.html" target="_blank" rel="noopener noreferrer" class="inspiration-btn" id="inspiration-corner-link" title="See the 1938 Zenith Walton 12-S-232 that inspired this project">
+        <span class="inspiration-icon">✦</span> SEE THE INSPIRATION
+    </a>
 
     <script src="images/eggs/manifest.js"></script>
     <script src="patina.js"></script>

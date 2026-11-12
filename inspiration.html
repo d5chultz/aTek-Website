@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1938 Zenith 12-S-232 "Walton" // The Inspiration</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png?v=2">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico?v=2">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --amber: #E5A93B;
+            --amber-bright: #ffc252;
+            --amber-glow: rgba(229, 169, 59, 0.45);
+            --bg-deep: #0c0c0e;
+            --bg-card: #15161b;
+            --border-brass: rgba(229, 169, 59, 0.28);
+            --border-dim: rgba(255, 255, 255, 0.08);
+            --eye-green: #33ff66;
+            --eye-glow: rgba(51, 255, 102, 0.5);
+            --machined: inset 0 1px 1px rgba(255,255,255,0.1), inset 0 -1px 1px rgba(0,0,0,0.6), 0 1px 2px rgba(0,0,0,0.5), 0 14px 32px -12px rgba(0,0,0,0.7);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-deep);
+            color: #d1d5db;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(ellipse at 50% 15%, rgba(229, 169, 59, 0.08) 0%, transparent 60%),
+                radial-gradient(circle at 85% 75%, rgba(51, 255, 102, 0.03) 0%, transparent 45%),
+                linear-gradient(180deg, #0e0f13 0%, #08080a 100%);
+            background-attachment: fixed;
+        }
+
+        /* Top Navigation Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(14, 15, 19, 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border-brass);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .back-link {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.76rem;
+            font-weight: 600;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #c9c5bb;
+            padding: 8px 14px;
+            border-radius: 4px;
+            background: linear-gradient(180deg, #232327, #1a1a1d);
+            box-shadow: var(--machined);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+        }
+        .back-link:hover {
+            color: var(--amber-bright);
+            transform: translateX(-2px);
+        }
+
+        .header-title-block {
+            text-align: center;
+        }
+        .header-brand {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.22em;
+            color: var(--amber);
+            text-transform: uppercase;
+        }
+        .header-title {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: 0.1em;
+            color: #f3f4f6;
+            text-shadow: 0 0 16px var(--amber-glow);
+        }
+
+        .header-badge {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.68rem;
+            color: #9ca3af;
+            letter-spacing: 0.12em;
+            background: rgba(229, 169, 59, 0.12);
+            border: 1px solid rgba(229, 169, 59, 0.3);
+            padding: 6px 12px;
+            border-radius: 3px;
+            text-transform: uppercase;
+        }
+
+        /* Container Layout */
+        main {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 32px 20px 80px;
+        }
+
+        /* Hero Introductory Placard */
+        .hero-placard {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+        .hero-tagline {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.78rem;
+            letter-spacing: 0.24em;
+            color: var(--amber);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .hero-tagline::before, .hero-tagline::after {
+            content: "";
+            width: 32px;
+            height: 1px;
+            background: var(--amber);
+            opacity: 0.5;
+        }
+        .hero-h1 {
+            font-family: 'Cinzel', serif;
+            font-weight: 800;
+            font-size: clamp(1.8rem, 4.2vw, 3.2rem);
+            letter-spacing: 0.08em;
+            color: #fff;
+            text-transform: uppercase;
+            line-height: 1.18;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8), 0 0 30px var(--amber-glow);
+        }
+        .hero-desc {
+            max-width: 820px;
+            margin: 0 auto;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #a1a1aa;
+        }
+
+        /* Centerpiece Stage: Video Hero surrounded by flanks */
+        .stage-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr 280px;
+            gap: 20px;
+            align-items: start;
+            margin-bottom: 48px;
+        }
+
+        /* Center Video Showcase */
+        .video-showcase {
+            background: #111216;
+            border: 2px solid var(--border-brass);
+            border-radius: 8px;
+            padding: 14px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(229, 169, 59, 0.15);
+            position: relative;
+        }
+        .video-frame-inner {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.9);
+        }
+        .video-frame-inner video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Floating Audio Unmute Pill */
+        .unmute-pill {
+            position: absolute;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(18, 16, 12, 0.92);
+            border: 1px solid var(--amber);
+            color: var(--amber-bright);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.78rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            font-weight: 700;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            z-index: 10;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.8), 0 0 16px var(--amber-glow);
+            transition: all 0.25s ease;
+            user-select: none;
+        }
+        .unmute-pill:hover {
+            background: var(--amber);
+            color: #0c0c0e;
+            transform: translateX(-50%) scale(1.04);
+            box-shadow: 0 6px 25px rgba(229, 169, 59, 0.7);
+        }
+        .unmute-pill.unmuted {
+            background: rgba(16, 26, 18, 0.85);
+            border-color: var(--eye-green);
+            color: var(--eye-green);
+            box-shadow: 0 4px 16px var(--eye-glow);
+        }
+
+        /* Video Placard Details */
+        .video-caption-bar {
+            margin-top: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 8px 4px 0;
+            border-top: 1px solid var(--border-dim);
+        }
+        .video-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #f3f4f6;
+            letter-spacing: 0.05em;
+        }
+        .video-meta {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--amber);
+            letter-spacing: 0.1em;
+        }
+
+        /* Flanking Columns */
+        .flank-col {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* Image Cards */
+        .zenith-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
+            transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+        .zenith-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--amber);
+            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.8), 0 0 20px var(--amber-glow);
+        }
+        .zenith-card.card-eye:hover {
+            border-color: var(--eye-green);
+            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.8), 0 0 20px var(--eye-glow);
+        }
+
+        .card-img-wrap {
+            position: relative;
+            width: 100%;
+            background: #090a0d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .card-img-wrap img {
+            width: 100%;
+            height: auto;
+            max-height: 230px;
+            object-fit: contain;
+            display: block;
+            transition: transform 0.35s ease;
+        }
+        .zenith-card:hover .card-img-wrap img {
+            transform: scale(1.03);
+        }
+
+        /* Specific card aspect tuning */
+        .card-eye .card-img-wrap {
+            background: radial-gradient(circle at center, #071a0e 0%, #050808 100%);
+            padding: 12px;
+        }
+        .card-eye .card-img-wrap img {
+            max-height: 160px;
+        }
+
+        .card-body {
+            padding: 12px 14px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .card-badge {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.64rem;
+            letter-spacing: 0.16em;
+            color: var(--amber);
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        .card-eye .card-badge {
+            color: var(--eye-green);
+        }
+        .card-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #f3f4f6;
+            letter-spacing: 0.04em;
+        }
+        .card-desc {
+            font-size: 0.78rem;
+            line-height: 1.45;
+            color: #9ca3af;
+            margin-top: 2px;
+        }
+
+        /* Archive Section Below: Vintage 1937 Newspapers */
+        .archive-section {
+            margin-top: 18px;
+            padding-top: 36px;
+            border-top: 1px solid var(--border-brass);
+        }
+        .archive-header {
+            text-align: center;
+            margin-bottom: 26px;
+        }
+        .archive-h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.6rem;
+            letter-spacing: 0.08em;
+            color: #f3f4f6;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .archive-desc {
+            font-size: 0.88rem;
+            color: #9ca3af;
+        }
+
+        .archive-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .archive-grid .card-img-wrap img {
+            max-height: 380px;
+            object-fit: cover;
+            object-position: top center;
+        }
+
+        /* High-Res Inspection Lightbox */
+        #lightbox-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(6, 6, 8, 0.94);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #lightbox-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+        .lightbox-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+        .lightbox-img {
+            max-width: 88vw;
+            max-height: 78vh;
+            object-fit: contain;
+            border: 2px solid var(--border-brass);
+            box-shadow: 0 0 50px rgba(0,0,0,0.95), 0 0 30px var(--amber-glow);
+            border-radius: 4px;
+            background: #000;
+        }
+        .lightbox-caption-box {
+            text-align: center;
+            max-width: 760px;
+        }
+        .lightbox-caption-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: var(--amber-bright);
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            margin-bottom: 4px;
+        }
+        .lightbox-caption-desc {
+            font-size: 0.85rem;
+            color: #d1d5db;
+            line-height: 1.45;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: -18px;
+            right: -18px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #18191e;
+            border: 1px solid var(--amber);
+            color: var(--amber-bright);
+            font-size: 1.3rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.8);
+            transition: all 0.2s ease;
+        }
+        .lightbox-close:hover {
+            background: var(--amber);
+            color: #000;
+            transform: scale(1.1);
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 1100px) {
+            .stage-grid {
+                grid-template-columns: 1fr;
+            }
+            .flank-col {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .archive-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 14px;
+            }
+            .header-badge { display: none; }
+            .header-title { font-size: 0.95rem; }
+            main { padding: 20px 12px 60px; }
+            .flank-col {
+                grid-template-columns: 1fr;
+            }
+            .archive-grid {
+                grid-template-columns: 1fr;
+            }
+            .unmute-pill {
+                font-size: 0.68rem;
+                padding: 8px 14px;
+                bottom: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sticky Navigation Bar -->
+    <header>
+        <a href="tuner.html" class="back-link">← Return to Tuner</a>
+        <div class="header-title-block">
+            <div class="header-brand">Zenith Radio Corporation // Chicago, USA</div>
+            <div class="header-title">The Walton 12-S-232 Masterwork</div>
+        </div>
+        <div class="header-badge">1938 Heritage Archive</div>
+    </header>
+
+    <main>
+        <!-- Hero Placard -->
+        <section class="hero-placard">
+            <div class="hero-tagline">Historical Origin & Design Heritage</div>
+            <h1 class="hero-h1">The Radio Behind the Dial</h1>
+            <p class="hero-desc">
+                In 1938, Zenith introduced the <strong>Model 12-S-232</strong> "Walton" tombstone radio. Featuring 12 vacuum tubes, 
+                electric motor tuning, the mechanical shutter <em>"Robot Dial"</em>, and the iconic green 6T5 <em>"Magic Eye"</em> target tube, 
+                it remains one of the most celebrated and sought-after masterpieces in radio history.
+            </p>
+        </section>
+
+        <!-- Main Showcase: Video Hero flanked by mechanical & visual highlights -->
+        <section class="stage-grid">
+            
+            <!-- Left Flank: Magic Eye & Tombstone Cabinet -->
+            <div class="flank-col">
+                <!-- Card 1: Magic Eye Radar Animation -->
+                <div class="zenith-card card-eye" data-full="images/zenith-magic-eye.gif" data-title="6T5 Cathode-Ray Target Eye (Radar Action)" data-desc="The animated phosphorescent green Magic Eye tuning target in action, deflecting its shadow angle in real time as incoming radio frequency carrier strength peaks.">
+                    <div class="card-img-wrap">
+                        <img src="images/zenith-magic-eye.gif" alt="Zenith Magic Eye Animation">
+                    </div>
+                    <div class="card-body">
+                        <span class="card-badge">Cathode-Ray Indicator</span>
+                        <h3 class="card-title">Magic Eye Animation</h3>
+                        <p class="card-desc">Active electron phosphor beam tuning to station resonance.</p>
+                    </div>
+                </div>
+
+                <!-- Card 2: 6T5 Tube Close-up -->
+                <div class="zenith-card card-eye" data-full="images/zenith.6t5.magic.eye.jpg" data-title="6T5 Vacuum Tube Close-up" data-desc="Authentic 6T5 vacuum tube seated directly above the dial escutcheon, radiating the distinctive bright green cathode glow through the beveled glass window.">
+                    <div class="card-img-wrap">
+                        <img src="images/zenith.6t5.magic.eye.jpg" alt="6T5 Magic Eye Vacuum Tube">
+                    </div>
+                    <div class="card-body">
+                        <span class="card-badge">Physical Hardware</span>
+                        <h3 class="card-title">6T5 Target Tube</h3>
+                        <p class="card-desc">The physical vacuum tube seated above the dial face.</p>
+                    </div>
+                </div>
+
+                <!-- Card 3: 5-S-228 Tombstone -->
+                <div class="zenith-card" data-full="images/zenith.5s228.jpg" data-title="1938 Zenith 5-S-228 Tombstone Cabinet" data-desc="The classic 1938 Zenith 5-S-228 tombstone cabinet featuring bookmatched American walnut veneers, architectural shoulder fluting, and the circular dial escutcheon.">
+                    <div class="card-img-wrap">
+                        <img src="images/zenith.5s228.jpg" alt="Zenith 5-S-228 Tombstone Cabinet">
+                    </div>
+                    <div class="card-body">
+                        <span class="card-badge">Cabinet Architecture</span>
+                        <h3 class="card-title">Model 5-S-228 Tombstone</h3>
+                        <p class="card-desc">Architectural walnut cabinet sharing the Walton design language.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Centerpiece Video: Autoplaying Walton Demonstration -->
+            <div class="video-showcase">
+                <div class="video-frame-inner" id="video-wrapper">
+                    <video id="zenith-video" src="zenith.12s232.walton.1939.mp4" playsinline autoplay muted loop controls></video>
+                    <button type="button" class="unmute-pill" id="unmute-btn" aria-label="Toggle vacuum tube audio">
+                        <span id="unmute-icon">🔊</span>
+                        <span id="unmute-label">Click to Unmute Walton Tube Audio</span>
+                    </button>
+                </div>
+                <div class="video-caption-bar">
+                    <div class="video-title">Zenith 12-S-232 "Walton" (1938/1939) Live Operational Demo</div>
+                    <div class="video-meta">1204 CHASSIS // MOTOR TUNING DEMO</div>
+                </div>
+            </div>
+
+            <!-- Right Flank: Robot Dial & Console Variant -->
+            <div class="flank-col">
+                <!-- Card 4: Walton Shutter Close-up -->
+                <div class="zenith-card" data-full="images/zenith.walton.shutter.jpg" data-title="The 1938 Walton Motor Tuning Escutcheon" data-desc="Frontal close-up of the 1938 Walton escutcheon displaying the motorized tuning buttons, band selector lever, and precision glass dial bezel.">
+                    <div class="card-img-wrap">
+                        <img src="images/zenith.walton.shutter.jpg" alt="Zenith Walton Shutter Escutcheon">
+                    </div>
+                    <div class="card-body">
+                        <span class="card-badge">Escutcheon & Controls</span>
+                        <h3 class="card-title">Walton Escutcheon</h3>
+                        <p class="card-desc">Motor tuning pushbuttons and multi-band shutter bezel.</p>
+                    </div>
+                </div>
+
+                <!-- Card 5: Robot Dial Shutter Mechanism -->
+                <div class="zenith-card" data-full="images/zenith.robot.dial.jpg" data-title="The Zenith Robot Dial Mechanism" data-desc="Behind the dial face: the intricate mechanical shutter system and motor-driven gear train that physically rotates brass shutter blades to uncover each wave band.">
+                    <div class="card-img-wrap">
+                        <img src="images/zenith.robot.dial.jpg" alt="Zenith Robot Dial Shutter Mechanism">
+                    </div>
+                    <div class="card-body">
+                        <span class="card-badge">Mechanical Engineering</span>
+                        <h3 class="card-title">The Robot Dial Mechanism</h3>
+                        <p class="card-desc">Split-shutter leaf system that exposes one wave band at a time.</p>
+                    </div>
+                </div>
+
+                <!-- Card 6: 12-S-267 Console -->
+                <div class="zenith-card" data-full="images/zenith.12s267.jpg" data-title="1938 Zenith 12-S-267 Console Model" data-desc="The grand floor-standing console model housing the same 12-tube 1204 chassis with motor tuning, paired with an electrodynamic 12-inch concert speaker.">
+                    <div class="card-img-wrap">
+                        <img src="images/zenith.12s267.jpg" alt="Zenith 12-S-267 Console Model">
+                    </div>
+                    <div class="card-body">
+                        <span class="card-badge">Flagship Console</span>
+                        <h3 class="card-title">Model 12-S-267 Console</h3>
+                        <p class="card-desc">The massive floor console housing the 12-tube Walton chassis.</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Archive Section: Authentic 1937 Newspaper Ephemera -->
+        <section class="archive-section">
+            <div class="archive-header">
+                <h2 class="archive-h2">The 1937 Vintage Press Archive</h2>
+                <p class="archive-desc">Original newspaper announcements and trade advertisements published across America introducing the 1938 Zenith Robot Dial line.</p>
+            </div>
+
+            <div class="archive-grid">
+                <!-- Card 7: Amarillo, TX -->
+                <div class="zenith-card" data-full="images/zenith.6s229.amaraillo.tx.21oct1937.jpg" data-title="Amarillo Daily News — October 21, 1937" data-desc="Historical full-column advertisement published in Amarillo, Texas: 'Again, A Year Ahead — Zenith Radio with Robot Dial and Magic Eye'.">
+                    <div class="card-img-wrap">
+                        <img src="images/zenith.6s229.amaraillo.tx.21oct1937.jpg" alt="Amarillo Daily News 1937 Zenith Ad">
+                    </div>
+                    <div class="card-body">
+                        <span class="card-badge">Amarillo, Texas // Oct 21, 1937</span>
+                        <h3 class="card-title">Amarillo Daily News</h3>
+                        <p class="card-desc">"Again, A Year Ahead — More Features Than Any Other Radio in the World."</p>
+                    </div>
+                </div>
+
+                <!-- Card 8: El Paso, TX -->
+                <div class="zenith-card" data-full="images/zenith.6s229.elpaso.tx.18dec1937.jpg" data-title="El Paso Times — December 18, 1937" data-desc="Holiday season advertisement in El Paso, Texas: 'Christmas With Zenith — Sells Itself in 60 Seconds of Performance'.">
+                    <div class="card-img-wrap">
+                        <img src="images/zenith.6s229.elpaso.tx.18dec1937.jpg" alt="El Paso Times 1937 Zenith Ad">
+                    </div>
+                    <div class="card-body">
+                        <span class="card-badge">El Paso, Texas // Dec 18, 1937</span>
+                        <h3 class="card-title">El Paso Times</h3>
+                        <p class="card-desc">"Christmas with Zenith — The Gift the Whole Family Enjoys Daily."</p>
+                    </div>
+                </div>
+
+                <!-- Card 9: New Castle, PA -->
+                <div class="zenith-card" data-full="images/zenith.6s229.newcastle.pa.27sep1937.jpg" data-title="New Castle News — September 27, 1937" data-desc="Feature announcement from New Castle, Pennsylvania showcasing the revolutionary Armchair Radios and split-second Robot Dial mechanism.">
+                    <div class="card-img-wrap">
+                        <img src="images/zenith.6s229.newcastle.pa.27sep1937.jpg" alt="New Castle News 1937 Zenith Ad">
+                    </div>
+                    <div class="card-body">
+                        <span class="card-badge">New Castle, PA // Sep 27, 1937</span>
+                        <h3 class="card-title">New Castle News</h3>
+                        <p class="card-desc">"Armchair Radio with Robot Dial: Tune Without Leaving Your Easy Chair."</p>
+                    </div>
+                </div>
+
+                <!-- Card 10: Radio Retailing Nov 1937 -->
+                <div class="zenith-card" data-full="images/zenith.6s222.nov1937.jpg" data-title="Radio Retailing Trade Ad — November 1937" data-desc="Trade press announcement for the Zenith 6-S-222 line, highlighting the consumer demand and precision engineering of the shutterdial series.">
+                    <div class="card-img-wrap">
+                        <img src="images/zenith.6s222.nov1937.jpg" alt="Radio Retailing Nov 1937 Zenith Ad">
+                    </div>
+                    <div class="card-body">
+                        <span class="card-badge">Trade Publication // Nov 1937</span>
+                        <h3 class="card-title">Radio Retailing Archive</h3>
+                        <p class="card-desc">National dealer spotlight on the 1938 Zenith Shutterdial revolution.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Inspection Lightbox Modal -->
+    <div id="lightbox-modal" role="dialog" aria-hidden="true">
+        <div class="lightbox-content">
+            <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close image viewer">✕</button>
+            <img src="" alt="" class="lightbox-img" id="lightbox-img">
+            <div class="lightbox-caption-box">
+                <div class="lightbox-caption-title" id="lightbox-title"></div>
+                <div class="lightbox-caption-desc" id="lightbox-desc"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Video Autoplay & Unmute Controller ---
+        const video = document.getElementById('zenith-video');
+        const unmuteBtn = document.getElementById('unmute-btn');
+        const unmuteIcon = document.getElementById('unmute-icon');
+        const unmuteLabel = document.getElementById('unmute-label');
+
+        function updateUnmuteButtonState() {
+            if (!video || !unmuteBtn) return;
+            if (video.muted) {
+                unmuteBtn.classList.remove('unmuted');
+                unmuteIcon.textContent = '🔊';
+                unmuteLabel.textContent = 'Click to Unmute Walton Tube Audio';
+            } else {
+                unmuteBtn.classList.add('unmuted');
+                unmuteIcon.textContent = '🔈';
+                unmuteLabel.textContent = 'Vacuum Tube Audio: ON';
+                // Fade pill after 3.5 seconds when unmuted to clear the video
+                setTimeout(() => {
+                    unmuteBtn.style.opacity = '0.35';
+                }, 3500);
+            }
+        }
+
+        if (unmuteBtn && video) {
+            unmuteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                video.muted = !video.muted;
+                if (!video.muted && video.paused) {
+                    video.play().catch(() => {});
+                }
+                updateUnmuteButtonState();
+            });
+            unmuteBtn.addEventListener('mouseenter', () => {
+                unmuteBtn.style.opacity = '1';
+            });
+            unmuteBtn.addEventListener('mouseleave', () => {
+                if (!video.muted) unmuteBtn.style.opacity = '0.35';
+            });
+            video.addEventListener('volumechange', updateUnmuteButtonState);
+        }
+
+        // Try to start autoplay immediately on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            if (video) {
+                video.play().catch(() => {
+                    // Browser prevented autoplay with audio; ensure muted autoplay runs smoothly
+                    video.muted = true;
+                    video.play().catch(() => {});
+                });
+            }
+        });
+
+        // --- High-Resolution Image Lightbox ---
+        const modal = document.getElementById('lightbox-modal');
+        const modalImg = document.getElementById('lightbox-img');
+        const modalTitle = document.getElementById('lightbox-title');
+        const modalDesc = document.getElementById('lightbox-desc');
+        const closeBtn = document.getElementById('lightbox-close');
+
+        function openLightbox(src, title, desc) {
+            if (!modal || !modalImg) return;
+            modalImg.src = src;
+            modalTitle.textContent = title || '';
+            modalDesc.textContent = desc || '';
+            modal.classList.add('active');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            if (!modal) return;
+            modal.classList.remove('active');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+
+        document.querySelectorAll('.zenith-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const fullSrc = card.getAttribute('data-full');
+                const title = card.getAttribute('data-title');
+                const desc = card.getAttribute('data-desc');
+                if (fullSrc) openLightbox(fullSrc, title, desc);
+            });
+        });
+
+        if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeLightbox();
+            });
+        }
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal && modal.classList.contains('active')) {
+                closeLightbox();
+            }
+        });
+    </script>
+</body>
+</html>
