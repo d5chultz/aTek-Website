@@ -7,10 +7,10 @@
 #   ./update-eggs.sh
 # Dont forget to push the changes to git-hub:
 #
-#  git add .
-#  git commit -m "Updated image registry and photos"
+#  "Updated image registry and photos"
 #  git push
-#
+#git add .
+#  git commit -m 
 # ==============================================================================
 cd "$(dirname "$0")" || exit 1
 python3 - <<'PY'

@@ -2455,6 +2455,29 @@
             border-radius: 4px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
         }
+        #wlob-stall-handle-hotspot {
+            position: absolute;
+            left: 44.5%;
+            top: 43%;
+            width: 9.5%;
+            height: 13%;
+            background: transparent;
+            border: none;
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+            z-index: 30;
+            display: none;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .wlob-brand-tag.stall-secret-active {
+            color: #b8ff66;
+            border-color: rgba(184, 255, 102, 0.55);
+            background: rgba(28, 42, 14, 0.85);
+            box-shadow: 0 0 12px rgba(160, 255, 80, 0.35);
+            cursor: pointer;
+        }
 
         /* "Who is she?" Slide Component */
         .wlob-who-slide {
@@ -3128,7 +3151,7 @@
                     <!-- Board Header -->
                     <header id="wlob-header">
                         <div class="wlob-header-left">
-                            <span class="wlob-brand-tag">WLOB // ARCHIVE</span>
+                            <span class="wlob-brand-tag" id="wlob-brand-tag">WLOB // ARCHIVE</span>
                             <span class="wlob-counter-tag" id="wlob-pool-stats">— WORKS</span>
                         </div>
                         
@@ -3193,6 +3216,7 @@
                 <button type="button" id="wlob-lb-prev" class="wlob-arrow-btn prev" aria-label="Previous photo">‹</button>
                 <div class="wlob-lightbox-img-wrap">
                     <img id="wlob-lightbox-img" src="" alt="Photo preview">
+                    <button type="button" id="wlob-stall-handle-hotspot" aria-label="Stall 2 Door Handle"></button>
                 </div>
                 <!-- Floating "Who is she?" Slide -->
                 <div id="wlob-lb-who-slide" class="wlob-who-slide" title="Click to reveal who she is">
@@ -3237,6 +3261,7 @@
     </a>
 
     <script src="images/eggs/manifest.js"></script>
+    <script src="images/wlob/manifest.js"></script>
     <script src="patina.js"></script>
     <script>
         const band3AlbumLink = document.getElementById('band3-album-link');
@@ -6741,6 +6766,8 @@
         let isWlobOpen = false;
         let isWlobLightboxOpen = false;
         let isEmergencyActive = false;
+        let isWlobSecretMode = false;
+        const WLOB_STALL_TOKEN = '__STALL_DOOR__';
         let wlobCurrentPage = 0;
         let wlobPhotoPool = [];
         let wlobFavorites = new Set();
@@ -6755,6 +6782,9 @@
             dir: (window.WLOB_DIR || 'images/eggs/'),
             manifestJson: (window.WLOB_DIR || 'images/eggs/') + 'manifest.json',
             manifestJs: (window.WLOB_DIR || 'images/eggs/') + 'manifest.js',
+            secretDir: 'images/wlob/',
+            secretManifestJson: 'images/wlob/manifest.json',
+            stallImage: 'images/dirty-bathroom-stall.jpg',
             pageSize: 30,
             // Shared Google Sheet Web App URL for live community consensus
             sheetsApiUrl: (window.WLOB_SHEETS_API || 'https://script.google.com/macros/s/AKfycbwK9J9nmPwk5aYi9YG9-D__HPplIXrKG_fpUgFiNHV7GeQoAPz0ywdzhcBx31Tq2HUm/exec')
@@ -6816,7 +6846,9 @@
 
         // Dynamic Image URL resolver
         function getWlobImageUrl(file) {
-            return WLOB_CONFIG.dir + encodeURIComponent(file);
+            if (file === WLOB_STALL_TOKEN) return WLOB_CONFIG.stallImage;
+            const baseDir = isWlobSecretMode ? WLOB_CONFIG.secretDir : WLOB_CONFIG.dir;
+            return baseDir + encodeURIComponent(file);
         }
 
         // Load favorites from localStorage
@@ -6838,13 +6870,74 @@
 
         // Fisher-Yates Shuffle on dynamic pool
         function shuffleWlobPool() {
-            const raw = (window.EGG_IMAGES && window.EGG_IMAGES.length) ? window.EGG_IMAGES.slice() : [];
+            const sourceList = isWlobSecretMode ? window.WLOB_SECRET_IMAGES : window.EGG_IMAGES;
+            const raw = (sourceList && sourceList.length) ? sourceList.slice() : [];
             for (let i = raw.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 const t = raw[i]; raw[i] = raw[j]; raw[j] = t;
             }
+            // In standard WLOB mode, inject the dirty bathroom stall photo on every 10th board (Board 10, 20, 30...)
+            if (!isWlobSecretMode && raw.length > 0) {
+                for (let boardNum = 10; (boardNum - 1) * WLOB_CONFIG.pageSize < raw.length; boardNum += 10) {
+                    const insertIdx = (boardNum - 1) * WLOB_CONFIG.pageSize + 14;
+                    if (insertIdx <= raw.length) {
+                        raw.splice(insertIdx, 0, WLOB_STALL_TOKEN);
+                    }
+                }
+            }
             wlobPhotoPool = raw;
             wlobCurrentPage = 0;
+        }
+
+        async function enterWlobSecretStall() {
+            try {
+                playDoor2Sound();
+                clackAudio.currentTime = 0;
+                clackAudio.play().catch(() => {});
+            } catch (_) {}
+            closeWlobLightbox();
+            isWlobSecretMode = true;
+            wlobActiveTab = 'all';
+            const tabAll = document.getElementById('wlob-tab-all');
+            const tabFavs = document.getElementById('wlob-tab-favs');
+            if (tabAll) tabAll.classList.add('active');
+            if (tabFavs) tabFavs.classList.remove('active');
+            const brandTag = document.getElementById('wlob-brand-tag');
+            if (brandTag) {
+                brandTag.textContent = '🚪 WLOB // STALL #2 (EXIT)';
+                brandTag.classList.add('stall-secret-active');
+                brandTag.title = 'Click to exit Stall #2 and return to main library';
+            }
+            if (!window.WLOB_SECRET_IMAGES || !window.WLOB_SECRET_IMAGES.length) {
+                try {
+                    const res = await fetch(`${WLOB_CONFIG.secretManifestJson}?t=${Date.now()}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (Array.isArray(data) && data.length) window.WLOB_SECRET_IMAGES = data;
+                    }
+                } catch (_) {}
+            }
+            shuffleWlobPool();
+            updateWlobCounts();
+            renderWlobBoard();
+        }
+
+        function exitWlobSecretStall() {
+            if (!isWlobSecretMode) return;
+            try {
+                clackAudio.currentTime = 0;
+                clackAudio.play().catch(() => {});
+            } catch (_) {}
+            isWlobSecretMode = false;
+            const brandTag = document.getElementById('wlob-brand-tag');
+            if (brandTag) {
+                brandTag.textContent = 'WLOB // ARCHIVE';
+                brandTag.classList.remove('stall-secret-active');
+                brandTag.title = '';
+            }
+            shuffleWlobPool();
+            updateWlobCounts();
+            renderWlobBoard();
         }
 
         // Dynamically fetch freshest manifest.json (with cache buster)
@@ -7438,6 +7531,7 @@
 
         function closeWLOB() {
             isWlobOpen = false;
+            if (isWlobSecretMode) exitWlobSecretStall();
             try {
                 if (alienDoorSyncAnimFrame) {
                     cancelAnimationFrame(alienDoorSyncAnimFrame);
@@ -7498,6 +7592,7 @@
 
         function formatEggName(filename) {
             if (!filename) return 'Unknown';
+            if (filename === WLOB_STALL_TOKEN) return 'Stall #2 // Out of Order';
             let name = filename.split('/').pop().replace(/\.[^/.]+$/, '');
             name = name.replace(/^[-_\s.]+/, '').replace(/[-_\s.]+$/, '');
 
@@ -7641,6 +7736,10 @@
             const file = list[index];
 
             lbImg.src = getWlobImageUrl(file);
+            const stallHotspot = document.getElementById('wlob-stall-handle-hotspot');
+            if (stallHotspot) {
+                stallHotspot.style.display = (file === WLOB_STALL_TOKEN) ? 'block' : 'none';
+            }
             if (counter) counter.textContent = `PHOTO ${(index + 1).toLocaleString()} OF ${list.length.toLocaleString()}`;
             if (favBtn) {
                 favBtn.className = 'wlob-btn-heart' + (wlobFavorites.has(file) ? ' favorited' : '');
@@ -7669,6 +7768,8 @@
 
         function closeWlobLightbox() {
             isWlobLightboxOpen = false;
+            const stallHotspot = document.getElementById('wlob-stall-handle-hotspot');
+            if (stallHotspot) stallHotspot.style.display = 'none';
             const lb = document.getElementById('wlob-lightbox');
             if (lb) {
                 lb.classList.remove('wlob-lb-active');
@@ -7801,6 +7902,23 @@
                 whoSlide.addEventListener('click', (e) => {
                     e.stopPropagation();
                     whoSlide.classList.toggle('revealed');
+                });
+            }
+
+            // Secret Stall #2 Door Handle Hotspot inside Lightbox
+            const stallHotspot = document.getElementById('wlob-stall-handle-hotspot');
+            if (stallHotspot) {
+                stallHotspot.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    enterWlobSecretStall();
+                });
+            }
+
+            // Click WLOB // STALL #2 badge to exit back to normal archive
+            const brandTag = document.getElementById('wlob-brand-tag');
+            if (brandTag) {
+                brandTag.addEventListener('click', () => {
+                    if (isWlobSecretMode) exitWlobSecretStall();
                 });
             }
 
