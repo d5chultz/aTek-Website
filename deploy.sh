@@ -1,26 +1,15 @@
 #!/bin/bash
-# aTek Git deployment script for Cloudflare Pages
+# aTek direct deployment script for Cloudflare Pages (via Wrangler)
 
-# Prompt the user for the commit message/tag
-#read -p "Enter commit message: " COMMIT_MSG
+# Ensure Node v22+ is prioritized over system Node v18
+if [ -d "$HOME/.nvm/versions/node/v22.23.5/bin" ]; then
+    export PATH="$HOME/.nvm/versions/node/v22.23.5/bin:$PATH"
+elif [ -s "$HOME/.nvm/nvm.sh" ]; then
+    source "$HOME/.nvm/nvm.sh"
+    nvm use 22 >/dev/null 2>&1
+fi
 
-# Prevent empty commit messages from halting the pipeline
-#if [ -z "$COMMIT_MSG" ]; then
-#  echo "Commit message cannot be empty. Aborting."
-#  exit 1
-#fi
+export CLOUDFLARE_ACCOUNT_ID="6783a90d2e23f2d7870c14cb36d921fe"
 
-# Stage all new and modified files
-#echo "Staging files..."
-#git add .
-
-# Commit with the provided string
-#echo "Committing changes..."
-#git commit -m "$COMMIT_MSG"
-
-# Push to the remote repository to trigger the Cloudflare build
-#echo "Pushing to origin main..."
-#git push origin main
-
-#echo "Deployment pushed successfully."
-npx wrangler pages deploy . --project-name=atek-website --branch=main
+echo "🚀 Deploying to Cloudflare Pages (atek-website)..."
+npx wrangler pages deploy . --project-name=atek-website --branch=main "$@"
