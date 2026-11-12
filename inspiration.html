@@ -377,6 +377,75 @@
             object-position: top center;
         }
 
+        /* Provenance Section: How It Got Its Name */
+        .provenance-section {
+            background: linear-gradient(135deg, rgba(28, 20, 14, 0.85) 0%, rgba(18, 20, 26, 0.92) 100%);
+            border: 1px solid var(--border-brass);
+            border-radius: 8px;
+            padding: 26px 30px;
+            margin: 44px 0 40px;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(229, 169, 59, 0.22);
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 32px;
+            align-items: center;
+        }
+        .provenance-img-wrap {
+            position: relative;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 2px solid var(--border-brass);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.85), 0 0 24px var(--amber-glow);
+            cursor: pointer;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        .provenance-img-wrap:hover {
+            transform: scale(1.025);
+            border-color: var(--amber-bright);
+        }
+        .provenance-img-wrap img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .provenance-tag {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.18em;
+            color: var(--amber);
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .provenance-h3 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(1.2rem, 2.4vw, 1.7rem);
+            color: #fff;
+            letter-spacing: 0.06em;
+            margin-bottom: 12px;
+            line-height: 1.25;
+        }
+        .provenance-desc {
+            font-size: 0.92rem;
+            line-height: 1.65;
+            color: #d1d5db;
+            margin-bottom: 12px;
+        }
+        .provenance-quote {
+            font-style: italic;
+            color: var(--amber-bright);
+            border-left: 2px solid var(--amber);
+            padding-left: 14px;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            background: rgba(229, 169, 59, 0.08);
+            padding: 8px 14px;
+            border-radius: 0 4px 4px 0;
+        }
+
         /* High-Res Inspection Lightbox */
         #lightbox-modal {
             position: fixed;
@@ -483,6 +552,15 @@
             .archive-grid {
                 grid-template-columns: 1fr;
             }
+            .provenance-section {
+                grid-template-columns: 1fr;
+                gap: 18px;
+                padding: 20px 16px;
+            }
+            .provenance-img-wrap {
+                max-width: 240px;
+                margin: 0 auto;
+            }
             .unmute-pill {
                 font-size: 0.68rem;
                 padding: 8px 14px;
@@ -509,9 +587,11 @@
             <div class="hero-tagline">Historical Origin & Design Heritage</div>
             <h1 class="hero-h1">The Radio Behind the Dial</h1>
             <p class="hero-desc">
-                In 1938, Zenith introduced the <strong>Model 12-S-232</strong> "Walton" tombstone radio. Featuring 12 vacuum tubes, 
-                electric motor tuning, the mechanical shutter <em>"Robot Dial"</em>, and the iconic green 6T5 <em>"Magic Eye"</em> target tube, 
-                it remains one of the most celebrated and sought-after masterpieces in radio history.
+                In 1938, Zenith introduced the <strong>Model 12-S-232</strong> tombstone radio—a technical triumph featuring 12 vacuum tubes, 
+                electric motor tuning, the mechanical shutter <em>"Robot Dial"</em>, and the green 6T5 <em>"Magic Eye"</em> target tube. 
+                Though officially designated solely by its model number when manufactured in 1938, the radio became universally known to collectors 
+                as <strong>"The Walton"</strong> after millions watched John-Boy and the Walton family huddle around this exact model in their Virginia 
+                living room throughout the iconic CBS television series.
             </p>
         </section>
 
@@ -611,6 +691,26 @@
                 </div>
             </div>
 
+        </section>
+
+        <!-- Pop Culture Provenance: How It Got Its Name -->
+        <section class="provenance-section">
+            <div class="provenance-img-wrap zenith-card" data-full="images/the.waltons.tv.series.jpg" data-title="The Waltons (CBS TV Series, 1972–1981)" data-desc="The iconic cast of 'The Waltons' gathered together in 1930s rural Virginia. Throughout the nine-season run, the family gathered around their 1938 Zenith tombstone radio to listen to news of the Great Depression and World War II.">
+                <img src="images/the.waltons.tv.series.jpg" alt="The Waltons TV Series Cast">
+            </div>
+            <div class="provenance-text">
+                <div class="provenance-tag">✦ Television History // Provenance</div>
+                <h3 class="provenance-h3">How the Radio Got Its Name: "The Walton"</h3>
+                <p class="provenance-desc">
+                    When Zenith launched the radio in late 1937 for the 1938 model line, it was cataloged simply by chassis number: the <strong>Model 12-S-232</strong> (alongside its 7-tube and 9-tube siblings, the 7-S-232 and 9-S-232). Priced at a hefty $115 in the depths of the Depression—the equivalent of over $2,500 today—it was a luxury showpiece of engineering.
+                </p>
+                <p class="provenance-desc">
+                    Decades later in 1972, creator Earl Hamner Jr. brought <em>The Waltons</em> to CBS television. Set in the Blue Ridge Mountains of Virginia during the Great Depression and World War II, the series placed a 1938 Zenith tombstone radio proudly in the Walton family living room. Week after week, John-Boy, Grandma, Grandpa, and the children huddled around its glowing black dial and green Magic Eye to listen to fireside chats, dance music, and wartime dispatches.
+                </p>
+                <div class="provenance-quote">
+                    The television series was so universally loved that antique radio collectors and historians permanently christened the 1938 Zenith 232-cabinet model <strong>"The Walton"</strong>—making it one of the rarest electronic masterworks in history named after a television show.
+                </div>
+            </div>
         </section>
 
         <!-- Archive Section: Authentic 1937 Newspaper Ephemera -->
