@@ -3260,8 +3260,8 @@
         <span class="inspiration-icon">✦</span> SEE THE REAL THING...
     </a>
 
-    <script src="images/eggs/manifest.js"></script>
-    <script src="images/wlob/manifest.js"></script>
+    <script src="https://pub-699f78fcd6c2411fa1de6ee874792c81.r2.dev/eggs/manifest.js"></script>
+    <script src="https://pub-699f78fcd6c2411fa1de6ee874792c81.r2.dev/wlob/manifest.js"></script>
     <script src="patina.js"></script>
     <script>
         const band3AlbumLink = document.getElementById('band3-album-link');
@@ -6776,14 +6776,14 @@
         let originalDocumentTitle = document.title;
         let wlobRadioAudio = null;
 
-        // Dynamic Configuration for Photo Archive
-        // Allows adding or removing photos on the fly without touching code
+        // Dynamic Configuration for Photo Archive (Cloudflare R2 Bucket: atek-media)
+        const R2_PUBLIC_BASE = 'https://pub-699f78fcd6c2411fa1de6ee874792c81.r2.dev/';
         const WLOB_CONFIG = {
-            dir: (window.WLOB_DIR || 'images/eggs/'),
-            manifestJson: (window.WLOB_DIR || 'images/eggs/') + 'manifest.json',
-            manifestJs: (window.WLOB_DIR || 'images/eggs/') + 'manifest.js',
-            secretDir: 'images/wlob/',
-            secretManifestJson: 'images/wlob/manifest.json',
+            dir: (window.WLOB_DIR || R2_PUBLIC_BASE + 'eggs/'),
+            manifestJson: (window.WLOB_DIR || R2_PUBLIC_BASE + 'eggs/') + 'manifest.json',
+            manifestJs: (window.WLOB_DIR || R2_PUBLIC_BASE + 'eggs/') + 'manifest.js',
+            secretDir: R2_PUBLIC_BASE + 'wlob/',
+            secretManifestJson: R2_PUBLIC_BASE + 'wlob/manifest.json',
             stallImage: 'images/dirty-bathroom-stall.jpg',
             pageSize: 30,
             // Shared Google Sheet Web App URL for live community consensus
