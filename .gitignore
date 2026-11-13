@@ -1,2 +1,5 @@
 .wrangler/
 .DS_Store
+__pycache__/
+images/eggs/*
+images/wlob/*
