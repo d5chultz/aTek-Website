@@ -262,8 +262,8 @@ header {
 
 /* Audio engage prompt: the boot sequence halts here until the visitor taps / presses Y */
 #boot-prompt { cursor: pointer; -webkit-tap-highlight-color: transparent; margin-top: 14px; }
-#boot-yes { color: #99ff99; text-shadow: 0 0 8px rgba(51, 255, 51, 0.8); }
-#boot-prompt:hover #boot-yes { color: #ffffff; }
+#boot-yes { color: #ffffff !important; font-weight: bold; text-shadow: 0 0 10px rgba(255, 255, 255, 0.95), 0 0 20px rgba(51, 255, 51, 0.7); }
+#boot-prompt:hover #boot-yes { color: #ffffff !important; text-shadow: 0 0 14px #ffffff, 0 0 26px rgba(51, 255, 51, 0.95); }
 
 @media (max-width: 600px) {
     .terminal-line { font-size: 0.78rem; }
