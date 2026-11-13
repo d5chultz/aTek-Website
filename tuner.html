@@ -6876,9 +6876,9 @@
                 const j = Math.floor(Math.random() * (i + 1));
                 const t = raw[i]; raw[i] = raw[j]; raw[j] = t;
             }
-            // In standard WLOB mode, inject the dirty bathroom stall photo on every 10th board (Board 10, 20, 30...)
+            // In standard WLOB mode, inject the dirty bathroom stall photo on every 5th board (Board 5, 10, 15, 20...)
             if (!isWlobSecretMode && raw.length > 0) {
-                for (let boardNum = 10; (boardNum - 1) * WLOB_CONFIG.pageSize < raw.length; boardNum += 10) {
+                for (let boardNum = 5; (boardNum - 1) * WLOB_CONFIG.pageSize < raw.length; boardNum += 5) {
                     const insertIdx = (boardNum - 1) * WLOB_CONFIG.pageSize + 14;
                     if (insertIdx <= raw.length) {
                         raw.splice(insertIdx, 0, WLOB_STALL_TOKEN);
