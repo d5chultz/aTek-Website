@@ -6981,6 +6981,7 @@
 
         // Dynamic Configuration for Photo Archive (Cloudflare R2 Bucket: atek-media)
         const R2_PUBLIC_BASE = 'https://pub-699f78fcd6c2411fa1de6ee874792c81.r2.dev/';
+        const IS_LOCAL_HOST = /^(localhost|127\.0\.0\.1)$/i.test(window.location.hostname);
         const WLOB_CONFIG = {
             dir: (window.WLOB_DIR || R2_PUBLIC_BASE + 'eggs/'),
             manifestJson: (window.WLOB_DIR || R2_PUBLIC_BASE + 'eggs/') + 'manifest.json',
@@ -6989,39 +6990,70 @@
             secretManifestJson: R2_PUBLIC_BASE + 'wlob/manifest.json',
             stallImage: 'images/dirty-bathroom-stall.jpg',
             pageSize: 30,
-            // Shared Google Sheet Web App URL for live community consensus
-            sheetsApiUrl: (window.WLOB_SHEETS_API || 'https://script.google.com/macros/s/AKfycbwK9J9nmPwk5aYi9YG9-D__HPplIXrKG_fpUgFiNHV7GeQoAPz0ywdzhcBx31Tq2HUm/exec')
+            // Native Cloudflare R2 Favorites API (no Google Sheet needed)
+            favoritesApiUrl: (window.WLOB_FAVORITES_API || (IS_LOCAL_HOST ? 'https://atek-website.pages.dev/api/favorites' : '/api/favorites')),
+            favoritesR2FallbackUrl: R2_PUBLIC_BASE + 'favorites.json'
         };
 
         let wlobCommunityVotes = {}; // { [filename]: voteCount }
 
         async function fetchCommunityVotes() {
-            if (!WLOB_CONFIG.sheetsApiUrl) return;
+            let data = null;
             try {
-                const res = await fetch(WLOB_CONFIG.sheetsApiUrl);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data && data.votes) {
-                        wlobCommunityVotes = data.votes;
-                        if (wlobFavorites.size === 0 && data.leaderboard && data.leaderboard.length) {
-                            data.leaderboard.forEach(item => {
-                                if (item.votes > 0) wlobFavorites.add(item.file);
-                            });
-                            saveWlobFavorites();
-                        }
-                        updateWlobCounts();
-                        renderWlobBoard();
-                    }
-                }
+                const res = await fetch(`${WLOB_CONFIG.favoritesApiUrl}?t=${Date.now()}`, { cache: 'no-store' });
+                if (res.ok) data = await res.json();
             } catch (_) {}
+
+            if (!data || !data.votes) {
+                try {
+                    const resFallback = await fetch(`${WLOB_CONFIG.favoritesR2FallbackUrl}?t=${Date.now()}`, { cache: 'no-store' });
+                    if (resFallback.ok) data = await resFallback.json();
+                } catch (_) {}
+            }
+
+            if (data && data.votes) {
+                wlobCommunityVotes = data.votes;
+                const remoteFiles = new Set();
+
+                // Always share and merge all database favorites across the board
+                Object.entries(data.votes).forEach(([file, count]) => {
+                    if (count > 0) {
+                        remoteFiles.add(file);
+                        wlobFavorites.add(file);
+                    }
+                });
+                if (Array.isArray(data.leaderboard)) {
+                    data.leaderboard.forEach(item => {
+                        if (item && item.file && item.votes > 0) {
+                            remoteFiles.add(item.file);
+                            wlobFavorites.add(item.file);
+                        }
+                    });
+                }
+
+                // If this browser has any local favorites not yet in the R2 database, push them up so every device gets them
+                const unsyncedLocal = Array.from(wlobFavorites).filter(f => !remoteFiles.has(f));
+                if (unsyncedLocal.length > 0) {
+                    try {
+                        fetch(WLOB_CONFIG.favoritesApiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ action: 'merge', files: unsyncedLocal })
+                        }).catch(() => {});
+                    } catch (_) {}
+                }
+
+                saveWlobFavorites();
+                updateWlobCounts();
+                renderWlobBoard();
+            }
         }
 
         async function syncVoteToSheet(file, action) {
-            if (!WLOB_CONFIG.sheetsApiUrl) return;
+            if (!WLOB_CONFIG.favoritesApiUrl) return;
             try {
-                await fetch(WLOB_CONFIG.sheetsApiUrl, {
+                const res = await fetch(WLOB_CONFIG.favoritesApiUrl, {
                     method: 'POST',
-                    mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         file: file,
@@ -7029,6 +7061,12 @@
                         name: formatEggName(file)
                     })
                 });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.votes) {
+                        wlobCommunityVotes = data.votes;
+                    }
+                }
             } catch (_) {}
         }
 
@@ -7037,7 +7075,7 @@
             const isFav = wlobFavorites.has(file);
             if (isFav) {
                 wlobFavorites.delete(file);
-                if (wlobCommunityVotes[file]) wlobCommunityVotes[file] = Math.max(0, wlobCommunityVotes[file] - 1);
+                delete wlobCommunityVotes[file];
                 syncVoteToSheet(file, 'remove');
             } else {
                 wlobFavorites.add(file);
@@ -7047,10 +7085,13 @@
             saveWlobFavorites();
         }
 
-        // Dynamic Image URL resolver
+        // Dynamic Image URL resolver across both Main Archive (eggs/) and Secret Stall #2 (wlob/)
         function getWlobImageUrl(file) {
             if (file === WLOB_STALL_TOKEN) return WLOB_CONFIG.stallImage;
-            const baseDir = isWlobSecretMode ? WLOB_CONFIG.secretDir : WLOB_CONFIG.dir;
+            const inEggs = Array.isArray(window.EGG_IMAGES) && window.EGG_IMAGES.includes(file);
+            const inSecret = Array.isArray(window.WLOB_SECRET_IMAGES) && window.WLOB_SECRET_IMAGES.includes(file);
+            const useSecret = isWlobSecretMode ? (inSecret || !inEggs) : (inSecret && !inEggs);
+            const baseDir = useSecret ? WLOB_CONFIG.secretDir : WLOB_CONFIG.dir;
             return baseDir + encodeURIComponent(file);
         }
 
@@ -7777,7 +7818,12 @@
         // Board Rendering & Pagination with Dynamic Counts
         function getActiveWlobList() {
             if (wlobActiveTab === 'favs') {
-                const favs = wlobPhotoPool.filter(f => wlobFavorites.has(f));
+                const allKnown = new Set([
+                    ...(Array.isArray(window.EGG_IMAGES) ? window.EGG_IMAGES : []),
+                    ...(Array.isArray(window.WLOB_SECRET_IMAGES) ? window.WLOB_SECRET_IMAGES : []),
+                    ...wlobPhotoPool
+                ]);
+                const favs = Array.from(wlobFavorites).filter(f => !allKnown.size || allKnown.has(f));
                 return favs.sort((a, b) => (wlobCommunityVotes[b] || 0) - (wlobCommunityVotes[a] || 0));
             }
             return wlobPhotoPool;
