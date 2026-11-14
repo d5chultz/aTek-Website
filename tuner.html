@@ -1469,38 +1469,102 @@
 
         /* ==========================================================================
            AUDIO-REACTIVE "BLOWN AWAY" SEQUENCE
-           Stage 1: bass shockwave + web cracking of the dial glass
-           Stage 2: dust dispersion, shard splintering, 3D chassis peel-back
-           Stage 3: Onkyo M-504 materialises from the settling mist
+           Stage 1: First guitar blast shatters dial (using user shattered dial image)
+           Stage 2: Main riffs blow AVIF transparency glass shards outward & forward in 3D
+           Stage 3: Only see green VU meters as they go from opaque to solid over 4-5 seconds
            ========================================================================== */
-        #shock-stage { position: fixed; inset: 0; z-index: 295; pointer-events: none; perspective: 1300px; perspective-origin: 50% 50%; }
+        #shock-stage {
+            position: fixed;
+            inset: 0;
+            z-index: 295;
+            pointer-events: none;
+            perspective: 900px;
+            perspective-origin: 50% 50%;
+            transform-style: preserve-3d;
+            overflow: hidden;
+        }
         #shock-ring {
-            position: absolute; width: 150vmax; height: 150vmax; left: 0; top: 0; border-radius: 50%; opacity: 0;
-            background: radial-gradient(circle closest-side, transparent 56%, rgba(244,241,234,0.16) 61%, rgba(244,241,234,0.04) 66%, transparent 72%);
+            position: absolute;
+            width: 150vmax;
+            height: 150vmax;
+            left: 0;
+            top: 0;
+            border-radius: 50%;
+            opacity: 0;
+            background: radial-gradient(circle closest-side, transparent 56%, rgba(244,241,234,0.2) 61%, rgba(244,241,234,0.05) 66%, transparent 72%);
             transform: translate(-50%, -50%) scale(0);
         }
-        #shock-ring.go { animation: shock-ring 1.3s cubic-bezier(0.15, 0.7, 0.25, 1) forwards; }
-        @keyframes shock-ring {
-            0%   { opacity: 0.9; transform: translate(-50%, -50%) scale(0); }
-            100% { opacity: 0;   transform: translate(-50%, -50%) scale(1); }
+        #shock-ring.go {
+            animation: shock-ring 1.1s cubic-bezier(0.15, 0.7, 0.25, 1) forwards;
         }
-        #crack-canvas { position: absolute; pointer-events: none; transition: opacity 0.5s var(--ease-weighted); }
-        .shard {
-            position: absolute; background-repeat: no-repeat; background-size: 100% 100%;
-            will-change: transform, opacity; backface-visibility: visible;
-            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.55));
+        @keyframes shock-ring {
+            0%   { opacity: 0.95; transform: translate(-50%, -50%) scale(0); }
+            100% { opacity: 0;    transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* Shattered Dial Overlay */
+        .shattered-dial-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            z-index: 10;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.04s linear;
+        }
+        .radio-frame.dial-cracked .shattered-dial-overlay {
+            opacity: 1 !important;
+        }
+        .radio-frame.dial-cracked .shutter-viewport,
+        .radio-frame.dial-cracked .needle {
+            opacity: 0.45;
+            transition: opacity 0.08s ease;
+        }
+        .radio-frame.dial-impact {
+            animation: radio-dial-impact 0.24s cubic-bezier(0.15, 0.85, 0.35, 1.2);
+        }
+        @keyframes radio-dial-impact {
+            0% { transform: scale(var(--dial-zoom)); }
+            20% { transform: scale(calc(var(--dial-zoom) * 1.05)) translate(-5px, 4px); filter: brightness(1.7) contrast(1.4); }
+            55% { transform: scale(calc(var(--dial-zoom) * 0.98)) translate(4px, -3px); filter: brightness(1.1); }
+            100% { transform: scale(var(--dial-zoom)); filter: none; }
+        }
+
+        /* 3D Flying Glass Shards from AVIF Transparency */
+        .real-glass-shard {
+            position: absolute;
+            pointer-events: none;
+            will-change: transform, opacity;
+            backface-visibility: visible;
+            transform-style: preserve-3d;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.8)) drop-shadow(0 0 8px rgba(220, 240, 255, 0.55));
+        }
+        .real-glass-shard.micro-shard {
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.65)) drop-shadow(0 0 4px rgba(255,255,255,0.7));
         }
 
         @keyframes chassis-peel {
-            to { translate: var(--px) var(--py) var(--pz); rotate: var(--rx) var(--ry) 0.2 var(--ra); opacity: 0; }
+            to {
+                translate: var(--px) var(--py) var(--pz);
+                rotate: var(--rx) var(--ry) 0.2 var(--ra);
+                opacity: 0;
+            }
         }
         .radio-frame.dial-peeling { perspective: 1100px; }
         .radio-frame.dial-peeling > .peel {
             animation: chassis-peel var(--pd, 1.8s) cubic-bezier(0.55, 0.05, 0.85, 0.45) var(--pdelay, 0s) forwards !important;
             pointer-events: none;
         }
-        .radio-frame.dial-peeling > #base-dial { visibility: hidden; }
+        .radio-frame.dial-peeling > #base-dial,
+        .radio-frame.dial-peeling > #shattered-dial {
+            opacity: 0 !important;
+            visibility: hidden !important;
+        }
 
+        /* Onkyo Stage & Emergence States */
         #onkyo-stack-container {
             background: radial-gradient(circle at 50% 45%, #1d1d20 0%, #121214 85%);
             transition: opacity 2.6s var(--ease-weighted);
@@ -1512,6 +1576,65 @@
             transition: filter 2.6s var(--ease-weighted), scale 2.8s var(--ease-weighted), opacity 2.2s var(--ease-weighted);
         }
         #onkyo-stack-container.revealed .onkyo-stage { filter: blur(0); scale: 1; opacity: 1; }
+
+        /* Isolated Emerald Green VU Meters Layer */
+        #onkyo-vu-isolate {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 4;
+            clip-path: inset(47.4% 17.0% 29.5% 17.5%);
+            -webkit-clip-path: inset(47.4% 17.0% 29.5% 17.5%);
+            opacity: 0;
+            transition: opacity 0.3s ease, filter 4.5s ease;
+        }
+        #onkyo-vu-isolate-img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: contain;
+        }
+
+        /* Stage 3: Only see the green VU meters as they go from opaque to solid over 4-5s */
+        #onkyo-stack-container.vu-emergence {
+            opacity: 1 !important;
+            pointer-events: none !important;
+            background: #000000 !important;
+            transition: none !important;
+        }
+        #onkyo-stack-container.vu-emergence .onkyo-stage {
+            opacity: 1 !important;
+            filter: none !important;
+            scale: 1 !important;
+            -webkit-mask-image: none !important;
+            mask-image: none !important;
+        }
+        #onkyo-stack-container.vu-emergence #onkyo-base-img {
+            opacity: 0;
+            transition: opacity 4.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+        #onkyo-stack-container.vu-emergence #onkyo-vu-isolate {
+            opacity: 1;
+            filter: drop-shadow(0 0 35px rgba(0, 255, 120, 0.9)) brightness(1.28);
+        }
+        #onkyo-stack-container.vu-emergence #onkyo-vu-glass-mask {
+            opacity: 1;
+            z-index: 8;
+        }
+        #onkyo-stack-container.vu-emergence #onkyo-header-bar {
+            opacity: 0;
+            transition: opacity 1.8s ease 3.0s;
+        }
+
+        #onkyo-stack-container.vu-solidifying #onkyo-base-img {
+            opacity: 1;
+        }
+        #onkyo-stack-container.vu-solidifying #onkyo-vu-isolate {
+            filter: drop-shadow(0 0 10px rgba(0, 255, 120, 0.25)) brightness(1.0);
+        }
+        #onkyo-stack-container.vu-solidifying #onkyo-header-bar {
+            opacity: 1;
+        }
 
         /* ======================================================================
            WLOB VAULT, DANGER VU METERS, PHOTO BOARD, LIGHTBOX & SAMMY THE CAT (BOSS KEY) STYLES
@@ -2860,6 +2983,7 @@
 
     <div class="radio-frame">
         <img id="base-dial" src="images/zenith-radio-dial.png" class="base-dial">
+        <img id="shattered-dial" src="images/zenith-dial-shattered.png" class="base-dial shattered-dial-overlay" alt="Zenith Shattered Dial">
         
         <img id="magic-eye-base" src="images/magic-eye.png" class="overlay-item">
         <img id="magic-eye" src="images/magic-eye-low.png" class="overlay-item">
@@ -2995,6 +3119,10 @@
             <svg id="onkyo-overlay" viewBox="0 0 2752 1536" preserveAspectRatio="none" aria-hidden="true"></svg>
             <!-- Layer 1 (Active Base): M504stack.png (Do NOT load M504stack-off.jpeg during reveal transition) -->
             <img id="onkyo-base-img" src="images/M504stack.png" alt="Onkyo Integra T-9090 II Tuner & M-504 Power Amplifier">
+            <!-- Isolated Emerald Green VU Meters Layer for the 1986 Break Point Reveal -->
+            <div id="onkyo-vu-isolate" aria-hidden="true">
+                <img id="onkyo-vu-isolate-img" src="images/M504stack.png" alt="">
+            </div>
             <!-- Layer 2 (VU Meters): Left & Right Needles with strict CSS transform-origin: 60px 220px, masked at bottom pivot points up to clear glass -->
             <div id="onkyo-vu-glass-mask">
                 <img id="onkyo-needle-left" src="images/onkyo_needle_overlay.png" class="onkyo-vu-needle" alt="">
@@ -4239,6 +4367,14 @@
         const onkyoNeedleRight = document.getElementById('onkyo-needle-right');
         const onkyoStationBanner = document.getElementById('onkyo-station-banner');
         const zenithDustCloud = document.getElementById('zenith-dust-cloud');
+        const shockStage = document.getElementById('shock-stage');
+        const shockRing = document.getElementById('shock-ring');
+        const shockMap = document.getElementById('shock-map');
+        const crackCanvas = document.getElementById('crack-canvas');
+        const baseDialEl = document.getElementById('base-dial');
+
+        let breakPointMonitorFrame = null;
+        let metallicaShatterStage = 0; // 0: uncracked, 1: dial glass shattered (first chord), 2: riffs blown outward & tearing radio
 
         let isOnkyoRevealed = false;
         let isOnkyoPoweredOn = true;
@@ -4396,6 +4532,7 @@
             tmPhase = 'idle';
             timeMachineAudio.pause();
             timeMachineAudio.removeAttribute('src');
+            if (typeof resetRadioFromShatter === 'function') resetRadioFromShatter();
         }
 
         function generateRandomTimeMachineDuration(trackDuration) {
@@ -4565,81 +4702,73 @@
             }
         }
 
-        let breakPointChordMonitorFrame = null;
+        const GLASS_SHARDS_DATA = [
+            { file: 'shard_00.png', w: 112, h: 212, orig_x: 635.5, orig_y: 145.5 },
+            { file: 'shard_01.png', w: 247, h: 87,  orig_x: 442.0, orig_y: 417.0 },
+            { file: 'shard_02.png', w: 165, h: 147, orig_x: 220.0, orig_y: 391.0 },
+            { file: 'shard_03.png', w: 150, h: 68,  orig_x: 120.5, orig_y: 209.5 },
+            { file: 'shard_04.png', w: 122, h: 120, orig_x: 351.5, orig_y: 186.5 },
+            { file: 'shard_05.png', w: 159, h: 85,  orig_x: 351.0, orig_y: 85.0 },
+            { file: 'shard_06.png', w: 119, h: 68,  orig_x: 210.0, orig_y: 269.5 },
+            { file: 'shard_07.png', w: 88,  h: 86,  orig_x: 107.5, orig_y: 330.5 },
+            { file: 'shard_08.png', w: 111, h: 78,  orig_x: 434.0, orig_y: 234.5 },
+            { file: 'shard_09.png', w: 49,  h: 109, orig_x: 68.0,  orig_y: 428.0 },
+            { file: 'shard_10.png', w: 111, h: 76,  orig_x: 640.0, orig_y: 364.5 },
+            { file: 'shard_11.png', w: 90,  h: 59,  orig_x: 645.5, orig_y: 278.0 },
+            { file: 'shard_12.png', w: 132, h: 44,  orig_x: 493.5, orig_y: 149.5 },
+            { file: 'shard_13.png', w: 114, h: 67,  orig_x: 393.5, orig_y: 334.0 },
+            { file: 'shard_14.png', w: 64,  h: 74,  orig_x: 96.5,  orig_y: 122.5 },
+            { file: 'shard_15.png', w: 74,  h: 54,  orig_x: 620.5, orig_y: 442.5 },
+            { file: 'shard_16.png', w: 73,  h: 54,  orig_x: 545.0, orig_y: 288.5 },
+            { file: 'shard_17.png', w: 55,  h: 72,  orig_x: 176.0, orig_y: 71.5 },
+            { file: 'shard_18.png', w: 44,  h: 70,  orig_x: 341.5, orig_y: 280.5 },
+            { file: 'shard_19.png', w: 62,  h: 48,  orig_x: 514.5, orig_y: 334.5 },
+            { file: 'shard_20.png', w: 63,  h: 64,  orig_x: 509.0, orig_y: 45.5 },
+            { file: 'shard_21.png', w: 44,  h: 53,  orig_x: 242.5, orig_y: 126.0 },
+            { file: 'shard_22.png', w: 51,  h: 27,  orig_x: 70.0,  orig_y: 59.0 }
+        ];
 
-        function monitorBreakPointFirstChord() {
-            if (tmPhase !== 'breakpoint_chord' || !tmCurrentTrack || !tmCurrentTrack.isBreakPoint) {
-                breakPointChordMonitorFrame = null;
-                return;
+        // Preload shattered dial and glass shard assets for instantaneous response
+        (function preloadMetallicaAssets() {
+            const d = new Image(); d.src = 'images/zenith-dial-shattered.png';
+            GLASS_SHARDS_DATA.forEach(s => {
+                const img = new Image(); img.src = 'images/shards/' + s.file;
+            });
+        })();
+
+        function resetRadioFromShatter() {
+            if (breakPointMonitorFrame) {
+                cancelAnimationFrame(breakPointMonitorFrame);
+                breakPointMonitorFrame = null;
             }
-            // The first high-gain guitar power chord hits at 0.25s–0.70s and decays to silence by 0.85s (before the main riff at 1.35s)
-            if (!timeMachineAudio.paused && timeMachineAudio.currentTime >= 0.85) {
-                breakPointChordMonitorFrame = null;
-                executeBreakPointShatterAndOnkyoReveal();
-                return;
+            metallicaShatterStage = 0;
+            if (radioFrame) {
+                radioFrame.classList.remove('dial-cracked', 'dial-impact', 'dial-peeling', 'dial-shattering');
+                radioFrame.style.pointerEvents = '';
+                radioFrame.style.display = '';
+                radioFrame.style.filter = '';
+                Array.from(radioFrame.children).forEach(ch => {
+                    ch.classList.remove('peel');
+                    ch.style.removeProperty('--px');
+                    ch.style.removeProperty('--py');
+                    ch.style.removeProperty('--pz');
+                    ch.style.removeProperty('--rx');
+                    ch.style.removeProperty('--ry');
+                    ch.style.removeProperty('--ra');
+                    ch.style.removeProperty('--pd');
+                    ch.style.removeProperty('--pdelay');
+                });
             }
-            breakPointChordMonitorFrame = requestAnimationFrame(monitorBreakPointFirstChord);
+            if (baseDialEl) baseDialEl.style.visibility = '';
+            const shat = document.getElementById('shattered-dial');
+            if (shat) shat.style.opacity = '';
+            if (onkyoContainer) {
+                onkyoContainer.classList.remove('vu-emergence', 'vu-solidifying');
+            }
+            if (shockStage) {
+                shockStage.querySelectorAll('.real-glass-shard').forEach(el => el.remove());
+            }
         }
-
-        function triggerMetallicaBreakPoint(breakTrack) {
-            tmCurrentTrack = breakTrack;
-            tmPhase = 'breakpoint_chord';
-            isTimeMachineLocked = true;
-            isSeeking = false;
-            isRobotActive = false;
-            startKnobAngle = 0;
-            updateMiddleKnobTransform();
-            stopNeedleSpinSound();
-            setManualTuningSound(0, 0, false);
-            warmUpAudio.pause();
-
-            // Snap needle to 1986 (147°) and display March 1986 Metallica
-            const snapDelta = breakTrack.angle - bottomAngle;
-            bottomAngle = breakTrack.angle;
-            mainAngle += snapDelta * NEEDLE_GEAR_RATIO;
-            bottomNeedle.style.setProperty('--bottom-angle', `${bottomAngle}deg`);
-            mainNeedle.style.setProperty('--main-angle', `${mainAngle}deg`);
-            setDecadeVisualState('decade-1980');
-            updateStationDisplay(breakTrack);
-            setMagicEye("locked", 1);
-
-            ensureOnkyoWebAudioAnalyser();
-            timeMachineAudio.pause();
-            timeMachineAudio.src = encodeAudioFileUrl(breakTrack.file);
-            timeMachineAudio.volume = 1.0; // Slam in at max volume (1.0)
-
-            const startChordPlayback = () => {
-                if (tmCurrentTrack !== breakTrack || tmPhase !== 'breakpoint_chord') return;
-                try { timeMachineAudio.currentTime = 0; } catch (_) {}
-                timeMachineAudio.volume = 1.0;
-                timeMachineAudio.play().then(() => {
-                    if (breakPointChordMonitorFrame) cancelAnimationFrame(breakPointChordMonitorFrame);
-                    breakPointChordMonitorFrame = requestAnimationFrame(monitorBreakPointFirstChord);
-                }).catch(() => {});
-            };
-
-            if (timeMachineAudio.readyState >= 1) {
-                startChordPlayback();
-            } else {
-                timeMachineAudio.addEventListener('loadedmetadata', startChordPlayback, { once: true });
-                timeMachineAudio.load();
-            }
-        }
-
-        /* ======================================================================
-           "BLOWN AWAY" SEQUENCE — triggered by the Master of Puppets power chord
-           Stage 1  (0–0.9s)   : bass thump drives a radial displacement of the dial
-                                 while web-like cracks propagate across the glass.
-           Stage 2  (0.7–3.2s) : glass splinters into shards, chassis parts peel back
-                                 in 3D, dust scatters from the impact point.
-           Stage 3  (1.7s →)   : Onkyo M-504 materialises out of the settling mist;
-                                 VU needles then follow the live Web Audio analyser.
-           ====================================================================== */
-        const shockStage = document.getElementById('shock-stage');
-        const shockRing = document.getElementById('shock-ring');
-        const shockMap = document.getElementById('shock-map');
-        const crackCanvas = document.getElementById('crack-canvas');
-        const REDUCED_MOTION = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
         function playShockThump() {
             try {
@@ -4672,272 +4801,352 @@
             } catch (_) {}
         }
 
-        // Low-frequency energy (0..1) from the live analyser when available, so the displacement follows the chord
-        function liveBassLevel() {
-            try {
-                if (onkyoAnalyserL && onkyoFreqDataL) {
-                    onkyoAnalyserL.getByteFrequencyData(onkyoFreqDataL);
-                    let sum = 0; const n = 6;
-                    for (let i = 0; i < n; i++) sum += onkyoFreqDataL[i];
-                    return sum / (n * 255);
-                }
-            } catch (_) {}
-            return 0;
-        }
-
-        function runShockDisplacement(duration) {
-            const start = performance.now();
-            function frame(now) {
-                const t = Math.min(1, (now - start) / duration);
-                const env = Math.sin(Math.PI * Math.pow(t, 0.55)) * Math.pow(1 - t, 0.6);
-                const boost = 1 + liveBassLevel() * 0.6;
-                const sc = 150 * env * boost;
-                if (shockMap) shockMap.setAttribute('scale', sc.toFixed(1));
-                if (t < 1) requestAnimationFrame(frame);
-                else {
-                    if (shockMap) shockMap.setAttribute('scale', '0');
-                    if (radioFrame) radioFrame.style.filter = '';
-                }
-            }
-            if (radioFrame) radioFrame.style.filter = 'url(#shock-displace)';
-            requestAnimationFrame(frame);
-        }
-
-        function buildCrackGeometry(w, h, cx, cy, rayCount) {
-            const R = h * 0.5;
-            const angles = [];
-            for (let i = 0; i < rayCount; i++) angles.push((i + (Math.random() - 0.5) * 0.55) / rayCount * Math.PI * 2);
-            const segs = [];
-            const addPoly = (pts) => {
-                for (let i = 0; i < pts.length - 1; i++) {
-                    const [x1, y1] = pts[i], [x2, y2] = pts[i + 1];
-                    segs.push({ x1, y1, x2, y2, d: Math.min(Math.hypot(x1 - cx, y1 - cy), Math.hypot(x2 - cx, y2 - cy)) });
-                }
-            };
-            angles.forEach(a => {
-                let x = cx, y = cy, ang = a;
-                const pts = [[x, y]];
-                const step = 18 + Math.random() * 12;
-                for (let r = step; r < R; r += step) {
-                    ang += (Math.random() - 0.5) * 0.16;
-                    x = cx + Math.cos(ang) * r + (Math.random() - 0.5) * 5;
-                    y = cy + Math.sin(ang) * r + (Math.random() - 0.5) * 5;
-                    pts.push([x, y]);
-                    if (Math.random() < 0.16 && r > 40) {
-                        const ba = ang + (Math.random() < 0.5 ? -1 : 1) * (0.5 + Math.random() * 0.4);
-                        const bp = [[x, y]];
-                        let bx = x, by = y;
-                        const bl = 3 + Math.floor(Math.random() * 4);
-                        for (let k = 0; k < bl; k++) { bx += Math.cos(ba) * 16 + (Math.random() - 0.5) * 6; by += Math.sin(ba) * 16 + (Math.random() - 0.5) * 6; bp.push([bx, by]); }
-                        addPoly(bp);
-                    }
-                }
-                addPoly(pts);
-            });
-            const ringR = [0.07, 0.16, 0.27, 0.38].map(f => f * h);
-            ringR.forEach(r => {
-                let pts = [];
-                const n = 46;
-                for (let i = 0; i <= n; i++) {
-                    const a = i / n * Math.PI * 2;
-                    const rr = r * (1 + (Math.random() - 0.5) * 0.06);
-                    pts.push([cx + Math.cos(a) * rr, cy + Math.sin(a) * rr]);
-                    if (Math.random() < 0.08) { addPoly(pts); pts = [[cx + Math.cos(a) * rr, cy + Math.sin(a) * rr]]; }
-                }
-                addPoly(pts);
-            });
-            segs.sort((a, b) => a.d - b.d);
-            return { angles, ringR, segs, R };
-        }
-
-        function drawCracks(ctx, geo, progress) {
-            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-            const limit = progress * geo.R;
-            const vis = geo.segs.filter(s => s.d <= limit);
-            ctx.lineCap = 'round';
-            ctx.strokeStyle = 'rgba(0,0,0,0.65)'; ctx.lineWidth = 2.4;
-            ctx.beginPath(); vis.forEach(s => { ctx.moveTo(s.x1, s.y1); ctx.lineTo(s.x2, s.y2); }); ctx.stroke();
-            ctx.strokeStyle = 'rgba(240,236,226,0.85)'; ctx.lineWidth = 1;
-            ctx.beginPath(); vis.forEach(s => { ctx.moveTo(s.x1, s.y1); ctx.lineTo(s.x2, s.y2); }); ctx.stroke();
-        }
-
-        function spawnShards(rect, cx, cy, geo) {
-            const shards = [];
-            const radii = [0, ...geo.ringR, geo.R * 2];
-            const a = geo.angles.slice().sort((p, q) => p - q);
-            for (let i = 0; i < a.length; i++) {
-                const a0 = a[i], a1 = (i + 1 < a.length) ? a[i + 1] : a[0] + Math.PI * 2;
-                for (let k = 0; k < radii.length - 1; k++) {
-                    const j = () => (Math.random() - 0.5) * 6;
-                    const pt = (ang, r) => [cx + Math.cos(ang) * r + (r ? j() : 0), cy + Math.sin(ang) * r + (r ? j() : 0)];
-                    const pts = k === 0
-                        ? [[cx, cy], pt(a0, radii[1]), pt(a1, radii[1])]
-                        : [pt(a0, radii[k]), pt(a1, radii[k]), pt(a1, radii[k + 1]), pt(a0, radii[k + 1])];
-                    const mx = pts.reduce((s, p) => s + p[0], 0) / pts.length;
-                    const my = pts.reduce((s, p) => s + p[1], 0) / pts.length;
-                    const el = document.createElement('div');
-                    el.className = 'shard';
-                    el.style.left = rect.left + 'px'; el.style.top = rect.top + 'px';
-                    el.style.width = rect.width + 'px'; el.style.height = rect.height + 'px';
-                    el.style.backgroundImage = "url('" + (baseDialEl ? baseDialEl.currentSrc || baseDialEl.src : 'images/zenith-radio-dial.png') + "')";
-                    el.style.clipPath = 'polygon(' + pts.map(p => p[0].toFixed(1) + 'px ' + p[1].toFixed(1) + 'px').join(',') + ')';
-                    el.style.webkitClipPath = el.style.clipPath;
-                    el.style.transformOrigin = mx.toFixed(1) + 'px ' + my.toFixed(1) + 'px';
-                    shockStage.appendChild(el);
-                    const dx = mx - cx, dy = my - cy, dist = Math.hypot(dx, dy) || 1;
-                    const speed = 0.3 + Math.random() * 0.55 + (k === 0 ? 0.3 : 0);
-                    shards.push({
-                        el, vx: dx / dist * speed * 520, vy: dy / dist * speed * 520 - 140, vz: 80 + Math.random() * 380,
-                        ax: Math.random() - 0.5, ay: Math.random() - 0.5, az: Math.random() - 0.5,
-                        spin: (Math.random() < 0.5 ? -1 : 1) * (160 + Math.random() * 520),
-                        delay: Math.min(0.28, dist / (geo.R * 5)) + Math.random() * 0.05
-                    });
-                }
-            }
-            return shards;
-        }
-
-        function animateShards(shards, duration, done) {
-            const start = performance.now();
-            function frame(now) {
-                const t = (now - start) / 1000;
-                const T = duration / 1000;
-                let alive = false;
-                shards.forEach(s => {
-                    const tt = Math.max(0, t - s.delay);
-                    const p = Math.min(1, tt / (T - s.delay));
-                    if (p >= 1) { s.el.style.opacity = '0'; return; }
-                    alive = true;
-                    const g = 900; // px/s^2 gravity once the blast loses energy
-                    const x = s.vx * tt * (1 - 0.35 * p);
-                    const y = s.vy * tt * (1 - 0.35 * p) + 0.5 * g * tt * tt;
-                    const z = s.vz * tt;
-                    const op = p < 0.55 ? 1 : 1 - (p - 0.55) / 0.45;
-                    s.el.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,' + z.toFixed(1) + 'px) rotate3d(' + s.ax.toFixed(2) + ',' + s.ay.toFixed(2) + ',' + s.az.toFixed(2) + ',' + (s.spin * tt).toFixed(1) + 'deg)';
-                    s.el.style.opacity = op.toFixed(3);
-                });
-                if (alive && t < T + 0.1) requestAnimationFrame(frame);
-                else done();
-            }
-            requestAnimationFrame(frame);
-        }
-
         function startChassisPeel() {
             if (!radioFrame) return;
             const rnd = (a, b) => a + Math.random() * (b - a);
             Array.from(radioFrame.children).forEach(ch => {
-                if (ch === baseDialEl) return;
+                if (ch === baseDialEl || ch.id === 'shattered-dial') return;
                 ch.classList.add('peel');
                 const dirX = Math.random() < 0.5 ? -1 : 1;
-                ch.style.setProperty('--px', (dirX * rnd(10, 90)) + 'px');
-                ch.style.setProperty('--py', rnd(-120, 220) + 'px');
-                ch.style.setProperty('--pz', rnd(150, 520) + 'px');
+                ch.style.setProperty('--px', (dirX * rnd(50, 240)) + 'px');
+                ch.style.setProperty('--py', rnd(-220, 360) + 'px');
+                ch.style.setProperty('--pz', rnd(250, 850) + 'px');
                 ch.style.setProperty('--rx', rnd(-1, 1).toFixed(2));
                 ch.style.setProperty('--ry', rnd(-1, 1).toFixed(2));
-                ch.style.setProperty('--ra', rnd(-110, 110).toFixed(0) + 'deg');
-                ch.style.setProperty('--pd', rnd(1.5, 2.3).toFixed(2) + 's');
-                ch.style.setProperty('--pdelay', rnd(0, 0.35).toFixed(2) + 's');
+                ch.style.setProperty('--ra', rnd(-180, 180).toFixed(0) + 'deg');
+                ch.style.setProperty('--pd', rnd(1.4, 2.2).toFixed(2) + 's');
+                ch.style.setProperty('--pdelay', rnd(0, 0.22).toFixed(2) + 's');
             });
             radioFrame.classList.add('dial-peeling');
         }
 
-        function revealOnkyoFromMist() {
-            isOnkyoRevealed = true;
-            isOnkyoPoweredOn = true;
-            if (window.Patina) window.Patina.clear();
+        function launchGlassShards3D() {
+            if (!shockStage) return;
+            const rect = baseDialEl ? baseDialEl.getBoundingClientRect() : {
+                left: window.innerWidth * 0.25, top: window.innerHeight * 0.25,
+                width: window.innerWidth * 0.5, height: window.innerHeight * 0.5
+            };
+            const cx = rect.left + rect.width * 0.5;
+            const cy = rect.top + rect.height * 0.5;
+            const dialRadius = rect.width * 0.35;
+            const scaleFactor = (rect.width * 0.65) / 500;
+
+            const shards = [];
+            const count = GLASS_SHARDS_DATA.length;
+
+            // Primary realistic vector glass shards from AVIF transparency
+            for (let i = 0; i < count; i++) {
+                const data = GLASS_SHARDS_DATA[i];
+                const el = document.createElement('img');
+                el.src = 'images/shards/' + data.file;
+                el.className = 'real-glass-shard';
+                const w = data.w * scaleFactor;
+                const h = data.h * scaleFactor;
+                el.style.width = w + 'px';
+                el.style.height = h + 'px';
+
+                // Offset relative to vector center (375, 250)
+                const dx0 = (data.orig_x - 375) * scaleFactor;
+                const dy0 = (data.orig_y - 250) * scaleFactor;
+
+                const angle = Math.atan2(dy0, dx0) + (Math.random() - 0.5) * 0.35;
+                const speed = 280 + Math.random() * 620;
+                const vx = Math.cos(angle) * speed;
+                const vy = Math.sin(angle) * speed - (70 + Math.random() * 110);
+                // Fly forward straight toward the camera (+Z)
+                const vz = 480 + Math.random() * 880;
+
+                const ax = (Math.random() - 0.5) * 2;
+                const ay = (Math.random() - 0.5) * 2;
+                const az = (Math.random() - 0.5) * 2;
+                const spin = (Math.random() < 0.5 ? -1 : 1) * (200 + Math.random() * 650);
+
+                el.style.left = (cx + dx0 - w * 0.5) + 'px';
+                el.style.top = (cy + dy0 - h * 0.5) + 'px';
+                shockStage.appendChild(el);
+
+                shards.push({
+                    el, x: 0, y: 0, z: 0,
+                    vx, vy, vz,
+                    ax, ay, az, spin,
+                    duration: 2.8 + Math.random() * 0.8,
+                    delay: Math.random() * 0.08
+                });
+            }
+
+            // Cloud of micro-shards whistling forward at higher speed
+            for (let i = 0; i < 16; i++) {
+                const data = GLASS_SHARDS_DATA[i % count];
+                const el = document.createElement('img');
+                el.src = 'images/shards/' + data.file;
+                el.className = 'real-glass-shard micro-shard';
+                const microScale = scaleFactor * (0.22 + Math.random() * 0.32);
+                const w = data.w * microScale;
+                const h = data.h * microScale;
+                el.style.width = w + 'px';
+                el.style.height = h + 'px';
+
+                const randAngle = Math.random() * Math.PI * 2;
+                const randDist = Math.random() * dialRadius;
+                const dx0 = Math.cos(randAngle) * randDist;
+                const dy0 = Math.sin(randAngle) * randDist;
+
+                const angle = randAngle + (Math.random() - 0.5) * 0.4;
+                const speed = 420 + Math.random() * 800;
+                const vx = Math.cos(angle) * speed;
+                const vy = Math.sin(angle) * speed - (100 + Math.random() * 120);
+                const vz = 650 + Math.random() * 1150;
+
+                el.style.left = (cx + dx0 - w * 0.5) + 'px';
+                el.style.top = (cy + dy0 - h * 0.5) + 'px';
+                shockStage.appendChild(el);
+
+                shards.push({
+                    el, x: 0, y: 0, z: 0,
+                    vx, vy, vz,
+                    ax: (Math.random() - 0.5) * 2,
+                    ay: (Math.random() - 0.5) * 2,
+                    az: (Math.random() - 0.5) * 2,
+                    spin: (Math.random() < 0.5 ? -1 : 1) * (420 + Math.random() * 950),
+                    duration: 2.2 + Math.random() * 0.6,
+                    delay: Math.random() * 0.12
+                });
+            }
+
+            const startTime = performance.now();
+            function animate(now) {
+                const t = (now - startTime) / 1000;
+                let activeCount = 0;
+
+                for (let i = 0; i < shards.length; i++) {
+                    const s = shards[i];
+                    const dt = t - s.delay;
+                    if (dt <= 0) continue;
+
+                    const progress = dt / s.duration;
+                    if (progress >= 1 || s.z > 860) {
+                        s.el.style.opacity = '0';
+                        continue;
+                    }
+                    activeCount++;
+
+                    const drag = 1 / (1 + dt * 0.45);
+                    s.x = s.vx * dt * drag;
+                    s.y = s.vy * dt * drag + 0.5 * 380 * dt * dt;
+                    s.z = Math.min(880, s.vz * dt * (1 + dt * 0.25));
+
+                    const rotDeg = s.spin * dt;
+                    let opacity = 1;
+                    if (s.z > 680) {
+                        opacity = Math.max(0, 1 - (s.z - 680) / 180);
+                    } else if (progress > 0.6) {
+                        opacity = Math.max(0, 1 - (progress - 0.6) / 0.4);
+                    }
+
+                    s.el.style.transform = `translate3d(${s.x.toFixed(1)}px, ${s.y.toFixed(1)}px, ${s.z.toFixed(1)}px) rotate3d(${s.ax.toFixed(2)}, ${s.ay.toFixed(2)}, ${s.az.toFixed(2)}, ${rotDeg.toFixed(1)}deg)`;
+                    s.el.style.opacity = opacity.toFixed(3);
+                }
+
+                if (activeCount > 0 && t < 4.5) {
+                    requestAnimationFrame(animate);
+                } else {
+                    shards.forEach(s => s.el.remove());
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        function executeRiffsExplosionAndVuSolidify() {
+            // 1. Shattered dial fragments away as glass blows outward
+            const shat = document.getElementById('shattered-dial');
+            if (shat) shat.style.opacity = '0';
+            if (baseDialEl) baseDialEl.style.visibility = 'hidden';
+
+            // 2. Realistic 3D glass shards blow outward & forward
+            launchGlassShards3D();
+
+            // 3. Tearing the radio apart: violent chassis peeling and metal/wood dust cloud
+            startChassisPeel();
+            if (zenithDustCloud) {
+                zenithDustCloud.classList.remove('active');
+                void zenithDustCloud.offsetWidth;
+                zenithDustCloud.classList.add('active');
+            }
+            if (shockRing) {
+                shockRing.classList.remove('go');
+                void shockRing.offsetWidth;
+                shockRing.classList.add('go');
+            }
+            if (window.Patina) {
+                const rect = baseDialEl ? baseDialEl.getBoundingClientRect() : {
+                    left: window.innerWidth * 0.5, top: window.innerHeight * 0.5, width: 200, height: 200
+                };
+                window.Patina.blast(rect.left + rect.width * 0.5, rect.top + rect.height * 0.5, 1.25);
+                window.Patina.mist(true);
+            }
+
+            // 4. Reveal ONLY the green VU meters behind the explosion
             if (onkyoBaseImg && !onkyoBaseImg.src.endsWith('M504stack.png')) {
-                onkyoBaseImg.src = 'images/M504stack.png'; // active state only — never the "-off" image during the reveal
+                onkyoBaseImg.src = 'images/M504stack.png';
             }
             updateOnkyoNeedleScale();
+
             if (onkyoContainer) {
-                onkyoContainer.classList.remove('powered-off');
+                onkyoContainer.classList.remove('powered-off', 'revealed', 'vu-solidifying');
                 onkyoContainer.setAttribute('aria-hidden', 'false');
-                void onkyoContainer.offsetWidth; // ensure the opacity transition (and transitionend) fires
-                onkyoContainer.classList.add('revealed');
+                onkyoContainer.classList.add('vu-emergence');
+
+                isOnkyoRevealed = true;
+                isOnkyoPoweredOn = true;
+                ensureOnkyoWebAudioAnalyser();
+                if (onkyoVuAnimFrame) cancelAnimationFrame(onkyoVuAnimFrame);
+                onkyoVuAnimFrame = requestAnimationFrame(animateOnkyoVuNeedles);
+
+                // Over 4 to 5 seconds, solidify from isolated green VU meters to full Onkyo stack
+                setTimeout(() => {
+                    if (onkyoContainer && onkyoContainer.classList.contains('vu-emergence')) {
+                        onkyoContainer.classList.add('vu-solidifying');
+                    }
+                }, 60);
+
+                setTimeout(() => {
+                    if (onkyoContainer) {
+                        onkyoContainer.classList.add('revealed');
+                        onkyoContainer.classList.remove('vu-emergence', 'vu-solidifying');
+                    }
+                    if (radioFrame) {
+                        radioFrame.style.display = 'none';
+                    }
+                    if (window.Patina) window.Patina.mist(false);
+                }, 4800);
             }
         }
 
-        const baseDialEl = document.getElementById('base-dial');
-
-        function executeBreakPointShatterAndOnkyoReveal(instant = false) {
-            if (tmPhase === 'breakpoint_paused' || isOnkyoRevealed) return;
-            tmPhase = 'breakpoint_paused';
-
-            // Hold the audio right after the first power chord
-            timeMachineAudio.pause();
-            ensureOnkyoWebAudioAnalyser();
-
-            if (bandHudEl) {
-                bandHudEl.style.transition = 'opacity 0.8s var(--ease-weighted)';
-                bandHudEl.style.opacity = '0';
-                bandHudEl.style.pointerEvents = 'none';
-            }
-
-            if (instant || REDUCED_MOTION || !baseDialEl || !shockStage) {
-                if (baseDialEl) baseDialEl.style.visibility = 'hidden';
-                revealOnkyoFromMist();
+        function monitorMetallicaTimeline() {
+            const breakTrack = timeMachineSequence.find(t => t.isBreakPoint);
+            if (tmCurrentTrack !== breakTrack || !isPoweredOn || currentBand !== 2) {
+                breakPointMonitorFrame = null;
                 return;
             }
 
-            radioFrame.style.pointerEvents = 'none';
-            const rect = baseDialEl.getBoundingClientRect();
-            const cx = rect.width * 0.5, cy = rect.height * 0.5; // impact at the heart of the dial
-            const rays = window.innerWidth < 768 ? 9 : 13;
-            const geo = buildCrackGeometry(rect.width, rect.height, cx, cy, rays);
+            const ct = timeMachineAudio.currentTime;
 
-            // ---- Stage 1: bass shockwave + web cracking ----
-            playShockThump();
-            runShockDisplacement(950);
-            shockRing.style.left = (rect.left + cx) + 'px';
-            shockRing.style.top = (rect.top + cy) + 'px';
-            shockRing.classList.remove('go'); void shockRing.offsetWidth; shockRing.classList.add('go');
-
-            crackCanvas.width = Math.round(rect.width); crackCanvas.height = Math.round(rect.height);
-            crackCanvas.style.left = rect.left + 'px'; crackCanvas.style.top = rect.top + 'px';
-            crackCanvas.style.width = rect.width + 'px'; crackCanvas.style.height = rect.height + 'px';
-            crackCanvas.style.opacity = '1';
-            const cctx = crackCanvas.getContext('2d');
-            const crackStart = performance.now();
-            (function growCracks(now) {
-                const p = Math.min(1, (now - crackStart) / 650);
-                drawCracks(cctx, geo, 1 - Math.pow(1 - p, 2.2));
-                if (p < 1) requestAnimationFrame(growCracks);
-            })(crackStart);
-
-            // ---- Stage 2: shards fly, chassis peels back, dust scatters ----
-            setTimeout(() => {
-                const shards = spawnShards(rect, cx, cy, geo);
-                baseDialEl.style.visibility = 'hidden';
-                crackCanvas.style.opacity = '0';
-                startChassisPeel();
-                if (window.Patina) {
-                    window.Patina.blast(rect.left + cx, rect.top + cy, 1.1);
-                    window.Patina.mist(true);
+            // Stage 1: The first guitar blast (~0.24s) shatters the dial glass.
+            // We do NOT see the Onkyo yet; just the shattered dial!
+            if (metallicaShatterStage === 0 && ct >= 0.24) {
+                metallicaShatterStage = 1;
+                if (radioFrame) {
+                    radioFrame.classList.add('dial-cracked', 'dial-impact');
+                    setTimeout(() => {
+                        if (radioFrame) radioFrame.classList.remove('dial-impact');
+                    }, 320);
                 }
-                animateShards(shards, 2800, () => {
-                    shards.forEach(s => s.el.remove());
-                    crackCanvas.getContext('2d').clearRect(0, 0, crackCanvas.width, crackCanvas.height);
-                });
-            }, 700);
+                playShockThump();
+            }
 
-            // ---- Stage 3: the Onkyo M-504 emerges from the mist ----
-            setTimeout(revealOnkyoFromMist, 1700);
-            setTimeout(() => { if (window.Patina) window.Patina.mist(false); }, 5200);
+            // Stage 2: The riffs come back at ~1.34s and blow the glass outward!
+            // Real glass shards from AVIF fly forward as Metallica riffs tear the radio apart.
+            // At that point we ONLY see the green VU meters, going from opaque to solid over 4-5 seconds.
+            if (metallicaShatterStage === 1 && ct >= 1.34) {
+                metallicaShatterStage = 2;
+                executeRiffsExplosionAndVuSolidify();
+            }
+
+            if (metallicaShatterStage < 2 || ct < 6.5) {
+                breakPointMonitorFrame = requestAnimationFrame(monitorMetallicaTimeline);
+            } else {
+                breakPointMonitorFrame = null;
+            }
         }
 
-        // Attach transitionend listener on #onkyo-stack-container so Master of Puppets resumes
-        // the exact moment the active Onkyo stack is fully revealed
-        if (onkyoContainer) {
-            onkyoContainer.addEventListener('transitionend', (e) => {
-                if (e.target === onkyoContainer && e.propertyName === 'opacity' && tmPhase === 'breakpoint_paused') {
-                    tmPhase = 'onkyo_active';
-                    ensureOnkyoWebAudioAnalyser();
-                    timeMachineAudio.volume = 1.0;
-                    timeMachineAudio.play().catch(() => {});
-                    if (onkyoVuAnimFrame) cancelAnimationFrame(onkyoVuAnimFrame);
-                    onkyoVuAnimFrame = requestAnimationFrame(animateOnkyoVuNeedles);
+        function triggerMetallicaBreakPoint(breakTrack) {
+            tmCurrentTrack = breakTrack;
+            tmPhase = 'breakpoint_playing';
+            isTimeMachineLocked = true;
+            isSeeking = false;
+            isRobotActive = false;
+            startKnobAngle = 0;
+            updateMiddleKnobTransform();
+            stopNeedleSpinSound();
+            setManualTuningSound(0, 0, false);
+            warmUpAudio.pause();
+
+            // Snap needle to 1986 (166.0°) and display March 1986 Metallica
+            const snapDelta = breakTrack.angle - bottomAngle;
+            bottomAngle = breakTrack.angle;
+            mainAngle += snapDelta * NEEDLE_GEAR_RATIO;
+            bottomNeedle.style.setProperty('--bottom-angle', `${bottomAngle}deg`);
+            mainNeedle.style.setProperty('--main-angle', `${mainAngle}deg`);
+            setDecadeVisualState('decade-1980');
+            updateStationDisplay(breakTrack);
+            setMagicEye("locked", 1);
+
+            ensureOnkyoWebAudioAnalyser();
+            resetRadioFromShatter();
+
+            const hud = document.getElementById('band-hud');
+            if (hud) {
+                hud.style.transition = 'opacity 0.8s var(--ease-weighted)';
+                hud.style.opacity = '0';
+                hud.style.pointerEvents = 'none';
+            }
+
+            timeMachineAudio.pause();
+            timeMachineAudio.src = encodeAudioFileUrl(breakTrack.file);
+            try { timeMachineAudio.currentTime = 0; } catch (_) {}
+            timeMachineAudio.volume = 1.0; // Slam in at full volume
+
+            const launchTimelineMonitor = () => {
+                if (tmCurrentTrack !== breakTrack) return;
+                if (breakPointMonitorFrame) cancelAnimationFrame(breakPointMonitorFrame);
+                breakPointMonitorFrame = requestAnimationFrame(monitorMetallicaTimeline);
+            };
+
+            let playbackStarted = false;
+            const startPlayback = () => {
+                if (playbackStarted || tmCurrentTrack !== breakTrack) return;
+                playbackStarted = true;
+                try { timeMachineAudio.currentTime = 0; } catch (_) {}
+                timeMachineAudio.volume = 1.0;
+                const p = timeMachineAudio.play();
+                if (p && typeof p.then === 'function') {
+                    p.then(launchTimelineMonitor).catch(() => {
+                        playbackStarted = false;
+                    });
+                } else {
+                    launchTimelineMonitor();
                 }
-            });
+            };
+
+            if (timeMachineAudio.readyState >= 1) {
+                startPlayback();
+            } else {
+                timeMachineAudio.addEventListener('loadedmetadata', startPlayback, { once: true });
+                timeMachineAudio.addEventListener('canplay', startPlayback, { once: true });
+                timeMachineAudio.load();
+            }
+        }
+
+        function executeBreakPointShatterAndOnkyoReveal(instant = false) {
+            if (instant) {
+                isOnkyoRevealed = true;
+                isOnkyoPoweredOn = true;
+                if (radioFrame) radioFrame.style.display = 'none';
+                if (onkyoBaseImg && !onkyoBaseImg.src.endsWith('M504stack.png')) {
+                    onkyoBaseImg.src = 'images/M504stack.png';
+                }
+                updateOnkyoNeedleScale();
+                if (onkyoContainer) {
+                    onkyoContainer.classList.remove('powered-off', 'vu-emergence', 'vu-solidifying');
+                    onkyoContainer.setAttribute('aria-hidden', 'false');
+                    onkyoContainer.classList.add('revealed');
+                }
+                ensureOnkyoWebAudioAnalyser();
+                if (onkyoVuAnimFrame) cancelAnimationFrame(onkyoVuAnimFrame);
+                onkyoVuAnimFrame = requestAnimationFrame(animateOnkyoVuNeedles);
+                return;
+            }
+            executeRiffsExplosionAndVuSolidify();
         }
 
         // HTML5 Audio Event Listeners for Time Machine (mirrors Band 1 stream sync architecture)
@@ -4976,13 +5185,7 @@
         function checkTimeMachineTrackAdvance() {
             if (!isPoweredOn || currentBand !== 2 || !tmCurrentTrack) return;
 
-            // Break Point check: Pause immediately after the very first Heavy Metal guitar power chord (0.85s)
-            if (tmPhase === 'breakpoint_chord' && tmCurrentTrack.isBreakPoint) {
-                if (timeMachineAudio.currentTime >= 0.85) {
-                    executeBreakPointShatterAndOnkyoReveal();
-                }
-                return;
-            }
+            if (tmCurrentTrack.isBreakPoint) return;
 
             if (tmPhase !== 'playing' || tmCurrentTrack.isBreakPoint) return;
 

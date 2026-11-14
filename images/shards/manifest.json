@@ -1,0 +1,186 @@
+[
+  {
+    "file": "shard_00.png",
+    "w": 112,
+    "h": 212,
+    "orig_x": 635.5,
+    "orig_y": 145.5,
+    "pixels": 11024
+  },
+  {
+    "file": "shard_01.png",
+    "w": 247,
+    "h": 87,
+    "orig_x": 442.0,
+    "orig_y": 417.0,
+    "pixels": 10981
+  },
+  {
+    "file": "shard_02.png",
+    "w": 165,
+    "h": 147,
+    "orig_x": 220.0,
+    "orig_y": 391.0,
+    "pixels": 7486
+  },
+  {
+    "file": "shard_03.png",
+    "w": 150,
+    "h": 68,
+    "orig_x": 120.5,
+    "orig_y": 209.5,
+    "pixels": 5231
+  },
+  {
+    "file": "shard_04.png",
+    "w": 122,
+    "h": 120,
+    "orig_x": 351.5,
+    "orig_y": 186.5,
+    "pixels": 4588
+  },
+  {
+    "file": "shard_05.png",
+    "w": 159,
+    "h": 85,
+    "orig_x": 351.0,
+    "orig_y": 85.0,
+    "pixels": 4474
+  },
+  {
+    "file": "shard_06.png",
+    "w": 119,
+    "h": 68,
+    "orig_x": 210.0,
+    "orig_y": 269.5,
+    "pixels": 4340
+  },
+  {
+    "file": "shard_07.png",
+    "w": 88,
+    "h": 86,
+    "orig_x": 107.5,
+    "orig_y": 330.5,
+    "pixels": 3842
+  },
+  {
+    "file": "shard_08.png",
+    "w": 111,
+    "h": 78,
+    "orig_x": 434.0,
+    "orig_y": 234.5,
+    "pixels": 3678
+  },
+  {
+    "file": "shard_09.png",
+    "w": 49,
+    "h": 109,
+    "orig_x": 68.0,
+    "orig_y": 428.0,
+    "pixels": 2980
+  },
+  {
+    "file": "shard_10.png",
+    "w": 111,
+    "h": 76,
+    "orig_x": 640.0,
+    "orig_y": 364.5,
+    "pixels": 2944
+  },
+  {
+    "file": "shard_11.png",
+    "w": 90,
+    "h": 59,
+    "orig_x": 645.5,
+    "orig_y": 278.0,
+    "pixels": 2817
+  },
+  {
+    "file": "shard_12.png",
+    "w": 132,
+    "h": 44,
+    "orig_x": 493.5,
+    "orig_y": 149.5,
+    "pixels": 2708
+  },
+  {
+    "file": "shard_13.png",
+    "w": 114,
+    "h": 67,
+    "orig_x": 393.5,
+    "orig_y": 334.0,
+    "pixels": 2705
+  },
+  {
+    "file": "shard_14.png",
+    "w": 64,
+    "h": 74,
+    "orig_x": 96.5,
+    "orig_y": 122.5,
+    "pixels": 2655
+  },
+  {
+    "file": "shard_15.png",
+    "w": 74,
+    "h": 54,
+    "orig_x": 620.5,
+    "orig_y": 442.5,
+    "pixels": 1990
+  },
+  {
+    "file": "shard_16.png",
+    "w": 73,
+    "h": 54,
+    "orig_x": 545.0,
+    "orig_y": 288.5,
+    "pixels": 1937
+  },
+  {
+    "file": "shard_17.png",
+    "w": 55,
+    "h": 72,
+    "orig_x": 176.0,
+    "orig_y": 71.5,
+    "pixels": 1593
+  },
+  {
+    "file": "shard_18.png",
+    "w": 44,
+    "h": 70,
+    "orig_x": 341.5,
+    "orig_y": 280.5,
+    "pixels": 1525
+  },
+  {
+    "file": "shard_19.png",
+    "w": 62,
+    "h": 48,
+    "orig_x": 514.5,
+    "orig_y": 334.5,
+    "pixels": 1345
+  },
+  {
+    "file": "shard_20.png",
+    "w": 63,
+    "h": 64,
+    "orig_x": 509.0,
+    "orig_y": 45.5,
+    "pixels": 1307
+  },
+  {
+    "file": "shard_21.png",
+    "w": 44,
+    "h": 53,
+    "orig_x": 242.5,
+    "orig_y": 126.0,
+    "pixels": 1070
+  },
+  {
+    "file": "shard_22.png",
+    "w": 51,
+    "h": 27,
+    "orig_x": 70.0,
+    "orig_y": 59.0,
+    "pixels": 748
+  }
+]
