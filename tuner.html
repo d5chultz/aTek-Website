@@ -7656,14 +7656,14 @@
                     fetchWlobPhotoPool();
                     startHerbertTimer();
 
-                    // Delay "Sweet Jesus!" audio reaction by about 2 seconds so the reaction comes after all the thumbs have loaded
+                    // Delay "Sweet Jesus!" audio reaction by 5 seconds so the reaction comes after all the thumbs have loaded
                     setTimeout(() => {
                         if (!isWlobOpen) return;
                         try {
                             sweetJesusAudio.currentTime = 0;
                             sweetJesusAudio.play().catch(() => {});
                         } catch (_) {}
-                    }, 2000);
+                    }, 5000);
                     return;
                 }
 
